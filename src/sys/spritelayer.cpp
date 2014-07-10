@@ -1097,11 +1097,11 @@ SpriteLayer::locationChanged(const Offset& delta) {
 			} else {
 				mCenterOffset -= delta;
 			}
-		} else if (!mFixedMoveAxis) {
+		} else if (mFixedMoveAxis) {
 			// TODO This mode is broken, fix it
-	//        Offset a(delta.x*mFacingCos - delta.y*mFacingSin, delta.x*mFacingSin + delta.y*mFacingCos);
-	//        mLocation -= delta;
-	//        mLocation += a;
+	        Offset a(delta.x*mFacingCos - delta.y*mFacingSin, delta.x*mFacingSin + delta.y*mFacingCos);
+	        mLocation -= delta;
+	        mLocation += a;
 		}
     }
   #endif // !PDG_NO_GUI
