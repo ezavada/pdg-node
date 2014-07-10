@@ -1,6 +1,5 @@
 {
   "name": "pdg",
-  "private": true,
   "description": "The cross platform Pixel Dust Game Engine for Node.js.",
   "keywords": [
     "game",
