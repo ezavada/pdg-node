@@ -1,8 +1,10 @@
-PDG Engine Node Plugin
-======================
+Pixel Dust Game Engine Node Plugin
+==================================
 
-PDG is an open source, professional quality 2D game engine. It provides 
-system independent abstractions of common elements needed by game developers. 
+The Pixel Dust Game Engine (PDG) is an open source, professional quality 
+2D game engine. It provides system independent abstractions of common 
+elements needed by game developers. 
+
 This is the node.js plugin portion of it for game servers. 
 
 
