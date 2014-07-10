@@ -37,8 +37,18 @@
       "type": "MIT"
     }
   ],
+  "homepage": "https://github.com/ezavada/pdg-node",
+  "repository": {
+  	"type": "git",
+  	"url": "https://github.com/ezavada/pdg-node.git"
+  },
   "bugs": {
+	"url": "https://github.com/ezavada/pdg-node/issues",
     "email": "ed.zavada@gmail.com"
+  },
+  "directories":{
+  	"man":"./man",
+  	"lib":"./lib"
   },
   "scripts": {
     "install": "make build",
