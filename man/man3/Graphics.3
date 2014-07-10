@@ -1,0 +1,294 @@
+.TH "Graphics" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Graphics \- 
+.PP
+Things related to drawing graphics on screen\&.  
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBColor\fP"
+.br
+.RI "\fIcolor in RGB space, with optional alpha \fP"
+.ti -1c
+.RI "class \fBFont\fP"
+.br
+.RI "\fIfont for text drawing and measuring (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "class \fBGraphicsManager\fP"
+.br
+.RI "\fIUsed to create and track ports (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "class \fBImage\fP"
+.br
+.RI "\fIA bitmap image that can be blitted onto the screen\&. \fP"
+.ti -1c
+.RI "class \fBImageStrip\fP"
+.br
+.RI "\fIbitmap image containing a number of frames that can be blitted onto the screen \fP"
+.ti -1c
+.RI "class \fBISpriteDrawHelper\fP"
+.br
+.RI "\fIhelper for drawing sprite overlays and add-on effects \fP"
+.ti -1c
+.RI "class \fBOffset\fP"
+.br
+.RI "\fIoffset within a 2D coordinate system \fP"
+.ti -1c
+.RI "class \fBPoint\fP"
+.br
+.RI "\fIpoint for 2D coordinate system \fP"
+.ti -1c
+.RI "class \fBPort\fP"
+.br
+.RI "\fIarea in which drawing is done, a viewport (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "struct \fBPortDrawEvent\fP"
+.br
+.RI "\fIa port needs to be redrawn (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "struct \fBPortResizedEvent\fP"
+.br
+.RI "\fIa port has been resized (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "class \fBQuad\fP"
+.br
+.RI "\fI4 point polygon in 2D system \fP"
+.ti -1c
+.RI "class \fBRect\fP"
+.br
+.RI "\fIRectangle for 2D coordinate system\&. \fP"
+.ti -1c
+.RI "class \fBResourceManager\fP"
+.br
+.RI "\fIused for loading resources \fP"
+.ti -1c
+.RI "class \fBRotatedRect\fP"
+.br
+.RI "\fIrectangle with rotation for 2D coordinate system\&. \fP"
+.ti -1c
+.RI "class \fBVector\fP"
+.br
+.RI "\fIvector (magnitude and direction) within a 2D coordinate system\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "const \fBaction_DrawPortComplete\fP = 43"
+.br
+.RI "\fIeventType_SpriteLayer action: all drawing for every \fBSpriteLayer\fP has completed \fP"
+.ti -1c
+.RI "const \fBaction_ErasePort\fP = 40"
+.br
+.RI "\fIeventType_SpriteLayer action: about to start drawing each \fBSpriteLayer\fP \fP"
+.ti -1c
+.RI "const \fBaction_PostDrawLayer\fP = 42"
+.br
+.RI "\fIeventType_SpriteLayer action: completed rendering for a particular \fBSpriteLayer\fP \fP"
+.ti -1c
+.RI "const \fBaction_PreDrawLayer\fP = 41"
+.br
+.RI "\fIeventType_SpriteLayer action: about to render a particular \fBSpriteLayer\fP \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Things related to drawing graphics on screen\&. 
+
+
+.SH "Class Documentation"
+.PP 
+.SH "class pdg::ISpriteDrawHelper"
+.PP 
+helper for drawing sprite overlays and add-on effects 
+
+\fBWarning:\fP
+.RS 4
+\fBAPI Stability: 1 - Experimental\fP\&. This API was introduced recently and gotten little or no real use\&. It may change or be removed in future versions\&. It may not be completely implemented and may be missing important pieces of functionality\&. Please try it out and provide feedback\&.
+.RE
+.PP
+Implement this interface to do extra drawing stuff for a specific \fBSprite\fP then start using it by calling the sprite's setDrawHelper() method\&. You can only have one \fBSprite\fP Draw Helper attached to a particular sprite for normal drawing (before the sprite would normally draw) and one for post draw (after the sprite has been drawn)
+.PP
+For those coding in Javascript, there is an implementation of \fBISpriteDrawHelper\fP that maps a function definition to the draw call\&. So to create a helper:
+.PP
+.PP
+.nf
+var myHelper = new pdg\&.ISpriteDrawHelper(function(sprite, port) {
+                console\&.log('in my sprite draw helper for ' + sprite );
+                var r = sprite\&.getLayer()\&.layerToPortRect(sprite\&.getFrameRotatedBounds());
+                port\&.fillRect(r, 'black');
+                port\&.frameRect(r, 'white');
+                return false;  // don't let sprite draw itself (ignored for post draw)
+});
+mySprite\&.setDrawHelper(myHelper);
+.fi
+.PP
+.PP
+If you need something more complex, you can also use classify to create a new Javascript class that derives from \fBpdg\&.ISpriteDrawHelper\fP, and it will call the draw() method of your class\&. For example:
+.PP
+.PP
+.nf
+classify(pdg\&.ISpriteDrawHelper, 'MyDrawHelperClass', function() {
+                def('draw', function(sprite, port) {
+                                console\&.log('MyDrawHelperClass\&.draw(' + sprite + ')' );
+                                return true;  // let sprite draw itself (ignored for post draw)
+                });
+});
+mySprite\&.setDrawHelper( new MyDrawHelperClass() );
+.fi
+.PP
+.PP
+.SS "Your Custom Function:"
+.PP
+As you can see from the examples above, your \fBSprite\fP Draw Helper function (or draw() method) will be called with two parameters, and return a boolean: 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsprite\fP the \fBSprite\fP that is being drawn 
+.br
+\fIport\fP the \fBPort\fP where the sprite should be drawn 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBtrue\fP if the normal \fBSprite\fP drawing should happen; or \fBfalse\fP if the normal \fBSprite\fP drawing should be skipped\&. This return result only applies when called for pre-draw\&. If the helper is installed for as a post-draw helper, using setSpritePostDraw(), then the return result is ignored\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSprite\&.setDrawHelper()\fP 
+.RE
+.PP
+
+.SH "struct pdg::PortDrawEvent"
+.PP 
+a port needs to be redrawn (\fIGUI Only\fP) 
+
+Generated by the \fBGraphicsManager\fP whenever it is time to redraw a \fBPort\fP\&. All drawing calls should be done during the handling of a \fBeventType_PortDraw\fP\&. 
+.PP
+.nf
+{ 
+    emitter: {},       // the emitter that generated this event
+    eventType: 24,     // the event type (eventType_PortDraw)
+    port: {},          // the port that needs to be redrawn
+    frameNum: 12897    // how many times this event has been generated for this port
+}
+
+.fi
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+these events are never generated in a non-GUI build, such as the PDG Node\&.js plugin
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_PortDraw\fP 
+.PP
+\fBPort\fP 
+.PP
+\fBGraphicsManager\fP 
+.RE
+.PP
+
+.SH "struct pdg::PortResizedEvent"
+.PP 
+a port has been resized (\fIGUI Only\fP) 
+
+Generated by the \fBGraphicsManager\fP whenever a \fBPort\fP is resized or when the device orientation is changed\&. 
+.PP
+.nf
+{ 
+    emitter: {},       // the emitter that generated this event
+    eventType: 15,     // the event type (eventType_PortResized)
+    port: {},          // the port that was resized
+    screenPos: 0       // one of the screenPos_ constants, in this case screenPos_Normal
+}
+
+.fi
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+these events are never generated in a non-GUI build, such as the PDG Node\&.js plugin
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_PortResized\fP 
+.PP
+\fBPort\fP 
+.PP
+\fBGraphicsManager\fP 
+.RE
+.PP
+
+.SH "Variable Documentation"
+.PP 
+.SS "action_DrawPortComplete = 43"
+
+.PP
+eventType_SpriteLayer action: all drawing for every \fBSpriteLayer\fP has completed Emitted once per frame, after all drawing for all layers is done\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBaction_ErasePort\fP 
+.PP
+\fBaction_PostDrawLayer\fP 
+.PP
+\fBeventType_SpriteLayer\fP 
+.RE
+.PP
+
+.SS "action_ErasePort = 40"
+
+.PP
+eventType_SpriteLayer action: about to start drawing each \fBSpriteLayer\fP Emitted once per frame, before the drawing of sprite layers is started\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBaction_DrawPortComplete\fP 
+.PP
+\fBaction_PreDrawLayer\fP 
+.PP
+\fBeventType_SpriteLayer\fP 
+.RE
+.PP
+
+.SS "action_PostDrawLayer = 42"
+
+.PP
+eventType_SpriteLayer action: completed rendering for a particular \fBSpriteLayer\fP Emitted once per layer per frame, after all drawing for that layer is complete\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBaction_DrawPortComplete\fP 
+.PP
+\fBaction_PreDrawLayer\fP 
+.PP
+\fBeventType_SpriteLayer\fP 
+.RE
+.PP
+
+.SS "action_PreDrawLayer = 41"
+
+.PP
+eventType_SpriteLayer action: about to render a particular \fBSpriteLayer\fP Emitted once per layer per frame, before any drawing for that layer is performed\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBaction_ErasePort\fP 
+.PP
+\fBaction_PostDrawLayer\fP 
+.PP
+\fBeventType_SpriteLayer\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

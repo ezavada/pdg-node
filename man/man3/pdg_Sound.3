@@ -1,0 +1,503 @@
+.TH "Sound" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Sound \- 
+.PP
+handles both short sounds and music (\fIGUI Only\fP)  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBEventEmitter\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBchangeOffsetX\fP (int targetOffset, int msDuration, int easing=\fBlinearTween\fP)"
+.br
+.RI "\fIchange the left/right positioning of the sound's origin over time \fP"
+.ti -1c
+.RI "\fBchangePitch\fP (number targetOffset, int msDuration, int easing=\fBeaseInOutQuad\fP)"
+.br
+.RI "\fIchange the pitch of a sound over time (NOT IMPLEMENTED) \fP"
+.ti -1c
+.RI "\fBchangeVolume\fP (number level, uint fadeMs, int easing=\fBlinearTween\fP)"
+.br
+.RI "\fIchange sounds volume to target level over time \fP"
+.ti -1c
+.RI "\fBfadeIn\fP (uint fadeMs, int easing=\fBlinearTween\fP)"
+.br
+.RI "\fIfade the sound in from zero to full volume over time \fP"
+.ti -1c
+.RI "\fBfadeOut\fP (uint fadeMs, int easing=\fBlinearTween\fP)"
+.br
+.RI "\fIfade the sound out to silence over time \fP"
+.ti -1c
+.RI "number \fBgetVolume\fP ()"
+.br
+.RI "\fIget the current volume level for this sound \fP"
+.ti -1c
+.RI "boolean \fBisLooping\fP ()"
+.br
+.RI "\fIfind out if this sound is set to loop \fP"
+.ti -1c
+.RI "boolean \fBisPaused\fP ()"
+.br
+.RI "\fIfind out if a sound is paused \fP"
+.ti -1c
+.RI "\fBIEventHandler\fP \fBon\fP (int eventCode, function func)"
+.br
+.RI "\fIset a handler for a particular sound event \fP"
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonDonePlaying\fP (function func)"
+.br
+.RI "\fIset a handler for when the sound finishes playing \fP"
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonFailedToPlay\fP (function func)"
+.br
+.RI "\fIset a handler for if the sound fails to play \fP"
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonLooping\fP (function func)"
+.br
+.RI "\fIset a handler for when the sound reaches the end and loops \fP"
+.ti -1c
+.RI "\fBpause\fP ()"
+.br
+.RI "\fIstop a sound playing until resumed \fP"
+.ti -1c
+.RI "\fBplay\fP (number vol=1\&.0, int offsetX=0, number pitch=0, uint fromMs=0, int lenMs=ENTIRE_LENGTH)"
+.br
+.RI "\fIplay a sound once with given settings \fP"
+.ti -1c
+.RI "\fBresume\fP ()"
+.br
+.RI "\fIunpause a sound that was paused \fP"
+.ti -1c
+.RI "\fBSound\fP \fBsetLooping\fP (boolean loopingOn)"
+.br
+.RI "\fIset if the sound should loop or not \fP"
+.ti -1c
+.RI "\fBSound\fP \fBsetOffsetX\fP (int offsetX)"
+.br
+.RI "\fIset the left/right positioning of the sound's origin \fP"
+.ti -1c
+.RI "\fBSound\fP \fBsetPitch\fP (number pitchOffset)"
+.br
+.RI "\fIset the pitch of a sound \fP"
+.ti -1c
+.RI "\fBSound\fP \fBsetVolume\fP (number inVolume)"
+.br
+.RI "\fIset the volume level for a sound \fP"
+.ti -1c
+.RI "\fBSound\fP \fBskip\fP (int skipMilliseconds)"
+.br
+.RI "\fIskip ahead or back in a sound \fP"
+.ti -1c
+.RI "\fBSound\fP \fBskipTo\fP (uint timeMs)"
+.br
+.RI "\fIskipTo a particular time position in a sound \fP"
+.ti -1c
+.RI "\fBstart\fP ()"
+.br
+.RI "\fIstart playing a sound \fP"
+.ti -1c
+.RI "\fBstop\fP ()"
+.br
+.RI "\fIstop a sound from playing \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+handles both short sounds and music (\fIGUI Only\fP) 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
+.RE
+.PP
+.SS "Fire and Forget Playback"
+.PP
+This mode is typically used for short sound effects, like a footstep, an explosion, a single note of music, or some other momentary sound that doesn't need to be altered while playing\&. Use \fBplay()\fP for that sort of fire and forget sound\&.
+.PP
+\fBFire and Forget Example:\fP
+.PP
+.PP
+.nf
+PDG terminal v0\&.9\&.4
+> pdg\&.run();  // must be running for sounds to play
+> var snd = new pdg\&.Sound('test/clink1\&.mp3');
+> snd\&.play();
+> snd\&.play(0\&.3);
+.fi
+.PP
+.PP
+.SS "Dynamic Playback"
+.PP
+For longer sound effects and music, you will often want more dynamic control over the sound as it plays\&. The hum of a motor might change pitch and location as the sprite that generates it moves around on the screen\&. Background music may need to be paused or have it's volume changed independent of other sounds as it plays\&. Use \fBstart()\fP to play those sorts of sounds, then call other methods as needed to alter the sound playback\&.
+.PP
+\fBDynamic Playback Example:\fP
+.PP
+.PP
+.nf
+PDG terminal v0\&.9\&.4
+> pdg\&.run();  // must be running for sounds to play
+> var snd = new pdg\&.Sound('test/Peppy_The-Firing-Squad_YMXB\&.mp3');
+> snd\&.start();
+> snd\&.setVolume(0\&.3);
+> snd\&.skip(2000);
+> snd\&.setPitch(1\&.0);  // doesn't work on Windows
+> snd\&.setPitch(0);
+> snd\&.setOffsetX(1000); // full right 
+> snd\&.setOffsetX(-500); // half left 
+> snd\&.setOffsetX(0); // center
+> snd\&.fadeOut(10000); // fade out over 10 seconds
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBplay\fP 
+.PP
+\fBstart\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "changeOffsetX (inttargetOffset, intmsDuration, inteasing = \fC\fBlinearTween\fP\fP)"
+
+.PP
+change the left/right positioning of the sound's origin over time Adjust the apparent left/right positioning of the sound over a period of time to make the sound appear to be coming from a particular location in the view port\&.
+.PP
+\fBNote:\fP
+.RS 4
+since different speaker setups and screen sizes can change the apparent location, this is a relative location only\&.
+.RE
+.PP
+\fBWarning:\fP
+.RS 4
+On Mac OS X this only works if the sound is in stereo, and the OS is version 10\&.7 (aka Lion) or later\&. It will fail silently on earlier versions or with mono or multichannel sounds; and the sound will play with center balance\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fItargetOffset\fP the target X offset from the center of the main view port 
+.br
+\fImsDuration\fP the amount of time to get there 
+.br
+\fIeasing\fP the function for calculating the movement rate\&. Defaults to linearTween (smooth movement with no acceleration or deceleration)\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetOffsetX\fP 
+.PP
+\fBGraphicsManager\&.getMainPort\fP 
+.PP
+Easing 
+.RE
+.PP
+
+.SS "changePitch (numbertargetOffset, intmsDuration, inteasing = \fC\fBeaseInOutQuad\fP\fP)"
+
+.PP
+change the pitch of a sound over time (NOT IMPLEMENTED) 
+.SS "changeVolume (numberlevel, uintfadeMs, inteasing = \fC\fBlinearTween\fP\fP)"
+
+.PP
+change sounds volume to target level over time The change can go in either direction, louder or quieter\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIlevel\fP the target level 
+.br
+\fIfadeMs\fP the time to take for sound to reach the new volume level 
+.br
+\fIeasing\fP the function that describes how the volume change should happen, defaults to linearTween (constant rate of change)
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+Easing 
+.PP
+\fBlinearTween\fP 
+.RE
+.PP
+
+.SS "fadeIn (uintfadeMs, inteasing = \fC\fBlinearTween\fP\fP)"
+
+.PP
+fade the sound in from zero to full volume over time \fBParameters:\fP
+.RS 4
+\fIfadeMs\fP the time to take for sound to reach full volume 
+.br
+\fIeasing\fP the function that describes how the fading should happen, defaults to linearTween (constant rate of change)
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBfadeOut\fP 
+.PP
+\fBchangeVolume\fP 
+.PP
+Easing 
+.PP
+\fBlinearTween\fP 
+.RE
+.PP
+
+.SS "fadeOut (uintfadeMs, inteasing = \fC\fBlinearTween\fP\fP)"
+
+.PP
+fade the sound out to silence over time The sound is stopped once it fades out completely\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfadeMs\fP the time to take for sound to fade out completely 
+.br
+\fIeasing\fP the function that describes how the fading should happen, defaults to linearTween (constant rate of change)
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBfadeIn\fP 
+.PP
+\fBchangeVolume\fP 
+.PP
+Easing 
+.PP
+\fBlinearTween\fP 
+.RE
+.PP
+
+.SS "getVolume ()"
+
+.PP
+get the current volume level for this sound \fBReturns:\fP
+.RS 4
+a number from 0\&.0 to 1\&.0 representing the volume level for this sound\&.
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+This is not the absolute volume of the sound, since even at full volume (1\&.0) the sound's volume is scaled by the \fBSoundManager\fP's master volume
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSoundManager\&.setVolume\fP 
+.RE
+.PP
+
+.SS "isLooping ()"
+
+.PP
+find out if this sound is set to loop \fBReturns:\fP
+.RS 4
+true if the sound will loop when it reaches the end, false if it will not 
+.RE
+.PP
+
+.SS "isPaused ()"
+
+.PP
+find out if a sound is paused \fBReturns:\fP
+.RS 4
+true if the sound is currently paused, false if not
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+a sound that was never started is not considered paused 
+.RE
+.PP
+
+.SS "on (inteventCode, functionfunc)"
+
+.PP
+set a handler for a particular sound event \fBRemarks:\fP
+.RS 4
+Generally you should use the specific on{Event} calls\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBonDonePlaying()\fP 
+.PP
+\fBonFailedToPlay()\fP 
+.PP
+\fBonLooping()\fP 
+.RE
+.PP
+
+.SS "onDonePlaying (functionfunc)"
+
+.PP
+set a handler for when the sound finishes playing 
+.SS "onFailedToPlay (functionfunc)"
+
+.PP
+set a handler for if the sound fails to play 
+.SS "onLooping (functionfunc)"
+
+.PP
+set a handler for when the sound reaches the end and loops 
+.SS "pause ()"
+
+.PP
+stop a sound playing until resumed 
+.SS "play (numbervol = \fC1\&.0\fP, intoffsetX = \fC0\fP, numberpitch = \fC0\fP, uintfromMs = \fC0\fP, intlenMs = \fCENTIRE_LENGTH\fP)"
+
+.PP
+play a sound once with given settings Can be called multiple times on same sound object, creating overlapping sounds\&. Internally, \fBplay()\fP creates a new sound instance that is automatically cleaned up when the sound has finished playing\&.
+.PP
+\fBNote:\fP
+.RS 4
+Once you've called \fBplay()\fP, the sound will play without interruption as specified\&. Calling \fBstop()\fP, \fBpause()\fP, \fBsetVolume()\fP, etc\&.\&. will have no effect; because they operate on the sound you actually have a reference to, not the internally created instance that is actually playing\&. Only \fBSoundManager\&.setVolume()\fP and \fBSoundManager\&.setMute()\fP will affect it\&. Use \fBstart()\fP if you need to affect the sound after it is playing\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIvol\fP the volume level from 0\&.0 to 1\&.0, defaults to 1\&.0 
+.br
+\fIoffsetX\fP the left/right position offset from the center of the screen for the sound source\&. The pan/balance for the sound is adjusted accordingly\&. Negative numbers are from the left, positive to the right\&. Defaults to zero (no balance adjustment)\&. 
+.br
+\fIpitch\fP the amount to shift the pitch -1\&.0 is down one octave, +1\&.0 is up one octave\&. 
+.br
+\fIfromMs\fP start the sound from a particular ms time mark 
+.br
+\fIlenMs\fP the maximum number of ms to play the sound\&. If longer than the length of the sound this parameter is ignored\&. Defaults to playing the entire length of the sound\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBstart\fP
+.RE
+.PP
+
+.SS "resume ()"
+
+.PP
+unpause a sound that was paused Play continues from where it was before it was paused\&. 
+.SS "setLooping (booleanloopingOn)"
+
+.PP
+set if the sound should loop or not \fBNote:\fP
+.RS 4
+Sounds started with \fBplay()\fP never loop 
+.RE
+.PP
+
+.SS "setOffsetX (intoffsetX)"
+
+.PP
+set the left/right positioning of the sound's origin Set the apparent left/right positioning of the sound to make the sound appear to be coming from a particular location in the view port\&.
+.PP
+\fBNote:\fP
+.RS 4
+Since different speaker setups and screen sizes can change the apparent location, this is a relative location only\&.
+.RE
+.PP
+\fBWarning:\fP
+.RS 4
+On Mac OS X this only works if the sound is in stereo, and the OS is version 10\&.7 (aka Lion) or later\&. It will fail silently on earlier versions or with mono or multichannel sounds; and the sound will play with center balance\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIoffsetX\fP the target X offset from the center of the main view port
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBchangeOffsetX\fP 
+.PP
+\fBGraphicsManager\&.getMainPort\fP 
+.RE
+.PP
+
+.SS "setPitch (numberpitchOffset)"
+
+.PP
+set the pitch of a sound Raise or lower the pitch of a sound by up to an octave\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpitchOffset\fP a value between -1\&.0 and 1\&.0, with -1\&.0 meaning down an octave, and +1\&.0 being up an octave\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBchangePitch\fP
+.RE
+.PP
+
+.SS "setVolume (numberinVolume)"
+
+.PP
+set the volume level for a sound Sets the volume level for this specific sound\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinVolume\fP a value between 0\&.0 and 1\&.0, where 0 is silent and 1\&.0 is the max volume allowed by the master volume\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetVolume\fP 
+.PP
+\fBSoundManager\&.setVolume\fP 
+.PP
+\fBSoundManager\&.setMute\fP 
+.RE
+.PP
+
+.SS "skip (intskipMilliseconds)"
+
+.PP
+skip ahead or back in a sound \fBParameters:\fP
+.RS 4
+\fIskipMilliseconds\fP the amount of time to skip\&. Negative values are backwards\&. 
+.RE
+.PP
+
+.SS "skipTo (uinttimeMs)"
+
+.PP
+skipTo a particular time position in a sound \fBParameters:\fP
+.RS 4
+\fItimeMs\fP the location within the sound to skip to 
+.RE
+.PP
+
+.SS "start ()"
+
+.PP
+start playing a sound Starts the sound playing\&. Use \fBstart()\fP instead of \fBplay()\fP when you want to manipulate the sound as it is playing, since this call allows the use of \fBsetVolume()\fP, \fBskip()\fP, \fBskipTo()\fP, \fBpause()\fP, set/changePitch(), and set/changeXOffset() to actually affect playback\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBplay\fP 
+.PP
+\fBstop\fP 
+.RE
+.PP
+
+.SS "stop ()"
+
+.PP
+stop a sound from playing This will free buffers and deallocate other memory, so use \fBpause()\fP if you want to restart the sound again\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBstart\fP 
+.PP
+\fBpause\fP 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

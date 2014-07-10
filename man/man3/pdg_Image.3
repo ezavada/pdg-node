@@ -1,0 +1,451 @@
+.TH "Image" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Image \- 
+.PP
+A bitmap image that can be blitted onto the screen\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBImageStrip\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "number \fBgetAlphaValue\fP (\fBPoint\fP p)"
+.br
+.RI "\fIget the value for the alpha channel at the given point in the image \fP"
+.ti -1c
+.RI "number \fBgetAlphaValue\fP (int x, int y)"
+.br
+.RI "\fIget the value for the alpha channel at the given x, y coordinates in the image \fP"
+.ti -1c
+.RI "number \fBgetHeight\fP ()"
+.br
+.RI "\fIget the height in pixels of the image \fP"
+.ti -1c
+.RI "\fBRect\fP \fBgetImageBounds\fP (\fBPoint\fP at)"
+.br
+.RI "\fIget image boundary rect, optionally with top left at given point \fP"
+.ti -1c
+.RI "number \fBgetOpacity\fP ()"
+.br
+.RI "\fIget opacity of this image \fP"
+.ti -1c
+.RI "\fBColor\fP \fBgetPixel\fP (\fBPoint\fP p)"
+.br
+.RI "\fIget the pixel data at the given point in the image \fP"
+.ti -1c
+.RI "\fBColor\fP \fBgetPixel\fP (int x, int y)"
+.br
+.RI "\fIget the pixel data at the given x, y coordinates in the image \fP"
+.ti -1c
+.RI "\fBImage\fP \fBgetSubsection\fP (\fBQuad\fP quad)"
+.br
+.RI "\fIget image that is an arbitrary subsection of this image \fP"
+.ti -1c
+.RI "\fBImage\fP \fBgetSubsection\fP (\fBRect\fP quad)"
+.br
+.RI "\fIget image that is a rectangular subsection of this image \fP"
+.ti -1c
+.RI "object \fBgetTransparentColor\fP ()"
+.br
+.RI "\fIget the color that is used to indicate transparency \fP"
+.ti -1c
+.RI "number \fBgetWidth\fP ()"
+.br
+.RI "\fIget the width in pixels of the image \fP"
+.ti -1c
+.RI "number \fBprepareToRasterize\fP ()"
+.br
+.RI "\fIbind the image into an OpenGL texture and free image data from main memory \fP"
+.ti -1c
+.RI "\fBretainAlpha\fP ()"
+.br
+.RI "\fIretain alpha data for use by \fBImage\&.getAlphaValue()\fP or per-pixel sprite collisions \fP"
+.ti -1c
+.RI "\fBretainData\fP ()"
+.br
+.RI "\fIretain pixel data for use by \fBImage\&.getPixel()\fP \fP"
+.ti -1c
+.RI "\fBsetEdgeClamping\fP (boolean inUseEdgeClamp)"
+.br
+.RI "\fIset whether image uses edge clamping or not \fP"
+.ti -1c
+.RI "\fBsetOpacity\fP (number opacity)"
+.br
+.RI "\fIset opacity of this image \fP"
+.ti -1c
+.RI "\fBImage\fP \fBsetTransparentColor\fP (object inTransparentColor)"
+.br
+.RI "\fIset the color that is used to indicate transparency \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+A bitmap image that can be blitted onto the screen\&. 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&. You can create an image directly from a file, or by loading it from resource files with the \fBResourceManager\fP\&.
+.RE
+.PP
+.PP
+.nf
+var img = new pdg\&.Image('myImage\&.png');
+.fi
+.PP
+.PP
+Images are just a data object\&. Methods in \fBPort\fP are used to draw them onscreen\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBPort\&.drawImage()\fP 
+.PP
+\fBResourceManager\&.getImage()\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "getAlphaValue (\fBPoint\fPp)"
+
+.PP
+get the value for the alpha channel at the given point in the image The alpha channel is the transparency of the image\&. An alpha channel value of 0 is completely transparent, 255 is completely opaque\&. If the image does not have an alpha channel, then it will return the overall image opacity, as if you had called \fBgetOpacity()\fP * 255\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIp\fP the point in the image to get the data from 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+alpha channel value from 0\&.\&.255
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+When an image is first drawn into a port, the image is data is converted into an OpenGL texture and the original image data is purged\&. Once that happens \fBgetAlphaValue()\fP will no longer work\&. If you need to access the image's alpha channel even after drawing it, use \fBretainAlpha()\fP to prevent the alpha channel from being purged\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetOpacity()\fP 
+.PP
+\fBretainAlpha()\fP 
+.RE
+.PP
+
+.SS "getAlphaValue (intx, inty)"
+
+.PP
+get the value for the alpha channel at the given x, y coordinates in the image The alpha channel is the transparency of the image\&. An alpha channel value of 0 is completely transparent, 255 is completely opaque\&. If the image does not have an alpha channel, then it will return the overall image opacity, as if you had called \fBgetOpacity()\fP * 255\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIx\fP the x coordinate of the point in the image to get the data from 
+.br
+\fIy\fP the y coordinate of the point in the image to get the data from 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+alpha channel value from 0\&.\&.255
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+When an image is first drawn into a port, the image is data is converted into an OpenGL texture and the original image data is purged\&. Once that happens \fBgetAlphaValue()\fP will no longer work\&. If you need to access the image's alpha channel even after drawing it, use \fBretainAlpha()\fP to prevent the alpha channel from being purged\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetOpacity()\fP 
+.PP
+\fBretainAlpha()\fP 
+.RE
+.PP
+
+.SS "getHeight ()"
+
+.PP
+get the height in pixels of the image \fBReturns:\fP
+.RS 4
+the image height in pixels
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetWidth()\fP 
+.PP
+\fBgetImageBounds()\fP 
+.RE
+.PP
+
+.SS "getImageBounds (\fBPoint\fPat)"
+
+.PP
+get image boundary rect, optionally with top left at given point Get a rectangle with the same height and width as the image\&. The location of the rectangle will either be with the top left at (0,0); or optionally at the point passed in, usually the point at which the image is located in some screen or view coordinate system\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIat\fP make the top left of the boundary rect be located at this point\&. If at is not passed in, the top left will be at (0,0) 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the bounds rectangle for the image, with top left at (0,0) at at the (at\&.x, at\&.y) if at was passed in 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetHeight()\fP 
+.PP
+\fBgetWidth()\fP 
+.RE
+.PP
+
+.SS "getOpacity ()"
+
+.PP
+get opacity of this image 0\&.0 - completely transparent to 1\&.0 - completely solid
+.PP
+\fBReturns:\fP
+.RS 4
+the opacity (0\&.0 \&.\&. 1\&.0)
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetOpacity()\fP 
+.RE
+.PP
+
+.SS "getPixel (\fBPoint\fPp)"
+
+.PP
+get the pixel data at the given point in the image The pixel data will be returned as an RGB \fBColor\fP, including the alpha channel if there is one\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIp\fP the point in the image to get the data from 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a \fBColor\fP object with red, green, blue and alpha values
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+When an image is first drawn into a port, the image is data is converted into an OpenGL texture and the original image data is purged\&. Once that happens \fBgetPixel()\fP will no longer work\&. If you need to access the image's pixel data even after drawing it, use \fBretainData()\fP to prevent the pixel data from being purged\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetOpacity()\fP 
+.PP
+\fBretainData()\fP 
+.RE
+.PP
+
+.SS "getPixel (intx, inty)"
+
+.PP
+get the pixel data at the given x, y coordinates in the image The pixel data will be returned as an RGB \fBColor\fP, including the alpha channel if there is one\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIx\fP the x coordinate of the point in the image to get the data from 
+.br
+\fIy\fP the y coordinate of the point in the image to get the data from 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a \fBColor\fP object with red, green, blue and alpha values
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+When an image is first drawn into a port, the image is data is converted into an OpenGL texture and the original image data is purged\&. Once that happens \fBgetPixel()\fP will no longer work\&. If you need to access the image's pixel data even after drawing it, use \fBretainData()\fP to prevent the pixel data from being purged\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetOpacity()\fP 
+.PP
+\fBretainData()\fP 
+.RE
+.PP
+
+.SS "getSubsection (\fBQuad\fPquad)"
+
+.PP
+get image that is an arbitrary subsection of this image \fBReturns:\fP
+.RS 4
+a new \fBImage\fP object with the sub image
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this is done by referencing the original, the storage space is not duplicated
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIquad\fP the sub-region desired 
+.RE
+.PP
+
+.SS "getSubsection (\fBRect\fPquad)"
+
+.PP
+get image that is a rectangular subsection of this image \fBReturns:\fP
+.RS 4
+a new \fBImage\fP object with the sub image
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this is done by referencing the original, the storage space is not duplicated
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIquad\fP the rectangular sub-region desired 
+.RE
+.PP
+
+.SS "getTransparentColor ()"
+
+.PP
+get the color that is used to indicate transparency In many cases an image with a single color that is marked as transparent is more space efficient than an entire alpha channel, since you can use RGB instead of RGBA colors (24 rather than 32 bits per pixel)\&.
+.PP
+\fBReturns:\fP
+.RS 4
+\fBColor\fP that is treated as transparent 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetTransparentColor()\fP 
+.RE
+.PP
+
+.SS "getWidth ()"
+
+.PP
+get the width in pixels of the image \fBReturns:\fP
+.RS 4
+the image width in pixels
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetHeight()\fP 
+.RE
+.PP
+
+.SS "prepareToRasterize ()"
+
+.PP
+bind the image into an OpenGL texture and free image data from main memory You usually won't need to do this explicitly, it is done automatically the first time an image is drawn\&. This is here to allow you to convert images ahead of time if needed to prevent frame rate hits from conversion while drawing\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBretainAlpha()\fP 
+.PP
+\fBretainData()\fP 
+.RE
+.PP
+
+.SS "retainAlpha ()"
+
+.PP
+retain alpha data for use by \fBImage\&.getAlphaValue()\fP or per-pixel sprite collisions Unless retainAlpha is called before the image is converted to an OpenGL texture (ie: the first time it is drawn onscreen), the image alpha channel data will be removed from main memory as soon as it is converted to an OpenGL texture, and \fBgetAlphaValue()\fP cannot be used to inspect the contents of the image\&. Per pixel-sprite collisions won't work either\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetAlphaValue()\fP 
+.RE
+.PP
+
+.SS "retainData ()"
+
+.PP
+retain pixel data for use by \fBImage\&.getPixel()\fP Unless retainData is called before the image is converted to an OpenGL texture (ie: the first time it is drawn onscreen), the image data will be removed from main memory as soon as it is converted to an OpenGL texture, and \fBgetPixel()\fP cannot be used to inspect the contents of the image\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetPixel()\fP 
+.RE
+.PP
+
+.SS "setEdgeClamping (booleaninUseEdgeClamp)"
+
+.PP
+set whether image uses edge clamping or not Edge Clamping is useful for applications where you want a single copy of the texture to appear on a large surface\&. It makes the edges on a large surface align more cleanly with the edges of the image\&. You should turn off edge clamping with images you intend to use as repeating textures, such as with calls to \fBPort\&.drawTexture()\fP or \fBPort\&.drawTexturedSphere()\fP\&.
+.PP
+\fBFig\&. 1: Edge Clamping Off vs Edge Clamping On\fP
+.PP
+.PP
+In the example above you can see faint diagonal white lines on the left hand image (no edge clamping)\&. Those lines are not present in the right hand image after edge clamping is turned on\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinUseEdgeClamp\fP true to use it, false to not
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+Edge Clamping is on by default for images, so you shouldn't need to change this setting in most cases\&.
+.RE
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBPort\&.drawTexture()\fP 
+.PP
+\fBPort\&.drawTexturedSphere()\fP 
+.RE
+.PP
+
+.SS "setOpacity (numberopacity)"
+
+.PP
+set opacity of this image Opacity can be used on an \fBImage\fP regardless of whether it has an alpha channel or not\&. In images with an alpha channel, the transparency of any given pixel is that pixel's alpha channel value * the image opacity (0\&.0 \&.\&. 1\&.0)\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIopacity\fP the desired opacity as range from either (0-255) or (0\&.0 to 1\&.0)\&. 0 is completely transparent, 1\&.0 or 255 is completely solid\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetOpacity()\fP 
+.RE
+.PP
+
+.SS "setTransparentColor (objectinTransparentColor)"
+
+.PP
+set the color that is used to indicate transparency In many cases an image with a single color that is marked as transparent is more space efficient than an entire alpha channel, since you can use RGB instead of RGBA colors (24 rather than 32 bits per pixel)\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinTransparentColor\fP a color object with red, green and blue value that indicates what RGB value should be treated as transparent
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetTransparentColor()\fP 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

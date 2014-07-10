@@ -1,0 +1,74 @@
+{
+  "name": "pdg",
+  "private": true,
+  "description": "The cross platform Pixel Dust Game Engine for Node.js.",
+  "keywords": [
+    "game",
+    "engine",
+    "server",
+    "2d",
+    "color",
+    "opengl",
+    "coordinates",
+    "graphics",
+    "animation",
+    "physics",
+    "simulation",
+    "image",
+    "tile",
+    "sprite",
+    "Spriter",
+    "serialize",
+    "serialization",
+    "SCML"
+  ],
+  "main": "lib/pdg.js",
+  "version": "0.9.4",
+  "author": {
+    "name": "Ed Zavada",
+    "url": "http://www.ezavada.com/pdg/javascript/html/",
+    "email": "ed.zavada@gmail.com"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "bugs": {
+    "email": "ed.zavada@gmail.com"
+  },
+  "scripts": {
+    "install": "make build",
+    "test": "node test.js"
+  },
+  "devDependencies": {
+    "jasmine-node": ">=0",
+    "node-gyp": ">=0.13"
+  },
+  "readmeFilename": "README.md",
+  "contributors": [
+    {
+      "name": "Ed Zavada",
+      "email": "ed.zavada@gmail.com"
+    },
+    {
+      "name": "Ariel Butler"
+    },
+    {
+      "name": "Alan Davies"
+    },
+    {
+      "name": "Nick Laiacona"
+    },
+    {
+      "name": "Justin Holmes"
+    }
+  ],
+  "dependencies": {},
+  "optionalDependencies": {},
+  "dist": {
+  }
+}

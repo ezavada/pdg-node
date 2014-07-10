@@ -1,0 +1,337 @@
+.TH "NetServer" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+NetServer \- 
+.PP
+a network endpoint that can accept incoming connections  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNetServer\fP (object opts=null)"
+.br
+.RI "\fIconstructor for a \fBNetServer\fP, sets server options \fP"
+.ti -1c
+.RI "number \fBbroadcast\fP (object message, function filter=null)"
+.br
+.RI "\fIsend a message to all connected clients \fP"
+.ti -1c
+.RI "\fBNetServer\fP \fBexpectClient\fP (string clientKey, string clientIpAddr= '*', int reservationTTL=FOREVER, boolean singleUse=false)"
+.br
+.RI "\fImake a connection reservation for a client \fP"
+.ti -1c
+.RI "\fBNetServer\fP \fBlisten\fP (function callback)"
+.br
+.RI "\fIlisten and call a function when new connections are established \fP"
+.ti -1c
+.RI "\fBNetServer\fP \fBonError\fP (function callback)"
+.br
+.RI "\fIset up callback for handling errors \fP"
+.ti -1c
+.RI "\fBshutdown\fP (boolean closeExisting=true, boolean kill=false)"
+.br
+.RI "\fIstop listening for new connections \fP"
+.ti -1c
+.RI "string \fBtoString\fP ()"
+.br
+.RI "\fIreturns '[object NetServer]' \fP"
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "boolean \fBallowDatagram\fP"
+.br
+.RI "\fIwhen true, the server tries to establish UDP communications with the client \fP"
+.ti -1c
+.RI "\fBconnections\fP"
+.br
+.RI "\fIan array of NetConnections made to this server - \fBRead Only\fP \fP"
+.ti -1c
+.RI "number \fBhandshakeTimeout\fP"
+.br
+.RI "\fIthe number of milliseconds allowed for handshake\&. Default is 5000 (5 seconds) \fP"
+.ti -1c
+.RI "boolean \fBlistening\fP"
+.br
+.RI "\fIflag to indicate if the server is currently listening or not \fP"
+.ti -1c
+.RI "boolean \fBreservationRequired\fP"
+.br
+.RI "\fIflag to indicate if reservations to the server are required or not \fP"
+.ti -1c
+.RI "string \fBserverAddr\fP"
+.br
+.RI "\fIthe address (interface) on which the server listens 0\&.0\&.0\&.0 means all interfaces on the computer \fP"
+.ti -1c
+.RI "number \fBserverPort\fP"
+.br
+.RI "\fIthe port on which the server listens \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+a network endpoint that can accept incoming connections 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
+.RE
+.PP
+.SS "Overview"
+.PP
+\fBNetServer\fP is part of the PDG Engine's custom protocol for games\&. It handles protocol negotiation and optional connections\&. It provide a server that listens for connections with a client over both TCP (reliable transport with guaranteed delivery) and UDP (small and unreliable but fast)\&.
+.PP
+\fBNetServer\fP doesn't actually handle network communication, it only listens for incoming connections\&. Once a connection is established, it creates a \fBNetConnection\fP object for each connected client that you can use to send and receive data\&.
+.PP
+In cases where your server consists of multiple processes (most game servers do, especially ones that expect to scale to handle a large number of users) a particular server process may be both a server and a client\&. For example, it might accept connections from players over the internet using a \fBNetServer\fP, but then connect (using a \fBNetClient\fP) to a central message distribution system to relay chat between players connected to different server nodes\&.
+.PP
+.SS "Authorization & Reservations"
+.PP
+There are 5 different ways you can allow clients to connect:
+.PP
+.IP "1." 4
+\fBWide Open\fP - clients do not require any authorization or reservation to connect\&. Obviously this is the least secure, but is fine for server processes that are all behind a firewall, or peer to peer connections\&. This is the default setting for \fBNetServer\fP if no options are used\&.
+.IP "2." 4
+\fBCommon Key\fP - clients all send the same static key\&. To do this, call \fBexpectClient()\fP once with the static key and no other parameters\&. That will allow all clients to call \fBNetClient\&.connect()\fP with that static key\&. Attempts to connect without the key will be rejected by the \fBNetServer\fP
+.IP "3." 4
+\fBComputed Key\fP - clients and server each compute a key based on some common information that they all have, most likely the UTC date/time\&. This is nearly the same as a static key, except that the single key doesn't last forever\&. To do this, all \fBexpectClient()\fP with the new key at a regular interval and set a reservationTTL for the keys\&. Make sure you pass '*' (any ip) for the clientIPAddr\&. You will probably want the TTL to be slightly longer than the new key interval to give clients a little extra time to connect with the previous computed key, to allow for differences in date/time between different systems\&.
+.IP "4." 4
+\fBPer-Client reservation\fP - Each client gets a unique key for their exclusive use during a session, set on the server side by calling \fBexpectClient()\fP\&. Generally this happens when the user logs in\&. This is made stronger if the client's IP address is also part of the reservation\&. The reservation should have a time to live (TTL)\&.
+.IP "5." 4
+\fBSingle Use Reservation\fP - This is by far the most secure, especially when combined with IP address checking\&. Any time the client is going to connect to a server, it must be given a key, and the server must be told to expect that key using \fBexpectClient()\fP\&. TTL should be short (10s of seconds) and the singleUse flag should be passed as true to \fBexpectClient()\fP\&.
+.PP
+.PP
+\fBWarning:\fP
+.RS 4
+\fBNetClient\fP, \fBNetServer\fP, and \fBNetConnection\fP all work together over a custom protocol\&. \fBNetServer\fP doesn't handle raw TCP nor any other protocol such as HTTP\&. There are perfectly fine \fCNet\fP and \fCHTTP\fP modules built-in to Node\&.js (and thus to PDG) for that\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBexpectClient\fP 
+.PP
+\fBNetConnection\fP 
+.PP
+\fBNetClient\fP 
+.PP
+\fCNode\&.js Net module\fP 
+.PP
+\fCNode\&.js HTTP module\fP 
+.RE
+.PP
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBNetServer\fP (objectopts = \fCnull\fP)"
+
+.PP
+constructor for a \fBNetServer\fP, sets server options Construct a new \fBNetServer\fP with particular options or using default values if no options are specified\&.
+.PP
+Available options are:
+.PP
+.IP "1." 4
+serverAddr - a string with the IP address (or hostname), defaults to 0\&.0\&.0\&.0 (all interfaces)
+.IP "2." 4
+serverPort - a string with the port to use (defaults to 5000)
+.IP "3." 4
+fixedPort - if false, indicate if we should try sequential ports if the one we asked for is already in use (defaults to false)
+.IP "4." 4
+noDatagram - flag to indicate that we should not try to establish UDP communication with the client (defaults to false)
+.IP "5." 4
+reservationRequired - flag indicating whether clients must be authenticated or not (defaults to false)
+.IP "6." 4
+handshakeTimeout - number of milliseconds to wait for handshake to complete\&. Connection is killed if handshake not complete by that time\&. Default is 5000 (5 seconds)\&. Shorter times offer better protection against Denial of Service attacks\&.
+.PP
+.PP
+\fBParameters:\fP
+.RS 4
+\fIopts\fP a Javascript object with the options above
+.RE
+.PP
+.PP
+.nf
+var myServer = new pdg\&.NetServer( { serverPort: 6160, noDatagram = true } );
+.fi
+.PP
+ 
+.SH "Member Function Documentation"
+.PP 
+.SS "broadcast (objectmessage, functionfilter = \fCnull\fP)"
+
+.PP
+send a message to all connected clients Go through all the NetConnections in the connections array send the message to each of them\&. If a filter function is used, instead of sending to all, only send to the ones that filter function returns true for\&.
+.PP
+The filter function should take one parameter, a Net Connection, and should return true if the connection passes the filter, and false if it is excluded by the filter\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fImessage\fP the message to send 
+.br
+\fIfilter\fP the filter function\&. If not passed, all connections will be sent the message\&.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the number of connections that were actually sent a message 
+.RE
+.PP
+
+.SS "expectClient (stringclientKey, stringclientIpAddr = \fC'*'\fP, intreservationTTL = \fCFOREVER\fP, booleansingleUse = \fCfalse\fP)"
+
+.PP
+make a connection reservation for a client When a server is created with the reservationRequired flag set to true, the server needs to know how clients are authorized\&. Use this to make specific reservations for clients by unique key and/or IP address; or a general reservation for all clients using a shared key, perhaps computed based on UTC date and time\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIclientKey\fP - the key the client(s) must provide 
+.br
+\fIclientIpAddr\fP - the IP address the client is allowed to connect from (defaults to '*', which means any IP address will be accepted) 
+.br
+\fIreservationTTL\fP - how long this reservation is valid (defaults to forever) 
+.br
+\fIsingleUse\fP - flag to indicate if the reservation becomes invalid after it is used (default to false, can be used multiple times until expiration)
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+itself for call chaining 
+.RE
+.PP
+
+.SS "listen (functioncallback)"
+
+.PP
+listen and call a function when new connections are established Starts a listening port for incoming connections, and with each new connection calls the provided callback with a newly created \fBNetConnection\fP\&.
+.PP
+The callback will be invoked with one parameter, a \fBNetConnection\fP\&.
+.PP
+.PP
+.nf
+myServer\&.listen( function(myConnection) {
+    myConnection\&.send('sorry, too busy to talk');
+    myConnection\&.close();
+});
+.fi
+.PP
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcallback\fP the callback function
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+itself for call chaining
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBNetConnection\fP 
+.RE
+.PP
+
+.SS "onError (functioncallback)"
+
+.PP
+set up callback for handling errors These will be errors with the listening port, not with the connections themselves; those go to the connection object\&. The exception is IP mismatch on incoming connections -- those don't generate any errors to avoid spending unnecessary resources in the event of denial of service attacks\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcallback\fP the callback function to be notified of errors
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+itself for call chaining 
+.RE
+.PP
+
+.SS "shutdown (booleancloseExisting = \fCtrue\fP, booleankill = \fCfalse\fP)"
+
+.PP
+stop listening for new connections This will also do a clean shutdown of all existing connections made through it, unless you tell it not to by passing false for closeExisting\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcloseExisting\fP flag for whether existing connections should be closed or not (defaults to true if not passed) 
+.br
+\fIkill\fP flag for whether existing connections should be killed\&. True means kill, false means allow to drain normally (defaults to false if not passed)\&.
+.RE
+.PP
+This will also do a clean shutdown of all existing connections made through it, unless you tell it not to by passing false for closeExisting\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcloseExisting\fP flag for whether existing connections should be closed or not (defaults to true if not passed) 
+.RE
+.PP
+
+.SS "toString ()"
+
+.PP
+returns '[object NetServer]' (\fIWaves hand\fP) This is not the method you are looking for\&.
+.PP
+You probably want this:
+.PP
+.PP
+.nf
+function getServerString(ns) {
+    return 'NetServer@' + ns\&.serverAddr + ':' + ns\&.serverPort;
+}
+.fi
+.PP
+.PP
+Which gives something like this: 
+.PP
+.nf
+NetServer@127.0.0.1:5000
+.fi
+.PP
+ 
+.SH "Member Data Documentation"
+.PP 
+.SS "allowDatagram"
+
+.PP
+when true, the server tries to establish UDP communications with the client This is set based on what you pass in for noDatagram at \fBNetServer\fP initialization\&. It can be changed at any time to affect new incoming connections\&. Changes will not affect existing connections\&. 
+.SS "connections"
+
+.PP
+an array of NetConnections made to this server - \fBRead Only\fP 
+.SS "handshakeTimeout"
+
+.PP
+the number of milliseconds allowed for handshake\&. Default is 5000 (5 seconds) The connection will be dropped if handshake has not completed in this time\&. This is to help prevent denial of service attacks\&.
+.PP
+This can be changed at any time to affect the timeout for new incoming connections\&. Changes will not affect existing connections\&.
+.PP
+The connection will be dropped if handshake has not completed in this time\&. This is to help prevent denial of service attacks\&. 
+.SS "listening"
+
+.PP
+flag to indicate if the server is currently listening or not flag to indicate if the server is currently listening or not - \fBRead Only\fP 
+.SS "reservationRequired"
+
+.PP
+flag to indicate if reservations to the server are required or not This can be changed at any time to affect new incoming connection\&. Changes will not affect existing connections\&. 
+.SS "serverAddr"
+
+.PP
+the address (interface) on which the server listens 0\&.0\&.0\&.0 means all interfaces on the computer the address (interface) on which the server listens
+.PP
+This can be changed at any time \fIbefore\fP calling \fBlisten()\fP\&. It should be considered Read Only after calling \fBlisten()\fP\&.
+.PP
+0\&.0\&.0\&.0 means all interfaces on the computer 
+.SS "serverPort"
+
+.PP
+the port on which the server listens This can be changed at any time \fIbefore\fP calling \fBlisten()\fP\&. It should be considered Read Only after calling \fBlisten()\fP\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

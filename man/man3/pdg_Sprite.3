@@ -1,0 +1,474 @@
+.TH "Sprite" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Sprite \- 
+.PP
+animated, moving image that is automatically moved, animated, and drawn  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBAnimated\fP, \fBEventEmitter\fP, and \fBISerializable\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBaddFramesImage\fP (\fBImage\fP image, int startingFrame=\fBstart_FromFirstFrame\fP, int numFrames=\fBall_Frames\fP)"
+.br
+.ti -1c
+.RI "\fBchangeFramesImage\fP (\fBImage\fP oldImage, \fBImage\fP newImage)"
+.br
+.ti -1c
+.RI "\fBdeserialize\fP (\fBDeserializer\fP deserializer)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBdisableCollisions\fP ()"
+.br
+.ti -1c
+.RI "\fBdisconnect\fP (\fBSprite\fP otherSprite)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBenableCollisions\fP (int collisionType=\fBcollide_AlphaChannel\fP)"
+.br
+.ti -1c
+.RI "\fBfadeIn\fP (int msDuration, int easing=\fBlinearTween\fP)"
+.br
+.ti -1c
+.RI "\fBfadeOut\fP (int msDuration, int easing=\fBlinearTween\fP)"
+.br
+.ti -1c
+.RI "\fBfadeTo\fP (number targetOpacity, int msDuration, int easing=\fBlinearTween\fP)"
+.br
+.ti -1c
+.RI "\fBCpConstraint\fP \fBgear\fP (\fBSprite\fP otherSprite, number gearRatio, number initialAngle=0, number breakingForce=0)"
+.br
+.ti -1c
+.RI "number \fBgetCollideGroup\fP ()"
+.br
+.ti -1c
+.RI "number \fBgetCollisionRadius\fP ()"
+.br
+.ti -1c
+.RI "number \fBgetCurrentFrame\fP ()"
+.br
+.RI "\fIwhich frame of animation the sprite is currently showing \fP"
+.ti -1c
+.RI "number \fBgetElasticity\fP ()"
+.br
+.ti -1c
+.RI "\fBOffset\fP \fBgetFrameCenterOffset\fP (\fBImage\fP image=null, int frameNum=0)"
+.br
+.RI "\fINOT IMPLEMENTED\&. \fP"
+.ti -1c
+.RI "number \fBgetFrameCount\fP ()"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBgetFrameRotatedBounds\fP (int frame)"
+.br
+.ti -1c
+.RI "number \fBgetFriction\fP ()"
+.br
+.ti -1c
+.RI "\fBSpriteLayer\fP \fBgetLayer\fP ()"
+.br
+.RI "\fIget the layer that contains this sprite \fP"
+.ti -1c
+.RI "number \fBgetMyClassTag\fP ()"
+.br
+.ti -1c
+.RI "number \fBgetOpacity\fP ()"
+.br
+.ti -1c
+.RI "uint \fBgetSerializedSize\fP (\fBSerializer\fP serializer)"
+.br
+.ti -1c
+.RI "int \fBgetZOrder\fP ()"
+.br
+.ti -1c
+.RI "\fBCpConstraint\fP \fBgrooveJoint\fP (\fBOffset\fP grooveStart, \fBOffset\fP grooveEnd, \fBSprite\fP otherSprite, \fBOffset\fP otherAnchor, number breakingForce=0)"
+.br
+.ti -1c
+.RI "boolean \fBhasAnimation\fP (int animationId)"
+.br
+.ti -1c
+.RI "boolean \fBhasAnimation\fP (string animationName)"
+.br
+.ti -1c
+.RI "boolean \fBisBehind\fP (\fBSprite\fP sprite)"
+.br
+.ti -1c
+.RI "\fBmakeJointBreakable\fP (\fBCpConstraint\fP joint, number breakingForce)"
+.br
+.ti -1c
+.RI "\fBmakeJointUnbreakable\fP (\fBCpConstraint\fP joint)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBmakeStatic\fP ()"
+.br
+.ti -1c
+.RI "\fBCpConstraint\fP \fBmotor\fP (\fBSprite\fP otherSprite, number spin, number maxTorque=INFINITY)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBmoveBehind\fP (\fBSprite\fP sprite)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBmoveInFrontOf\fP (\fBSprite\fP sprite)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBmoveToBack\fP ()"
+.br
+.RI "\fIput this sprite behind all others in its layer \fP"
+.ti -1c
+.RI "\fBSprite\fP \fBmoveToFront\fP ()"
+.br
+.RI "\fIput this sprite in front of all others in its layer \fP"
+.ti -1c
+.RI "\fBoffsetFrameCenters\fP (int offsetX, int offsetY, \fBImage\fP image=null, int startingFrame=\fBstart_FromFirstFrame\fP, int numFrames=\fBall_Frames\fP)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBon\fP (int eventCode, function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonAnimationEnd\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonAnimationLoop\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonCollideSprite\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonCollideWall\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonExitLayer\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonFadeComplete\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonFadeInComplete\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonFadeOutComplete\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonMouseClick\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonMouseDown\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonMouseEnter\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonMouseLeave\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonMouseUp\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonOffscreen\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonOnscreen\fP (function func)"
+.br
+.ti -1c
+.RI "\fBCpConstraint\fP \fBpinJoint\fP (\fBOffset\fP anchor, \fBSprite\fP otherSprite, \fBOffset\fP otherAnchor, number breakingForce=0)"
+.br
+.ti -1c
+.RI "\fBCpConstraint\fP \fBpivotJoint\fP (\fBSprite\fP otherSprite, \fBPoint\fP pivot, number breakingForce=0)"
+.br
+.ti -1c
+.RI "\fBCpConstraint\fP \fBratchet\fP (\fBSprite\fP otherSprite, number rachetInterval, number phase, number breakingForce=0)"
+.br
+.ti -1c
+.RI "\fBremoveJoint\fP (\fBCpConstraint\fP joint)"
+.br
+.ti -1c
+.RI "\fBCpConstraint\fP \fBrotaryLimit\fP (\fBSprite\fP otherSprite, number minAngle, number maxAngle, number breakingForce=0)"
+.br
+.ti -1c
+.RI "\fBCpConstraint\fP \fBrotarySpring\fP (\fBSprite\fP otherSprite, number restAngle, number stiffness, number damping, number breakingForce=0)"
+.br
+.ti -1c
+.RI "\fBserialize\fP (\fBSerializer\fP serializer)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBsetCollideGroup\fP (int group)"
+.br
+.ti -1c
+.RI "\fBsetCollisionHelper\fP (\fBISpriteCollideHelper\fP helper)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBsetCollisionRadius\fP (number pixelRadius)"
+.br
+.ti -1c
+.RI "\fBsetDrawHelper\fP (\fBISpriteDrawHelper\fP helper)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBsetElasticity\fP (number elasticity)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBsetEntityScale\fP (number xScale, number yScale)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBsetFrame\fP (int frame)"
+.br
+.ti -1c
+.RI "number \fBsetMouseDetectMode\fP (int collisionType=\fBcollide_BoundingBox\fP)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBsetOpacity\fP (number opacity)"
+.br
+.ti -1c
+.RI "\fBsetPostDrawHelper\fP (\fBISpriteDrawHelper\fP helper)"
+.br
+.ti -1c
+.RI "boolean \fBsetWantsAnimEndEvents\fP (boolean wantsThem=true)"
+.br
+.ti -1c
+.RI "boolean \fBsetWantsAnimLoopEvents\fP (boolean wantsThem=true)"
+.br
+.ti -1c
+.RI "boolean \fBsetWantsClickEvents\fP (boolean wantsThem=true)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBsetWantsCollideWallEvents\fP (boolean wantsThem=true)"
+.br
+.ti -1c
+.RI "boolean \fBsetWantsMouseOverEvents\fP (boolean wantsThem=true)"
+.br
+.ti -1c
+.RI "\fBSprite\fP \fBsetWantsOffscreenEvents\fP (boolean wantsThem=true)"
+.br
+.ti -1c
+.RI "\fBCpConstraint\fP \fBslideJoint\fP (\fBOffset\fP anchor, \fBSprite\fP otherSprite, \fBOffset\fP otherAnchor, number minDist, number maxDist, number breakingForce=0)"
+.br
+.ti -1c
+.RI "\fBCpConstraint\fP \fBspringJoint\fP (\fBOffset\fP anchor, \fBSprite\fP otherSprite, \fBOffset\fP otherAnchor, number restLength, number stiffness, number damping, number breakingForce=0)"
+.br
+.ti -1c
+.RI "\fBstartAnimation\fP (int animationId)"
+.br
+.ti -1c
+.RI "\fBstartAnimation\fP (string animationName)"
+.br
+.ti -1c
+.RI "\fBstartFrameAnimation\fP (number fps, int startingFrame=\fBstart_FromFirstFrame\fP, int numFrames=\fBall_Frames\fP, int animateFlags=\fBanimate_Looping\fP)"
+.br
+.ti -1c
+.RI "\fBstopFrameAnimation\fP ()"
+.br
+.ti -1c
+.RI "\fBuseCollisionMask\fP (\fBImage\fP frameImage, \fBImage\fP maskImage)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+animated, moving image that is automatically moved, animated, and drawn 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
+.RE
+.PP
+Things that happen to a sprite that might require intervention, such as collisions completed animations, going offscreen, etc\&.\&.\&. will generate events 
+.SH "Member Function Documentation"
+.PP 
+.SS "addFramesImage (\fBImage\fPimage, intstartingFrame = \fC\fBstart_FromFirstFrame\fP\fP, intnumFrames = \fC\fBall_Frames\fP\fP)"
+
+.SS "changeFramesImage (\fBImage\fPoldImage, \fBImage\fPnewImage)"
+
+.SS "deserialize (\fBDeserializer\fPdeserializer)"
+
+.SS "\fBSprite\fP disableCollisions ()"
+
+.SS "disconnect (\fBSprite\fPotherSprite)"
+
+.SS "\fBSprite\fP enableCollisions (intcollisionType = \fC\fBcollide_AlphaChannel\fP\fP)"
+
+.SS "fadeIn (intmsDuration, inteasing = \fC\fBlinearTween\fP\fP)"
+
+.SS "fadeOut (intmsDuration, inteasing = \fC\fBlinearTween\fP\fP)"
+
+.SS "fadeTo (numbertargetOpacity, intmsDuration, inteasing = \fC\fBlinearTween\fP\fP)"
+
+.SS "\fBCpConstraint\fP gear (\fBSprite\fPotherSprite, numbergearRatio, numberinitialAngle = \fC0\fP, numberbreakingForce = \fC0\fP)"
+
+.SS "number getCollideGroup ()"
+
+.SS "number getCollisionRadius ()"
+
+.SS "getCurrentFrame ()"
+
+.PP
+which frame of animation the sprite is currently showing \fBReturns:\fP
+.RS 4
+the frame index number (0 based) 
+.RE
+.PP
+
+.SS "number getElasticity ()"
+
+.SS "getFrameCenterOffset (\fBImage\fPimage = \fCnull\fP, intframeNum = \fC0\fP)"
+
+.PP
+NOT IMPLEMENTED\&. 
+.SS "getFrameCount ()"
+\fBReturns:\fP
+.RS 4
+total number of frames of animation for this sprite 
+.RE
+.PP
+
+.SS "getFrameRotatedBounds (intframe)"
+
+.SS "number getFriction ()"
+
+.SS "getLayer ()"
+
+.PP
+get the layer that contains this sprite \fBReturns:\fP
+.RS 4
+the containing \fBSpriteLayer\fP 
+.RE
+.PP
+
+.SS "number getMyClassTag ()"
+
+.SS "number getOpacity ()"
+
+.SS "uint getSerializedSize (\fBSerializer\fPserializer)"
+
+.SS "int getZOrder ()"
+
+.SS "\fBCpConstraint\fP grooveJoint (\fBOffset\fPgrooveStart, \fBOffset\fPgrooveEnd, \fBSprite\fPotherSprite, \fBOffset\fPotherAnchor, numberbreakingForce = \fC0\fP)"
+
+.SS "boolean hasAnimation (intanimationId)"
+
+.SS "boolean hasAnimation (stringanimationName)"
+
+.SS "boolean isBehind (\fBSprite\fPsprite)"
+
+.SS "makeJointBreakable (\fBCpConstraint\fPjoint, numberbreakingForce)"
+
+.SS "makeJointUnbreakable (\fBCpConstraint\fPjoint)"
+
+.SS "\fBSprite\fP makeStatic ()"
+
+.SS "\fBCpConstraint\fP motor (\fBSprite\fPotherSprite, numberspin, numbermaxTorque = \fCINFINITY\fP)"
+
+.SS "\fBSprite\fP moveBehind (\fBSprite\fPsprite)"
+
+.SS "\fBSprite\fP moveInFrontOf (\fBSprite\fPsprite)"
+
+.SS "moveToBack ()"
+
+.PP
+put this sprite behind all others in its layer 
+.SS "moveToFront ()"
+
+.PP
+put this sprite in front of all others in its layer 
+.SS "offsetFrameCenters (intoffsetX, intoffsetY, \fBImage\fPimage = \fCnull\fP, intstartingFrame = \fC\fBstart_FromFirstFrame\fP\fP, intnumFrames = \fC\fBall_Frames\fP\fP)"
+
+.SS "\fBIEventHandler\fP on (inteventCode, functionfunc)"
+
+.SS "\fBIEventHandler\fP onAnimationEnd (functionfunc)"
+
+.SS "\fBIEventHandler\fP onAnimationLoop (functionfunc)"
+
+.SS "\fBIEventHandler\fP onCollideSprite (functionfunc)"
+
+.SS "\fBIEventHandler\fP onCollideWall (functionfunc)"
+
+.SS "\fBIEventHandler\fP onExitLayer (functionfunc)"
+
+.SS "\fBIEventHandler\fP onFadeComplete (functionfunc)"
+
+.SS "\fBIEventHandler\fP onFadeInComplete (functionfunc)"
+
+.SS "\fBIEventHandler\fP onFadeOutComplete (functionfunc)"
+
+.SS "\fBIEventHandler\fP onMouseClick (functionfunc)"
+
+.SS "\fBIEventHandler\fP onMouseDown (functionfunc)"
+
+.SS "\fBIEventHandler\fP onMouseEnter (functionfunc)"
+
+.SS "\fBIEventHandler\fP onMouseLeave (functionfunc)"
+
+.SS "\fBIEventHandler\fP onMouseUp (functionfunc)"
+
+.SS "\fBIEventHandler\fP onOffscreen (functionfunc)"
+
+.SS "\fBIEventHandler\fP onOnscreen (functionfunc)"
+
+.SS "\fBCpConstraint\fP pinJoint (\fBOffset\fPanchor, \fBSprite\fPotherSprite, \fBOffset\fPotherAnchor, numberbreakingForce = \fC0\fP)"
+
+.SS "\fBCpConstraint\fP pivotJoint (\fBSprite\fPotherSprite, \fBPoint\fPpivot, numberbreakingForce = \fC0\fP)"
+
+.SS "\fBCpConstraint\fP ratchet (\fBSprite\fPotherSprite, numberrachetInterval, numberphase, numberbreakingForce = \fC0\fP)"
+
+.SS "removeJoint (\fBCpConstraint\fPjoint)"
+
+.SS "\fBCpConstraint\fP rotaryLimit (\fBSprite\fPotherSprite, numberminAngle, numbermaxAngle, numberbreakingForce = \fC0\fP)"
+
+.SS "\fBCpConstraint\fP rotarySpring (\fBSprite\fPotherSprite, numberrestAngle, numberstiffness, numberdamping, numberbreakingForce = \fC0\fP)"
+
+.SS "serialize (\fBSerializer\fPserializer)"
+
+.SS "\fBSprite\fP setCollideGroup (intgroup)"
+
+.SS "setCollisionHelper (\fBISpriteCollideHelper\fPhelper)"
+
+.SS "\fBSprite\fP setCollisionRadius (numberpixelRadius)"
+
+.SS "setDrawHelper (\fBISpriteDrawHelper\fPhelper)"
+
+.SS "\fBSprite\fP setElasticity (numberelasticity)"
+
+.SS "\fBSprite\fP setEntityScale (numberxScale, numberyScale)"
+
+.SS "\fBSprite\fP setFrame (intframe)"
+
+.SS "number setMouseDetectMode (intcollisionType = \fC\fBcollide_BoundingBox\fP\fP)"
+
+.SS "\fBSprite\fP setOpacity (numberopacity)"
+
+.SS "setPostDrawHelper (\fBISpriteDrawHelper\fPhelper)"
+
+.SS "boolean setWantsAnimEndEvents (booleanwantsThem = \fCtrue\fP)"
+
+.SS "boolean setWantsAnimLoopEvents (booleanwantsThem = \fCtrue\fP)"
+
+.SS "boolean setWantsClickEvents (booleanwantsThem = \fCtrue\fP)"
+
+.SS "\fBSprite\fP setWantsCollideWallEvents (booleanwantsThem = \fCtrue\fP)"
+
+.SS "boolean setWantsMouseOverEvents (booleanwantsThem = \fCtrue\fP)"
+
+.SS "\fBSprite\fP setWantsOffscreenEvents (booleanwantsThem = \fCtrue\fP)"
+
+.SS "\fBCpConstraint\fP slideJoint (\fBOffset\fPanchor, \fBSprite\fPotherSprite, \fBOffset\fPotherAnchor, numberminDist, numbermaxDist, numberbreakingForce = \fC0\fP)"
+
+.SS "\fBCpConstraint\fP springJoint (\fBOffset\fPanchor, \fBSprite\fPotherSprite, \fBOffset\fPotherAnchor, numberrestLength, numberstiffness, numberdamping, numberbreakingForce = \fC0\fP)"
+
+.SS "startAnimation (intanimationId)"
+
+.SS "startAnimation (stringanimationName)"
+
+.SS "startFrameAnimation (numberfps, intstartingFrame = \fC\fBstart_FromFirstFrame\fP\fP, intnumFrames = \fC\fBall_Frames\fP\fP, intanimateFlags = \fC\fBanimate_Looping\fP\fP)"
+
+.SS "stopFrameAnimation ()"
+
+.SS "useCollisionMask (\fBImage\fPframeImage, \fBImage\fPmaskImage)"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

@@ -1,0 +1,1036 @@
+.TH "Events" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Events \- 
+.PP
+Things used to notify your code of user input or other significant events\&.  
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBEventEmitter\fP"
+.br
+.RI "\fIDistributes events to event handlers\&. \fP"
+.ti -1c
+.RI "class \fBEventManager\fP"
+.br
+.RI "\fIDistributes events to event handlers\&. \fP"
+.ti -1c
+.RI "class \fBIEventHandler\fP"
+.br
+.RI "\fIInterface for any class which handles events\&. \fP"
+.ti -1c
+.RI "struct \fBKeyEvent\fP"
+.br
+.RI "\fIa key down or up event \fP"
+.ti -1c
+.RI "struct \fBKeyPressEvent\fP"
+.br
+.RI "\fIthe user pressed and released a key \fP"
+.ti -1c
+.RI "struct \fBMouseEvent\fP"
+.br
+.RI "\fIthe user did something with the mouse \fP"
+.ti -1c
+.RI "struct \fBMouseTrackingEvent\fP"
+.br
+.RI "\fIthe mouse entered or left a tracking region (\fINOT IMPLEMENTED\fP) \fP"
+.ti -1c
+.RI "struct \fBPortDrawEvent\fP"
+.br
+.RI "\fIa port needs to be redrawn (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "struct \fBPortResizedEvent\fP"
+.br
+.RI "\fIa port has been resized (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "struct \fBScrollWheelEvent\fP"
+.br
+.RI "\fIthe user repositioned the scroll wheel \fP"
+.ti -1c
+.RI "struct \fBShutdownEvent\fP"
+.br
+.RI "\fIa timer fire event \fP"
+.ti -1c
+.RI "struct \fBSoundEvent\fP"
+.br
+.RI "\fIa sound completed or is looping (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "struct \fBSpriteAnimateEvent\fP"
+.br
+.RI "\fIa \fBSprite\fP did some animation (\fIOptional\fP) \fP"
+.ti -1c
+.RI "struct \fBSpriteBreakEvent\fP"
+.br
+.RI "\fIa \fBSprite\fP joint is breaking because it was overstressed (\fIChipmunk Physics Only\fP) \fP"
+.ti -1c
+.RI "struct \fBSpriteCollideEvent\fP"
+.br
+.RI "\fIa \fBSprite\fP collided with something (\fIOptional\fP) \fP"
+.ti -1c
+.RI "struct \fBSpriteLayerEvent\fP"
+.br
+.RI "\fIthe user clicked on (or touched) a \fBSprite\fP \fP"
+.ti -1c
+.RI "struct \fBSpriteTouchEvent\fP"
+.br
+.RI "\fIthe user clicked on (or touched) a \fBSprite\fP \fP"
+.ti -1c
+.RI "class \fBTimerManager\fP"
+.br
+.RI "\fImanages timers that can fire at a particular time, or repeatedly at an interval \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "const \fBall_events\fP = 0"
+.br
+.RI "\fIa special catch-all for events that weren't handled by specific event handlers \fP"
+.ti -1c
+.RI "const \fBeventType_KeyDown\fP = 4"
+.br
+.RI "\fIthe user pushed down on a key \fP"
+.ti -1c
+.RI "const \fBeventType_KeyPress\fP = 6"
+.br
+.RI "\fIthe user pressed and released a key \fP"
+.ti -1c
+.RI "const \fBeventType_KeyUp\fP = 5"
+.br
+.RI "\fIthe user released a key \fP"
+.ti -1c
+.RI "const \fBeventType_MouseDown\fP = 7"
+.br
+.RI "\fIthe user pressed a mouse button \fP"
+.ti -1c
+.RI "const \fBeventType_MouseEnter\fP = 22"
+.br
+.RI "\fIthe user moved the mouse into a tracking area (\fINOT IMPLEMENTED\fP) \fP"
+.ti -1c
+.RI "const \fBeventType_MouseLeave\fP = 23"
+.br
+.RI "\fIthe user moved the mouse out of a tracking area (\fINOT IMPLEMENTED\fP) \fP"
+.ti -1c
+.RI "const \fBeventType_MouseMove\fP = 9"
+.br
+.RI "\fIthe user moved the mouse \fP"
+.ti -1c
+.RI "const \fBeventType_MouseUp\fP = 8"
+.br
+.RI "\fIthe user release a mouse button \fP"
+.ti -1c
+.RI "const \fBeventType_PortDraw\fP = 24"
+.br
+.RI "\fIa port needs to be redrawn \fP"
+.ti -1c
+.RI "const \fBeventType_PortResized\fP = 15"
+.br
+.RI "\fIa port was resized \fP"
+.ti -1c
+.RI "const \fBeventType_ScrollWheel\fP = 16"
+.br
+.RI "\fIthe user moved the scroll wheel \fP"
+.ti -1c
+.RI "const \fBeventType_Shutdown\fP = 2"
+.br
+.RI "\fIone time application shutdown event \fP"
+.ti -1c
+.RI "const \fBeventType_SoundEvent\fP = 14"
+.br
+.RI "\fIa sound finished or looped \fP"
+.ti -1c
+.RI "const \fBeventType_SpriteAnimate\fP = 17"
+.br
+.RI "\fIa sprite finished an animation (\fIOptional\fP) \fP"
+.ti -1c
+.RI "const \fBeventType_SpriteBreak\fP = 21"
+.br
+.RI "\fIjoined sprites broke apart (\fIChipmunk Physics only\fP) \fP"
+.ti -1c
+.RI "const \fBeventType_SpriteCollide\fP = 20"
+.br
+.RI "\fIa collision between sprites \fP"
+.ti -1c
+.RI "const \fBeventType_SpriteLayer\fP = 18"
+.br
+.RI "\fIsomething happening to a sprite layer \fP"
+.ti -1c
+.RI "const \fBeventType_SpriteTouch\fP = 19"
+.br
+.RI "\fIsprite touched event (\fIOptional\fP) \fP"
+.ti -1c
+.RI "const \fBeventType_Timer\fP = 3"
+.br
+.RI "\fIa timer fire event \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Things used to notify your code of user input or other significant events\&. 
+
+
+.SH "Class Documentation"
+.PP 
+.SH "class pdg::IEventHandler"
+.PP 
+Interface for any class which handles events\&. 
+
+Specific Subclasses should be written to implement particular handlers\&. Typically you would call an onXXX() method of the \fBEventEmitter\fP object that is generating the event you want, and it will take care of creating the event handler for you, and adding a convenient cancel() method to the handler\&. For example:
+.PP
+.PP
+.nf
+var mySpriteCollisionHandler = mySprite\&.onCollideSprite(function(event) {
+   // do something about the collision
+});
+\&.\&.\&.
+mySpriteCollisionHandler\&.cancel();   // stop handling collision events with this handler
+.fi
+.PP
+.PP
+This cancel() method will only work for a single emitter\&. So if you may want to create a handler that is used with multiple emitters, you should create it once and then explicitly add it to and remove it from each emitter\&. Here's how:
+.PP
+.PP
+.nf
+var mySpriteHandler = new pdg\&.IEventHandler(function(event) {
+                console\&.log('in my event handler with '+event);
+});
+mySprite\&.addHandler(mySpriteHandler, pdg\&.eventType_SpriteCollide);
+\&.\&.\&.
+mySprite\&.removeHandler(mySpriteHandler, pdg\&.eventType_SpriteCollide);
+.fi
+.PP
+.PP
+.SS "Your Custom Function:"
+.PP
+As you can see from the examples above, your Event Handler function will be called with a single parameter, and return a boolean: 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIevent\fP the event that occurred (from the See Also list below) 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBtrue\fP if the event has been completely handled and should not propagate any further; or \fBfalse\fP it should be allowed to continue to propagate through the handler chain\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBKeyEvent\fP 
+.PP
+\fBKeyPressEvent\fP 
+.PP
+\fBMouseEvent\fP 
+.PP
+\fBMouseTrackingEvent\fP 
+.PP
+\fBPortDrawEvent\fP 
+.PP
+\fBPortResizedEvent\fP 
+.PP
+\fBScrollWheelEvent\fP 
+.PP
+\fBShutdownEvent\fP 
+.PP
+\fBSoundEvent\fP 
+.PP
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBSpriteBreakEvent\fP 
+.PP
+\fBSpriteCollideEvent\fP 
+.PP
+\fBSpriteLayerEvent\fP 
+.PP
+\fBSpriteTouchEvent\fP 
+.RE
+.PP
+
+.SH "struct pdg::KeyEvent"
+.PP 
+a key down or up event 
+
+Generated by the \fBEventManager\fP when the user pushes down on a key (\fBeventType_KeyDown\fP) or releases a key (\fBeventType_KeyUp\fP)\&. Use this for arcade style key handling\&.
+.PP
+For keyboard data entry, use \fBeventType_KeyPress\fP\&. 
+.PP
+.nf
+{ 
+    emitter: {},       // the emitter that generated this event
+    eventType: 4,      // the event type (eventType_KeyUp or eventType_KeyDown)
+    keyCode: 34        // the raw key code from the OS
+} 
+
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_KeyDown\fP 
+.PP
+\fBeventType_KeyUp\fP 
+.PP
+\fBeventType_KeyPress\fP 
+.PP
+\fBonKeyDown()\fP 
+.PP
+\fBEventManager\&.isKeyDown()\fP 
+.PP
+\fBEventManager\&.isRawKeyDown()\fP 
+.RE
+.PP
+
+.SH "struct pdg::KeyPressEvent"
+.PP 
+the user pressed and released a key 
+
+Generated by the \fBEventManager\fP when the user presses and releases a key (a keystroke)\&. Also generated by repeat key events from the OS when a key is held down\&.
+.PP
+For arcade style multi-key handling see \fBeventType_KeyDown\fP and \fBeventType_KeyUp\fP\&. 
+.PP
+.nf
+{ 
+    emitter: {},            // the emitter that generated this event
+    eventType: 6,           // the event type (eventType_KeyPress)
+    shift: false,           // true if the shift key is held down
+    ctrl: false,            // true if the control key is held down
+    alt: false,             // true if the alt (or option) key is held down
+    meta: false,            // true if the meta (windows or command) key is held down
+    unicode: 48,            // the Unicode character code generated by this key
+    isRepeating: false,     // true if this is a repeat key event
+} 
+
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_KeyPress\fP 
+.PP
+\fBonKeyPress()\fP 
+.PP
+\fBKey Code Constants\fP 
+.RE
+.PP
+
+.SH "struct pdg::MouseEvent"
+.PP 
+the user did something with the mouse 
+
+Generated by the \fBEventManager\fP whenever the user moves the mouse (\fBeventType_MouseMove\fP) or clicks a mouse button (\fBeventType_MouseDown\fP and \fBeventType_MouseUp\fP)\&.
+.PP
+The \fBEventManager\fP also tracks the state of the mouse buttons, so you can retrieve that at any time with \fBEventManager\&.isButtonDown()\fP\&. The \fBGraphicsManager\fP tracks the position of the mouse, and that can be retrieved at any time with \fBGraphicsManager\&.getMouse()\fP\&. 
+.PP
+.nf
+{ 
+    emitter: {},            // the emitter that generated this event
+    eventType: 7,           // the event type (eventType_MouseDown, eventType_MouseUp, or eventType_MouseMove)
+    shift: false,           // true if the shift key is held down
+    ctrl: false,            // true if the control key is held down
+    alt: false,             // true if the alt (or option) key is held down
+    meta: false,            // true if the meta (windows or command) key is held down
+    mousePos: {
+        x: 456,                         // the x coordinate of the mouse when the event occurred
+        y: 201              // the y coordinate of the mouse when the event occurred
+    },
+    leftButton: false,      // true if the left mouse button was down
+    rightButton: false,     // true if the left mouse button was down
+    buttonNumber: 0,        // true if the meta (windows or command) key is held down
+    lastClickPos: { 
+        x: 456,                         // the x coordinate of the last mouseDown event
+        y: 201              // the y coordinate of the last mouseDown event
+    },
+    lastClickElapsed: 201   // the number of milliseconds since the last mouseDown
+}
+
+.fi
+.PP
+.PP
+Location and time since the last mouseDown event are provided to make it easier to detect double-clicks, dragging, and gestures\&.
+.PP
+\fBNote:\fP
+.RS 4
+on a touch device mouse moved events are only generated when the user is touching the device, and each finger touching is treated like a separate mouse button, with the button number based on the order the fingers touched the device\&.
+.PP
+A \fBSpriteLayer\fP has the ability to automatically handle these mouse events and generate \fBeventType_SpriteTouch\fP for any \fBSprite\fP that was clicked on, or pass these on as mouse events if no \fBSprite\fP was hit\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_MouseDown\fP 
+.PP
+\fBeventType_MouseUp\fP 
+.PP
+\fBeventType_MouseMove\fP 
+.PP
+\fBeventType_SpriteTouch\fP 
+.PP
+\fBonMouseDown()\fP 
+.PP
+\fBonMouseUp()\fP 
+.PP
+\fBonMouseMove()\fP 
+.PP
+\fBEventManager\&.isButtonDown()\fP 
+.PP
+\fBGraphicsManager\&.getMouse()\fP 
+.RE
+.PP
+
+.SH "struct pdg::MouseTrackingEvent"
+.PP 
+the mouse entered or left a tracking region (\fINOT IMPLEMENTED\fP) 
+
+
+.SH "struct pdg::PortDrawEvent"
+.PP 
+a port needs to be redrawn (\fIGUI Only\fP) 
+
+Generated by the \fBGraphicsManager\fP whenever it is time to redraw a \fBPort\fP\&. All drawing calls should be done during the handling of a \fBeventType_PortDraw\fP\&. 
+.PP
+.nf
+{ 
+    emitter: {},       // the emitter that generated this event
+    eventType: 24,     // the event type (eventType_PortDraw)
+    port: {},          // the port that needs to be redrawn
+    frameNum: 12897    // how many times this event has been generated for this port
+}
+
+.fi
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+these events are never generated in a non-GUI build, such as the PDG Node\&.js plugin
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_PortDraw\fP 
+.PP
+\fBPort\fP 
+.PP
+\fBGraphicsManager\fP 
+.RE
+.PP
+
+.SH "struct pdg::PortResizedEvent"
+.PP 
+a port has been resized (\fIGUI Only\fP) 
+
+Generated by the \fBGraphicsManager\fP whenever a \fBPort\fP is resized or when the device orientation is changed\&. 
+.PP
+.nf
+{ 
+    emitter: {},       // the emitter that generated this event
+    eventType: 15,     // the event type (eventType_PortResized)
+    port: {},          // the port that was resized
+    screenPos: 0       // one of the screenPos_ constants, in this case screenPos_Normal
+}
+
+.fi
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+these events are never generated in a non-GUI build, such as the PDG Node\&.js plugin
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_PortResized\fP 
+.PP
+\fBPort\fP 
+.PP
+\fBGraphicsManager\fP 
+.RE
+.PP
+
+.SH "struct pdg::ScrollWheelEvent"
+.PP 
+the user repositioned the scroll wheel 
+
+Generated by the \fBEventManager\fP when the user moves the scroll wheel\&. 
+.PP
+.nf
+{ 
+    emitter: {},            // the emitter that generated this event
+    eventType: 16,          // the event type (eventType_ScrollWheel)
+    shift: false,           // true if the shift key is held down
+    ctrl: false,            // true if the control key is held down
+    alt: false,             // true if the alt (or option) key is held down
+    meta: false,            // true if the meta (windows or command) key is held down
+    horizDelta: 0,          // the amount of horizontal scroll wheel movement
+    vertDelta: -48          // the amount of vertical scroll wheel movement
+}
+
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_ScrollWheel\fP 
+.RE
+.PP
+
+.SH "struct pdg::ShutdownEvent"
+.PP 
+a timer fire event 
+
+Generated by the PDG Engine when the application exits normally\&. This is usually when \fBpdg\&.quit()\fP is called\&. 
+.PP
+.nf
+{ 
+    emitter: {},            // the emitter that generated this event
+    eventType: 2,           // the event type (eventType_Shutdown)
+    exitReason: 0,          // the reason the application exited (TBD, always 0)
+    exitCode: 0             // the exit code that will be returned to the OS
+} 
+
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_Shutdown\fP 
+.PP
+\fBpdg\&.quit()\fP 
+.RE
+.PP
+
+.SH "struct pdg::SoundEvent"
+.PP 
+a sound completed or is looping (\fIGUI Only\fP) 
+
+Generated by the \fBSoundManager\fP whenever a sound finishes playing (\fBsoundEvent_DonePlaying\fP), or reaches the end and loops (\fBsoundEvent_Looping\fP)\&. If there is an error
+.PP
+For keyboard data entry, use \fBeventType_KeyPress\fP\&. 
+.PP
+.nf
+{ 
+    emitter: {},       // the emitter that generated this event
+    eventType: 14,     // the event type (eventType_SoundEvent)
+    eventCode: 1,      // the sound event code (one of: soundEvent_DonePlaying, soundEvent_Looping, or soundEvent_FailedToPlay) 
+    sound: {}          // the Sound object that caused the event
+} 
+
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_SoundEvent\fP 
+.PP
+\fBsoundEvent_DonePlaying\fP 
+.PP
+\fBsoundEvent_Looping\fP 
+.PP
+\fBsoundEvent_FailedToPlay\fP 
+.PP
+\fBSound\fP 
+.RE
+.PP
+
+.SH "struct pdg::SpriteAnimateEvent"
+.PP 
+a \fBSprite\fP did some animation (\fIOptional\fP) 
+
+A \fBSprite\fP will generate one of these events when it completes an animation including fades (opacity animations)\&.
+.PP
+For frame based animations -- that is, calls to \fBSprite\&.startFrameAnimation()\fP -- if it reaches the last frame and is not set to loop, action will be \fBaction_AnimationEnd\fP\&. For looping animations \fBaction_AnimationLoop\fP will be received each time the animation completes and starts over with the first frame\&.
+.PP
+For fades, one of three action types are possible: \fBaction_FadeComplete\fP for calls to \fBSprite\&.fadeTo()\fP, \fBaction_FadeInComplete\fP for calls to \fBSprite\&.fadeIn()\fP, and \fBaction_FadeOutComplete\fP for calls to \fBSprite\&.fadeOut()\fP\&. 
+.PP
+.nf
+{
+    emitter: {},            // the emitter that generated this event
+    eventType: 17,          // the event type (eventType_SpriteAnimate)
+    action: 0,              // what happened (action_AnimationEnd/Loop or action_Fade/In/OutComplete)
+    actingSprite: {},       // the Sprite that was animating
+    inLayer: {}             // the SpriteLayer that contains the Sprite
+}
+
+.fi
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+At this time other kinds of animations such as calls to \fBSprite\&.startAnimation()\fP do not generate any events\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_SpriteAnimate\fP 
+.PP
+\fBSprite\&.startFrameAnimation()\fP 
+.PP
+\fBSprite\&.fadeTo()\fP 
+.PP
+\fBSprite\&.fadeIn()\fP 
+.PP
+\fBSprite\&.fadeOut()\fP 
+.RE
+.PP
+
+.SH "struct pdg::SpriteBreakEvent"
+.PP 
+a \fBSprite\fP joint is breaking because it was overstressed (\fIChipmunk Physics Only\fP) 
+
+This event is generated by a \fBSprite\fP whenever the forces acting on a joint with another \fBSprite\fP are greater then the breaking force of the joint\&. To prevent the break from happening, return true from the handler that gets this event\&. If you return false then the joint will go ahead and break\&. 
+.PP
+.nf
+{
+    emitter: {},            // the emitter that generated this event
+    eventType: 21,          // the event type (eventType_SpriteBreak)
+    action: 13,                 // what happened (action_JointBreak)
+    actingSprite: {},       // the Sprite to which the forces were applied
+    inLayer: {},            // the SpriteLayer that contains the Sprite
+    targetSprite: {},       // the Sprite that was previously joined
+    impulse: {              // the impulse applied 
+      x: 29.35,
+      y: 0.883
+    },
+    force: 384.0,           // the force of the collision
+    breakForce: 100.0,      // the maximum force the joint could stand before breaking
+    joint: {}               // the CpConstraint that defines the joint
+}
+
+.fi
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+Only joints that have a breaking force assigned will generate these events; without it joints between sprites are considered unbreakable\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_SpriteBreak\fP 
+.PP
+\fBSprite\&.makeJointBreakable()\fP 
+.PP
+\fBSprite\&.makeJointUnbreakable()\fP 
+.PP
+\fBPhysics\fP 
+.RE
+.PP
+
+.SH "struct pdg::SpriteCollideEvent"
+.PP 
+a \fBSprite\fP collided with something (\fIOptional\fP) 
+
+This event is generated by a \fBSprite\fP whenever it hits something\&. If it hits another \fBSprite\fP action will be \fBaction_CollideSprite\fP, if it hits a wall it will be \fBaction_CollideWall\fP\&. 
+.PP
+.nf
+{
+    emitter: {},            // the emitter that generated this event
+    eventType: 20,          // the event type (eventType_SpriteCollide)
+    action: 0,                  // what happened (action_CollideSprite or action_CollideWall)
+    actingSprite: {},       // the moving Sprite
+    inLayer: {},            // the SpriteLayer that contains the Sprite
+    targetSprite: {},       // the Sprite that was collided with (if action was action_CollideSprite)
+    normal: {               // the normal vector for the collision
+      x: 1.0,
+      y: 0.0
+    },
+    impulse: {              // the impulse imparted by the collision
+      x: 29.35,
+      y: 0.883
+    },
+    force: 384.0,           // the force of the collision
+    kineticEnergy:883       // the total kinetic energy of the collision
+}
+
+.fi
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+Collisions must be turned on for each \fBSprite\fP using \fBSprite\&.enableCollisions()\fP or \fBSprite\&.setCollisionRadius()\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_SpriteCollide\fP 
+.PP
+\fBaction_CollideSprite\fP 
+.PP
+\fBaction_CollideWall\fP 
+.PP
+\fBSprite\&.enableCollisions()\fP 
+.PP
+\fBSprite\&.setCollisionRadius()\fP 
+.RE
+.PP
+
+.SH "struct pdg::SpriteLayerEvent"
+.PP 
+the user clicked on (or touched) a \fBSprite\fP 
+
+This events is generated by a \fBSpriteLayer\fP to give the application a chance to take action at various stages of sprite animation and rendering\&. 
+.PP
+.nf
+{ 
+    emitter: {},            // the emitter that generated this event
+    eventType: 18,          // the event type (eventType_SpriteLayer)
+    action: 0,              // one of: action_AnimationStart/Complete, action_Pre/PostAnimateLayer, action_ErasePort, action_Pre/PostDrawLayer, or action_DrawPortComplete
+    actingLayer: {},        // the SpriteLayer that is taking action
+    millisec: 1025448321,   // the millisecond time when this entire animation step started (when action_AnimationStart fired) 
+}  
+
+.fi
+.PP
+.PP
+A single step of animation will generate these events:
+.PP
+.IP "\(bu" 2
+\fBaction_AnimationStart\fP with actingLayer set to the first layer (Z-order = 0)
+.IP "\(bu" 2
+for each layer, with actingLayer set to that layer, in Z-order (0\&.\&.\&.n):
+.IP "  \(bu" 4
+\fBaction_PreAnimateLayer\fP just before animation starts
+.IP "  \(bu" 4
+\fBaction_PostAnimateLayer\fP after all animation is complete
+.PP
+
+.IP "\(bu" 2
+\fBaction_AnimationComplete\fP with actingLayer set to the last layer
+.PP
+.PP
+In a similar fashion, a rendering a single frame will generate these events:
+.PP
+.IP "\(bu" 2
+\fBaction_ErasePort\fP with actingLayer set to the first layer (Z-order = 0)
+.IP "\(bu" 2
+for each layer, with actingLayer set to that layer, in Z-order (0\&.\&.\&.n):
+.IP "  \(bu" 4
+\fBaction_PreDrawLayer\fP just before layer rendering starts
+.IP "  \(bu" 4
+\fBaction_PostDrawLayer\fP after all sprites in the layer have been drawn
+.PP
+
+.IP "\(bu" 2
+\fBaction_DrawPortComplete\fP with actingLayer set to the last layer
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_SpriteLayer\fP 
+.RE
+.PP
+
+.SH "struct pdg::SpriteTouchEvent"
+.PP 
+the user clicked on (or touched) a \fBSprite\fP 
+
+This event is generated by a \fBSprite\fP whenever a user clicks on it (or touches it in on a touch device)\&. 
+.PP
+.nf
+{
+    emitter: {},            // the emitter that generated this event
+    eventType: 1,           // the event type (eventType_SpriteTouch)
+    touchType: 0,           // touch_MouseDown, touch_MouseUp, or touch_MouseClick
+    touchedSprite: {},      // the Sprite that was clicked or touched
+    inLayer: {}             // the SpriteLayer that contains the Sprite
+}  
+
+.fi
+.PP
+.PP
+A single click may generate up to three separate events, each with a different touchType:
+.PP
+.IP "\(bu" 2
+\fBtouch_MouseDown\fP when a mouse button goes down inside a \fBSprite\fP
+.IP "\(bu" 2
+\fBtouch_MouseUp\fP when a mouse button is released inside a \fBSprite\fP
+.IP "\(bu" 2
+\fBtouch_MouseClick\fP when the mouse button was clicked and released inside the same \fBSprite\fP
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+Click events must be turned on for each \fBSprite\fP using \fBSprite\&.setWantsClickEvents()\fP
+.PP
+If no \fBSprite\fP was hit by a mouse event, the original \fBeventType_MouseDown\fP or \fBeventType_MouseUp\fP is passed on through the \fBEventManager\fP
+.RE
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_SpriteTouch\fP 
+.PP
+\fBSprite\&.onMouseDown()\fP 
+.PP
+\fBSprite\&.onMouseUp()\fP 
+.PP
+\fBSprite\&.onMouseClick()\fP 
+.PP
+\fBSprite\&.setWantsClickEvents()\fP 
+.RE
+.PP
+
+.SH "Variable Documentation"
+.PP 
+.SS "all_events = 0"
+
+.PP
+a special catch-all for events that weren't handled by specific event handlers \fBSee Also:\fP
+.RS 4
+\fBEventEmitter\&.addHandler()\fP 
+.PP
+\fBEventEmitter\&.removeHandler()\fP 
+.RE
+.PP
+
+.SS "eventType_KeyDown = 4"
+
+.PP
+the user pushed down on a key Generated by the \fBEventManager\fP when the user first pushes down on a key\&. Use this for arcade style key handling\&.
+.PP
+To detect the key being released, use \fBeventType_KeyUp\fP\&. For keyboard data entry, use \fBeventType_KeyPress\fP\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBKeyEvent\fP 
+.PP
+\fBeventType_KeyUp\fP 
+.PP
+\fBeventType_KeyPress\fP 
+.PP
+\fBonKeyDown()\fP 
+.PP
+\fBEventManager\&.isKeyDown()\fP 
+.PP
+\fBEventManager\&.isRawKeyDown()\fP 
+.RE
+.PP
+
+.SS "eventType_KeyPress = 6"
+
+.PP
+the user pressed and released a key Also generated by repeat key events from the OS when a key is held down
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBKeyPressEvent\fP 
+.PP
+\fBonKeyPress()\fP 
+.RE
+.PP
+
+.SS "eventType_KeyUp = 5"
+
+.PP
+the user released a key Generated by the \fBEventManager\fP when the user releases a key that was being held down\&. Use this for arcade style key handling\&. To detect the key being pushed down, use \fBeventType_KeyDown\fP\&.
+.PP
+For keyboard data entry, use \fBeventType_KeyPress\fP\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBKeyEvent\fP 
+.PP
+\fBeventType_KeyUp\fP 
+.PP
+\fBeventType_KeyPress\fP 
+.PP
+\fBonKeyUp()\fP 
+.PP
+\fBEventManager\&.isKeyDown()\fP 
+.PP
+\fBEventManager\&.isRawKeyDown()\fP 
+.RE
+.PP
+
+.SS "eventType_MouseDown = 7"
+
+.PP
+the user pressed a mouse button Generated by the \fBEventManager\fP when a timer fires
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBMouseEvent\fP 
+.PP
+\fBeventType_MouseUp\fP 
+.PP
+\fBonMouseDown()\fP 
+.PP
+\fBEventManager\&.isButtonDown()\fP 
+.RE
+.PP
+
+.SS "eventType_MouseEnter = 22"
+
+.PP
+the user moved the mouse into a tracking area (\fINOT IMPLEMENTED\fP) Generated by the \fBEventManager\fP when the mouse enters a tracking area
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBMouseTrackingEvent\fP 
+.RE
+.PP
+
+.SS "eventType_MouseLeave = 23"
+
+.PP
+the user moved the mouse out of a tracking area (\fINOT IMPLEMENTED\fP) Generated by the \fBEventManager\fP when the mouse leaves a tracking area
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBMouseTrackingEvent\fP 
+.RE
+.PP
+
+.SS "eventType_MouseMove = 9"
+
+.PP
+the user moved the mouse Generated by the \fBEventManager\fP when the user moves the mouse
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBMouseEvent\fP 
+.RE
+.PP
+
+.SS "eventType_MouseUp = 8"
+
+.PP
+the user release a mouse button Generated by the \fBEventManager\fP whenever the user releases a mouse button\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBMouseEvent\fP 
+.PP
+\fBeventType_MouseDown\fP 
+.PP
+\fBonMouseUp()\fP 
+.PP
+\fBEventManager\&.isButtonDown()\fP 
+.RE
+.PP
+
+.SS "eventType_PortDraw = 24"
+
+.PP
+a port needs to be redrawn Generated by the \fBGraphicsManager\fP whenever it is time to redraw the port
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBPortDrawEvent\fP 
+.RE
+.PP
+
+.SS "eventType_PortResized = 15"
+
+.PP
+a port was resized Generated by the \fBGraphicsManager\fP whenever a port is resized
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBPortResizedEvent\fP 
+.RE
+.PP
+
+.SS "eventType_ScrollWheel = 16"
+
+.PP
+the user moved the scroll wheel Generated by the \fBEventManager\fP whenever the user moves the scroll wheel
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBScrollWheelEvent\fP 
+.RE
+.PP
+
+.SS "eventType_Shutdown = 2"
+
+.PP
+one time application shutdown event Generated by the \fBTimerManager\fP when a timer fires
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBpdg::ShutdownEvent\fP 
+.RE
+.PP
+
+.SS "eventType_SoundEvent = 14"
+
+.PP
+a sound finished or looped Generated by the \fBSoundManager\fP whenever a sound completes or loops, or when an error prevents a sound from playing
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSoundEvent\fP 
+.RE
+.PP
+
+.SS "eventType_SpriteAnimate = 17"
+
+.PP
+a sprite finished an animation (\fIOptional\fP) Optionally generated by a \fBSprite\fP whenever it finishes an animation\&. Emitting this event must be turned on for each \fBSprite\fP individually\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteAnimateEvent\fP 
+.RE
+.PP
+
+.SS "eventType_SpriteBreak = 21"
+
+.PP
+joined sprites broke apart (\fIChipmunk Physics only\fP) Generated by a \fBSprite\fP whenever forces acting on it exceed the break force set for a joint\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteBreakEvent\fP 
+.RE
+.PP
+
+.SS "eventType_SpriteCollide = 20"
+
+.PP
+a collision between sprites Generated by a \fBSprite\fP whenever it collides with something
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteCollideEvent\fP 
+.RE
+.PP
+
+.SS "eventType_SpriteLayer = 18"
+
+.PP
+something happening to a sprite layer Generated by \fBSpriteLayer\fP to give the application a chance to take action during various stages of animation and rendering\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteLayerEvent\fP 
+.RE
+.PP
+
+.SS "eventType_SpriteTouch = 19"
+
+.PP
+sprite touched event (\fIOptional\fP) Optionally generated by a \fBSprite\fP whenever it is clicked on\&. Emitting this event must be turned on individually for each \fBSprite\fP\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteTouchEvent\fP 
+.RE
+.PP
+
+.SS "eventType_Timer = 3"
+
+.PP
+a timer fire event Generated by the \fBTimerManager\fP when a timer fires
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBTimerEvent\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

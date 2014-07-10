@@ -1,0 +1,502 @@
+.TH "GraphicsManager" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+GraphicsManager \- 
+.PP
+Used to create and track ports (\fIGUI Only\fP)  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBcloseGraphicsPort\fP (\fBPort\fP port=MAIN_PORT)"
+.br
+.RI "\fIclose given port, along with its window and restore screen mode if changed \fP"
+.ti -1c
+.RI "\fBFont\fP \fBcreateFont\fP (string fontName, number scalingFactor=1\&.0)"
+.br
+.RI "\fIget a font with optional scaling adjust \fP"
+.ti -1c
+.RI "\fBPort\fP \fBcreateFullScreenPort\fP (\fBRect\fP rect, int screenNum=PRIMARY_SCREEN, boolean allowResChange=true, int bpp=0)"
+.br
+.RI "\fIcreate full screen drawing port with given dimensions on given screen, optionally changing depth \fP"
+.ti -1c
+.RI "\fBPort\fP \fBcreateWindowPort\fP (\fBRect\fP rect, string windName='', int bpp=0)"
+.br
+.RI "\fIcreate windowed drawing port with given dimensions, title and depth \fP"
+.ti -1c
+.RI "object \fBgetCurrentScreenMode\fP (int screenNum=PRIMARY_SCREEN)"
+.br
+.RI "\fIget width, height, depth and maxWindowRect for specified screen \fP"
+.ti -1c
+.RI "number \fBgetFPS\fP ()"
+.br
+.RI "\fIget current frame rate \fP"
+.ti -1c
+.RI "\fBPort\fP \fBgetMainPort\fP ()"
+.br
+.RI "\fIreturn the primary graphics port \fP"
+.ti -1c
+.RI "\fBPoint\fP \fBgetMouse\fP (int mouseNumber=0)"
+.br
+.RI "\fIget mouse position \fP"
+.ti -1c
+.RI "object \fBgetNthSupportedScreenMode\fP (int n, int screenNum=PRIMARY_SCREEN)"
+.br
+.RI "\fIget the details of the Nth screen mode from the supported ones for a screen \fP"
+.ti -1c
+.RI "number \fBgetNumScreens\fP ()"
+.br
+.RI "\fIget the total number of display screens available \fP"
+.ti -1c
+.RI "number \fBgetNumSupportedScreenModes\fP (int screen=PRIMARY_SCREEN)"
+.br
+.RI "\fIget the total number of display modes available for a screen \fP"
+.ti -1c
+.RI "number \fBgetTargetFPS\fP ()"
+.br
+.RI "\fIget the intended frame rate \fP"
+.ti -1c
+.RI "boolean \fBinFullScreenMode\fP ()"
+.br
+.RI "\fIreturn whether primary graphics port is fullscreen or not \fP"
+.ti -1c
+.RI "\fBsetScreenMode\fP (int width, int height, int screenNum=PRIMARY_SCREEN, int bpp=0)"
+.br
+.RI "\fIchanges specified screen to closest matching mode \fP"
+.ti -1c
+.RI "\fBGraphicsManager\fP \fBsetTargetFPS\fP (number inTargetFPS)"
+.br
+.RI "\fIset the frames per second you would like the graphics system to display \fP"
+.ti -1c
+.RI "boolean \fBswitchToFullScreenMode\fP (boolean allowResChange=false, \fBPort\fP port=MAIN_PORT)"
+.br
+.RI "\fIswitch a port to full screen \fP"
+.ti -1c
+.RI "boolean \fBswitchToWindowMode\fP (\fBPort\fP port=MAIN_PORT, string windName='')"
+.br
+.RI "\fIswitch a port to be in a window \fP"
+.in -1c
+.SS "Related Functions"
+(Note that these are not member functions\&.) 
+.in +1c
+.ti -1c
+.RI "\fBgetGraphicsManager\fP"
+.br
+.RI "\fIget the singleton instance of the \fBGraphicsManager\fP used by the pdg framework \fP"
+.ti -1c
+.RI "\fBgfx\fP"
+.br
+.RI "\fIthe singleton instance of the \fBGraphicsManager\fP \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Used to create and track ports (\fIGUI Only\fP) 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
+.RE
+.PP
+.SS "Full Screen"
+.PP
+There are 3 primary ways to deal with fullscreen:
+.PP
+.IP "1." 4
+\fBEasy\fP: let the PDG Engine deal with everything, including switching screen resolution to give you what you ask for\&. Just call \fBcreateFullScreenPort()\fP with a desired port dimensions and it will just do the right thing\&.
+.IP "2." 4
+\fBAdaptable\fP: don't allow the PDG engine to change display modes\&. Instead query the current screen mode and ask for that size (or something that fits within in)\&. This will be more work for your display code since you will need to make all of your drawing calls handle different screen dimensions\&. This is often best for the end user and also works well with switching back and forth between full screen and running in a window\&.
+.IP "3." 4
+\fBFine Tuned\fP: you figure out exactly what you want and manage it yourself, querying the system for available screens, explicitly choosing which screen(s) you want to use and switching screen modes yourself before calling \fBcreateFullScreenPort()\fP with port dimensions, target screen and even pixel depth\&.
+.PP
+.PP
+.SS "Running in a Window"
+.PP
+Use \fBcreateWindowPort()\fP to create a window\&. The window will be movable and resizable, and you'll get eventType_PortResize events if it is resized by the user\&.
+.PP
+.SS "Display Rate"
+.PP
+The Graphics system has the concept of a target display rate in frames per second, which is used to limit the frame rate, particularly important on mobile devices\&. This is independent of the animation and physics system\&. See \fBgetFPS()\fP, \fBgetTargetFPS()\fP and \fBsetTargetFPS()\fP\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "closeGraphicsPort (\fBPort\fPport = \fCMAIN_PORT\fP)"
+
+.PP
+close given port, along with its window and restore screen mode if changed \fBParameters:\fP
+.RS 4
+\fIport\fP the port to close, default to the main port if none passed
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBPort\fP 
+.PP
+\fBcreateFullScreenPort\fP 
+.PP
+\fBcreateWindowPort\fP
+.RE
+.PP
+\fBWarning:\fP
+.RS 4
+closing the main port will quit the application, use setMainPort to change to a new port before closing an old one\&. 
+.RE
+.PP
+
+.SS "createFont (stringfontName, numberscalingFactor = \fC1\&.0\fP)"
+
+.PP
+get a font with optional scaling adjust \fBParameters:\fP
+.RS 4
+\fIfontName\fP the name of the font (ie: 'Arial' or 'Times') 
+.br
+\fIscalingFactor\fP an across-the-board amount to adjust the normal size of the font by 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the \fBFont\fP requested
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBFont\fP 
+.RE
+.PP
+
+.SS "createFullScreenPort (\fBRect\fPrect, intscreenNum = \fCPRIMARY_SCREEN\fP, booleanallowResChange = \fCtrue\fP, intbpp = \fC0\fP)"
+
+.PP
+create full screen drawing port with given dimensions on given screen, optionally changing depth Unless allowResChange is passed as false, the monitor resolution will be changed to match the closest allowable screen size for the given dimension\&. If no other port is open, this becomes the main port\&.
+.PP
+If no is screen specified, the primary screen will be used\&. If no depth is specified, the current depth of the specified screen will be used\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIrect\fP the dimensions of the drawing area 
+.br
+\fIscreenNum\fP which screen to work with (optional) 
+.br
+\fIallowResChange\fP pass false to prevent monitor resolution from changing (optional) 
+.br
+\fIbpp\fP the depth of the drawing buffer in bits per pixel (optional) 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the newly created \fBPort\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetNumScreens\fP 
+.PP
+\fBcreateWindowPort\fP 
+.PP
+\fBcloseGraphicsPort\fP 
+.PP
+\fBswitchToFullScreenMode\fP 
+.PP
+\fBswitchToWindowMode\fP 
+.RE
+.PP
+
+.SS "createWindowPort (\fBRect\fPrect, stringwindName = \fC''\fP, intbpp = \fC0\fP)"
+
+.PP
+create windowed drawing port with given dimensions, title and depth Matches the depth of the screen if depth not given\&. If no other port is open, this becomes the main port\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIrect\fP the visible area of the window in screen coordinates 
+.br
+\fIwindName\fP the window title (optional) 
+.br
+\fIbpp\fP the depth of the drawing buffer in bits per pixel (optional) 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the newly created \fBPort\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBPort\fP 
+.PP
+\fBcreateFullScreenPort\fP 
+.RE
+.PP
+
+.SS "getCurrentScreenMode (intscreenNum = \fCPRIMARY_SCREEN\fP)"
+
+.PP
+get width, height, depth and maxWindowRect for specified screen \fBParameters:\fP
+.RS 4
+\fIscreenNum\fP the number of the screen, defaults to the primary screen if no screen number given
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Object with width, height, depth and maxWindowRect members
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetScreenMode\fP 
+.PP
+\fBgetNumScreens\fP 
+.RE
+.PP
+
+.SS "getFPS ()"
+
+.PP
+get current frame rate gets the current frame rate in frames per second that the rendering engine is producing\&. This should always be at or slightly below the target FPS\&.
+.PP
+\fBReturns:\fP
+.RS 4
+current frame rate in frames per second
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetTargetFPS\fP 
+.PP
+\fBsetTargetFPS\fP 
+.RE
+.PP
+
+.SS "getMainPort ()"
+
+.PP
+return the primary graphics port \fBReturns:\fP
+.RS 4
+the primary \fBPort\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBPort\fP 
+.PP
+\fBcreateFullScreenPort\fP 
+.PP
+\fBcreateWindowPort\fP 
+.RE
+.PP
+
+.SS "getMouse (intmouseNumber = \fC0\fP)"
+
+.PP
+get mouse position Gets the screen location of the given mouse or finger touch\&. For touch devices the number represents the order the fingers went down rather than specific numbered devices\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fImouseNumber\fP the particular mouse; defaults to zero, the primary mouse or first touch
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the \fBPoint\fP location of the mouse or touch
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this relies on events from the OS, so you must be calling \fBpdg\&.idle()\fP or be in a \fBpdg\&.run()\fP loop to get mouse data\&. 
+.RE
+.PP
+
+.SS "getNthSupportedScreenMode (intn, intscreenNum = \fCPRIMARY_SCREEN\fP)"
+
+.PP
+get the details of the Nth screen mode from the supported ones for a screen \fBParameters:\fP
+.RS 4
+\fIn\fP the index into the list of supported screen modes, from 0 to number of support modes  1 
+.br
+\fIscreenNum\fP the screen you are interested in, defaults to the primary screen if not passed
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a screen mode object with width, height, depth members
+.RE
+.PP
+\fBExample\fP 
+.PP
+.nf
+PDG terminal v0.9.4
+> pdg.gfx.getNthSupportedScreenMode(1);
+{ width: 1440,
+  height: 900,
+  depth: 16 }
+.fi
+.PP
+ 
+.SS "getNumScreens ()"
+
+.PP
+get the total number of display screens available \fBSee Also:\fP
+.RS 4
+\fBgetCurrentScreenMode\fP 
+.PP
+\fBcreateFullScreenPort\fP 
+.PP
+\fBsetScreenMode\fP 
+.RE
+.PP
+
+.SS "getNumSupportedScreenModes (intscreen = \fCPRIMARY_SCREEN\fP)"
+
+.PP
+get the total number of display modes available for a screen \fBParameters:\fP
+.RS 4
+\fIscreen\fP the screen number, defaults to the primary screen if not passed
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the number of modes
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetNthSupportedScreenMode\fP 
+.PP
+\fBgetCurrentScreenMode\fP 
+.PP
+\fBsetScreenMode\fP 
+.PP
+\fBgetNumScreens\fP 
+.RE
+.PP
+
+.SS "getTargetFPS ()"
+
+.PP
+get the intended frame rate \fBReturns:\fP
+.RS 4
+the target frame rate in frames per second
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetTargetFPS\fP 
+.PP
+\fBgetFPS\fP 
+.RE
+.PP
+
+.SS "inFullScreenMode ()"
+
+.PP
+return whether primary graphics port is fullscreen or not \fBReturns:\fP
+.RS 4
+true if the main port exists and is in fullscreen mode, false otherwise
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBswitchToFullScreenMode\fP 
+.PP
+\fBswitchToWindowMode\fP 
+.PP
+\fBgetMainPort\fP 
+.PP
+\fBsetScreenMode\fP 
+.RE
+.PP
+
+.SS "setScreenMode (intwidth, intheight, intscreenNum = \fCPRIMARY_SCREEN\fP, intbpp = \fC0\fP)"
+
+.PP
+changes specified screen to closest matching mode \fBParameters:\fP
+.RS 4
+\fIwidth\fP the desired width in pixels 
+.br
+\fIheight\fP the desired height in pixels 
+.br
+\fIscreenNum\fP the screen to change, defaults to the primary screen if not passed 
+.br
+\fIbpp\fP the screen depth in bits per pixel, uses current screen depth if not passed
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetCurrentScreenMode\fP 
+.PP
+\fBgetNumScreens\fP 
+.RE
+.PP
+
+.SS "setTargetFPS (numberinTargetFPS)"
+
+.PP
+set the frames per second you would like the graphics system to display The graphics system will attempt to display that many frames per second on most systems\&. It will issue warnings in the logs if the frame rate falls below 80% of that rate\&.
+.PP
+Animations, \fBSprite\fP movement, Network and other kinds of Events work independently of the display timer, so this will not affect collision detection even at lower frame rates\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinTargetFPS\fP the desired frame rate in Frames Per Second
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetTargetFPS\fP 
+.PP
+\fBgetFPS\fP 
+.RE
+.PP
+
+.SS "switchToFullScreenMode (booleanallowResChange = \fCfalse\fP, \fBPort\fPport = \fCMAIN_PORT\fP)"
+
+.PP
+switch a port to full screen \fBParameters:\fP
+.RS 4
+\fIallowResChange\fP if true, the monitor resolution will be changed to match the window size; defaults to false 
+.br
+\fIport\fP the port to change, defaults to the main port if not passed
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+true if mode switch succeeded, false if it did not 
+.RE
+.PP
+
+.SS "switchToWindowMode (\fBPort\fPport = \fCMAIN_PORT\fP, stringwindName = \fC''\fP)"
+
+.PP
+switch a port to be in a window If the monitor resolution was changed to go into full screen, it will be changed back to it's original value
+.PP
+\fBParameters:\fP
+.RS 4
+\fIport\fP the port to change, defaults to the main port if not passed 
+.br
+\fIwindName\fP the name to give the window (optional)
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+true if mode switch succeeded, false if it did not 
+.RE
+.PP
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "getGraphicsManager\fC [related]\fP"
+
+.PP
+get the singleton instance of the \fBGraphicsManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBGraphicsManager\fP singleton object 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

@@ -1,0 +1,265 @@
+.TH "Color" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Color \- 
+.PP
+color in RGB space, with optional alpha  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBColor\fP ()"
+.br
+.RI "\fIcreate a color \fP"
+.ti -1c
+.RI "\fBColor\fP (number c)"
+.br
+.RI "\fIcreate a color from a single 32 bit A-RGB color value \fP"
+.ti -1c
+.RI "\fBColor\fP (string colorstr)"
+.br
+.RI "\fIcreate a color by CSS color string \fP"
+.ti -1c
+.RI "\fBColor\fP (number r, number g, number b, number \fBalpha\fP=1)"
+.br
+.RI "\fIcreate a color with RGB values \fP"
+.ti -1c
+.RI "\fBColor\fP \fBassign\fP (\fBColor\fP color)"
+.br
+.RI "\fIcopy a color \fP"
+.ti -1c
+.RI "\fBconvertToGrayscale\fP ()"
+.br
+.RI "\fIconvert the color to a matching shade of grey \fP"
+.ti -1c
+.RI "boolean \fBequals\fP (\fBColor\fP color)"
+.br
+.RI "\fIcheck if this color is the same as another \fP"
+.ti -1c
+.RI "boolean \fBnotEquals\fP (\fBColor\fP color)"
+.br
+.RI "\fIcheck if this color is different than another color \fP"
+.ti -1c
+.RI "string \fBtoString\fP ()"
+.br
+.RI "\fIdisplays the color as a string \fP"
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "number \fBalpha\fP"
+.br
+.RI "\fIalpha channel: 0\&.0 transparent \&.\&.\&. 1\&.0 solid \fP"
+.ti -1c
+.RI "number \fBblue\fP"
+.br
+.RI "\fIblue component: 0\&.0 no blue \&.\&.\&. 1\&.0 max blue \fP"
+.ti -1c
+.RI "number \fBgreen\fP"
+.br
+.RI "\fIgreen component: 0\&.0 no green \&.\&.\&. 1\&.0 max green \fP"
+.ti -1c
+.RI "number \fBred\fP"
+.br
+.RI "\fIred component: 0\&.0 no red \&.\&.\&. 1\&.0 max red \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+color in RGB space, with optional alpha 
+
+\fBColor\fP is in the global namespace, so you don't need the pdg prefix, even though it will work if you use it
+.PP
+.PP
+.nf
+var c = new Color();        // this works
+var c2 = new pdg\&.Color();   // this works too
+.fi
+.PP
+.PP
+RGB \fBColor\fP Space works by mixing red (R), green (G) and blue (B) light to form all possible colors\&. Here's a nice color wheel to illustrate\&.
+.PP
+.PP
+The optional Alpha Channel is used to determine how translucent the color is, ie: how much the underlying colors show through\&. For Alpha, 1\&.0 is completely solid/opaque, and 0\&.0 is completely transparent\&. Whenever an Alpha value is not given, 1\&.0 is assumed\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBColor\fP ()"
+
+.PP
+create a color Creates a color with all RGB values set to zero, and Alpha channel set to 1, ie: solid black\&. 
+.SS "\fBColor\fP (numberc)"
+
+.PP
+create a color from a single 32 bit A-RGB color value Creates a color from a single 32 bit RGB value with an Alpha channel\&. It's usually most convenient to express the number in hexadecimal, since it's easier to see the components:
+.PP
+.PP
+.nf
+var col = new pdg\&.Color(0xff004488);
+.fi
+.PP
+.PP
+In the example above, the A-RGB component values are represented as: 
+.PP
+.nf
+ff 00 44 88
+A  R  G  B
+
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBColor(string)\fP 
+.PP
+\fBColor(number, number, number, number)\fP 
+.RE
+.PP
+
+.SS "\fBColor\fP (stringcolorstr)"
+
+.PP
+create a color by CSS color string Creates a color from a CSS color value string (ie: #FFF or #FFFFFF); or from a color name\&. For example:
+.PP
+.PP
+.nf
+var gray = new pdg\&.Color('#888');  // a gray color (RGB 888888)
+var green = new pdg\&.Color('#008800');  // a green color (RGB 008800)
+var teal = new pdg\&.Color('teal');  // the CSS teal color
+.fi
+.PP
+.PP
+\fBSupported \fBColor\fP names:\fP
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBColor(number)\fP 
+.PP
+\fBColor(number, number, number, number)\fP 
+.RE
+.PP
+
+.SS "\fBColor\fP (numberr, numberg, numberb, numberalpha = \fC1\fP)"
+
+.PP
+create a color with RGB values Create a color by giving the Red, Green and Blue values separately, with an optional alpha channel\&. Values can be given either in the range of 0\&.0 to 1\&.0\&. If no alpha value is given, 1\&.0 is used, making the color completely solid\&.
+.PP
+.PP
+.nf
+var white = new Color(1\&.0, 1\&.0, 1\&.0);
+var translucentWhite = new Color(1\&.0, 1\&.0, 1\&.0, 0\&.5);
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBColor(number)\fP 
+.PP
+\fBColor(string)\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "assign (\fBColor\fPcolor)"
+
+.PP
+copy a color Sets this color to be the same as another color
+.PP
+.PP
+.nf
+var c1 = new Color('teal');
+var c2 = new Color('black');
+
+c1\&.assign(c2);
+console\&.log('c1 is now '+c1);
+.fi
+.PP
+.PP
+Output: 
+.PP
+.nf
+c1 is now Color(0,0,0)
+
+.fi
+.PP
+.PP
+\fBReturns:\fP
+.RS 4
+the color (c1 in the example)
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+Unlike a simple assignment (c1 = c2), \fBassign()\fP copies the values but leaves c1 and c2 independent\&. Simple assignment causes c1 and c2 to point to the same data, so changing one changes the other\&. 
+.RE
+.PP
+
+.SS "convertToGrayscale ()"
+
+.PP
+convert the color to a matching shade of grey  
+.SS "equals (\fBColor\fPcolor)"
+
+.PP
+check if this color is the same as another \fBReturns:\fP
+.RS 4
+true if the colors are the same, false if not 
+.RE
+.PP
+
+.SS "notEquals (\fBColor\fPcolor)"
+
+.PP
+check if this color is different than another color \fBReturns:\fP
+.RS 4
+true if the colors are different, false if not 
+.RE
+.PP
+
+.SS "toString ()"
+
+.PP
+displays the color as a string Example:
+.PP
+.PP
+.nf
+var c = new Color('teal');
+console\&.log(c\&.toString());
+.fi
+.PP
+.PP
+Outputs: 
+.PP
+.nf
+Color(0, 0.5019607843137255, 0.5019607843137255)
+.fi
+.PP
+ 
+.SH "Member Data Documentation"
+.PP 
+.SS "alpha"
+
+.PP
+alpha channel: 0\&.0 transparent \&.\&.\&. 1\&.0 solid 
+.SS "blue"
+
+.PP
+blue component: 0\&.0 no blue \&.\&.\&. 1\&.0 max blue 
+.SS "green"
+
+.PP
+green component: 0\&.0 no green \&.\&.\&. 1\&.0 max green 
+.SS "red"
+
+.PP
+red component: 0\&.0 no red \&.\&.\&. 1\&.0 max red 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

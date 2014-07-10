@@ -1,0 +1,981 @@
+.TH "Serializer" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Serializer \- 
+.PP
+serialize data into memory  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBMemBlock\fP \fBgetDataPtr\fP ()"
+.br
+.RI "\fIget the serialized data \fP"
+.ti -1c
+.RI "number \fBgetDataSize\fP ()"
+.br
+.RI "\fIget the size of the serialized data \fP"
+.ti -1c
+.RI "\fBserialize_1\fP (int val)"
+.br
+.RI "\fIserialize 1 signed byte \fP"
+.ti -1c
+.RI "\fBserialize_1u\fP (uint val)"
+.br
+.RI "\fIserialize 1 unsigned byte \fP"
+.ti -1c
+.RI "\fBserialize_2\fP (int val)"
+.br
+.RI "\fIserialize 2 signed bytes \fP"
+.ti -1c
+.RI "\fBserialize_2u\fP (uint val)"
+.br
+.RI "\fIserialize 2 unsigned bytes \fP"
+.ti -1c
+.RI "\fBserialize_3u\fP (uint val)"
+.br
+.RI "\fIserialize 3 unsigned bytes \fP"
+.ti -1c
+.RI "\fBserialize_4\fP (int val)"
+.br
+.RI "\fIserialize 4 signed bytes \fP"
+.ti -1c
+.RI "\fBserialize_4u\fP (uint val)"
+.br
+.RI "\fIserialize 4 unsigned bytes \fP"
+.ti -1c
+.RI "\fBserialize_8\fP (number val)"
+.br
+.RI "\fIserialize 8 signed bytes \fP"
+.ti -1c
+.RI "\fBserialize_8u\fP (number val)"
+.br
+.RI "\fIserialize 8 unsigned bytes \fP"
+.ti -1c
+.RI "\fBserialize_bool\fP (boolean val)"
+.br
+.RI "\fIserialize a 1 bit boolean value \fP"
+.ti -1c
+.RI "\fBserialize_color\fP (\fBColor\fP val)"
+.br
+.RI "\fIserialize a \fBColor\fP \fP"
+.ti -1c
+.RI "\fBserialize_d\fP (number val)"
+.br
+.RI "\fIserialize a double precision floating point number \fP"
+.ti -1c
+.RI "\fBserialize_f\fP (number val)"
+.br
+.RI "\fIserialize a single precision floating point number \fP"
+.ti -1c
+.RI "\fBserialize_mem\fP (BinaryString mem)"
+.br
+.RI "\fIserialize a binary string \fP"
+.ti -1c
+.RI "\fBserialize_mem\fP (\fBMemBlock\fP mem)"
+.br
+.RI "\fIserialize a block of memory \fP"
+.ti -1c
+.RI "\fBserialize_obj\fP (\fBISerializable\fP obj)"
+.br
+.RI "\fIserialize a serializable object \fP"
+.ti -1c
+.RI "\fBserialize_offset\fP (\fBOffset\fP val)"
+.br
+.RI "\fIserialize an \fBOffset\fP's (x,y) values \fP"
+.ti -1c
+.RI "\fBserialize_point\fP (\fBPoint\fP val)"
+.br
+.RI "\fIserialize a \fBPoint\fP's (x,y) values \fP"
+.ti -1c
+.RI "\fBserialize_quad\fP (\fBQuad\fP val)"
+.br
+.RI "\fIserialize a \fBQuad\fP's (x,y) point values \fP"
+.ti -1c
+.RI "\fBserialize_rect\fP (\fBRect\fP val)"
+.br
+.RI "\fIserialize a \fBRect\fP's left, top, right, bottom values \fP"
+.ti -1c
+.RI "\fBserialize_rotr\fP (\fBRotatedRect\fP val)"
+.br
+.RI "\fIserialize a \fBRotatedRect\fP's data values \fP"
+.ti -1c
+.RI "\fBserialize_str\fP (string str)"
+.br
+.RI "\fIserialize a JavaScript string \fP"
+.ti -1c
+.RI "\fBserialize_uint\fP (uint val)"
+.br
+.RI "\fIserialize up to 4 unsigned bytes \fP"
+.ti -1c
+.RI "\fBserialize_vector\fP (\fBVector\fP val)"
+.br
+.RI "\fIserialize a \fBVector\fP's (x,y) values \fP"
+.ti -1c
+.RI "number \fBserializedSize\fP (string arg)"
+.br
+.RI "\fIget the number of bytes used to serialize the given string \fP"
+.ti -1c
+.RI "number \fBserializedSize\fP (boolean arg)"
+.br
+.RI "\fIget the number of bytes used to serialize the given boolean \fP"
+.ti -1c
+.RI "number \fBserializedSize\fP (uint arg)"
+.br
+.RI "\fIget the number of bytes used to serialize the given unsigned integer \fP"
+.ti -1c
+.RI "number \fBserializedSize\fP (\fBColor\fP arg)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBColor\fP \fP"
+.ti -1c
+.RI "number \fBserializedSize\fP (\fBOffset\fP arg)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBOffset\fP \fP"
+.ti -1c
+.RI "number \fBserializedSize\fP (\fBPoint\fP arg)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBPoint\fP \fP"
+.ti -1c
+.RI "number \fBserializedSize\fP (\fBVector\fP arg)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBVector\fP \fP"
+.ti -1c
+.RI "number \fBserializedSize\fP (\fBRect\fP arg)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBRect\fP \fP"
+.ti -1c
+.RI "number \fBserializedSize\fP (\fBRotatedRect\fP arg)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBRotatedRect\fP \fP"
+.ti -1c
+.RI "number \fBserializedSize\fP (\fBQuad\fP arg)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBQuad\fP \fP"
+.ti -1c
+.RI "number \fBserializedSize\fP (\fBMemBlock\fP arg)"
+.br
+.RI "\fIget the number of bytes used to serialize the given block of memory \fP"
+.ti -1c
+.RI "number \fBserializedSize\fP (\fBISerializable\fP arg)"
+.br
+.RI "\fIget the number of bytes used to serialize the given object, including any objects that it serializes \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+serialize data into memory 
+
+\fBPrecondition:\fP
+.RS 4
+\fBAPI Stability: 3 - Stable\fP\&. The API has proven satisfactory, but cleanup in the underlying code may cause minor changes\&. Backwards-compatibility is guaranteed\&.
+.RE
+.PP
+\fBSerializer\fP stores complex data into memory in a way that it can be read back from a \fBDeserializer\fP\&. It can correctly store entire object hierarchies without duplication\&.
+.PP
+The data stream format is platform neutral, so it is suitable for saved game files and network messages between client and server, using \fBNetConnection\&.send(ISerializable)\fP\&.
+.PP
+\fBSerializer\fP writes tags at key points that the deserialization process can use to be sure things haven't gotten out of sync\&. However, if you want your serialized data streams to be versioned, you will have to add that yourself; either on a per object/message basis or for an entire saved stream\&.
+.PP
+.SS "Method Groups"
+.PP
+.IP "\(bu" 2
+\fBserialize_x(x)\fP: These methods write the given data of type \fIx\fP into the stream\&. When \fIx\fP is a number (ie: serialize_1 or serialize_2u) the number represents the number of bytes that will be used in the data stream\&. Others, such as uint, str, mem and obj are all variable sized based on the actual data passed in\&.
+.IP "\(bu" 2
+\fBserialized_Size(x)\fP - These methods get the number of bytes of data that would be written into the stream to serialize that particular bit of data\&. These are only used for the variable size data types\&.
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDeserializer\fP 
+.PP
+\fBISerializable\fP 
+.PP
+\fBNetConnection\&.send(ISerializable)\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "getDataPtr ()"
+
+.PP
+get the serialized data \fBReturns:\fP
+.RS 4
+a \fBMemBlock\fP object with the serialized data\&.
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+This is really only useful after one or more serialize_X methods have been called to actually write data into the memory block\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetDataSize\fP 
+.PP
+\fBDeserializer\&.setDataPtr\fP 
+.RE
+.PP
+
+.SS "getDataSize ()"
+
+.PP
+get the size of the serialized data \fBReturns:\fP
+.RS 4
+the number of bytes of data in the serialized data\&. This is the same value that would be returned by calling the \fBgetDataSize()\fP method of the \fBMemBlock\fP returned by \fBgetDataPtr()\fP
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+This is really only useful after one or more serialize_X methods have been called to actually write data into the memory block\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetDataPtr\fP 
+.RE
+.PP
+
+.SS "serialize_1 (intval)"
+
+.PP
+serialize 1 signed byte Write a one byte value in the range of \fB127 to 127\fP into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+if the value is outside the range then only the info from the least significant byte will be written into the serialized data stream
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: 1 byte
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDeserializer\&.deserialize_1\fP 
+.RE
+.PP
+
+.SS "serialize_1u (uintval)"
+
+.PP
+serialize 1 unsigned byte Write a one byte value in the range of \fB0 to 255\fP into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+if the value is outside the range then only the info from the least significant byte will be written into the serialized data stream
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: 1 byte
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDeserializer\&.deserialize_1u\fP 
+.RE
+.PP
+
+.SS "serialize_2 (intval)"
+
+.PP
+serialize 2 signed bytes Write a two byte value in the range of \fB32,767 to 32,767\fP into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+if the value is outside the range then only the info from the least significant two bytes will be written into the serialized data stream
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: 2 bytes
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDeserializer\&.deserialize_2\fP 
+.RE
+.PP
+
+.SS "serialize_2u (uintval)"
+
+.PP
+serialize 2 unsigned bytes Write a two byte value in the range of \fB0 to 65,535\fP into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+if the value is outside the range then only the info from the least significant two bytes will be written into the serialized data stream
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: 2 bytes
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDeserializer\&.deserialize_2u\fP 
+.RE
+.PP
+
+.SS "serialize_3u (uintval)"
+
+.PP
+serialize 3 unsigned bytes Write a three byte value in the range of \fB0 to 16,777,216\fP into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+if the value is outside the range then only the info from the least significant three bytes will be written into the serialized data stream\&.
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: 3 bytes
+.RE
+.PP
+\fBRemarks:\fP
+.RS 4
+there is no serialize_3(signed int); use serialize_4 instead
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDeserializer\&.deserialize_3u\fP 
+.RE
+.PP
+
+.SS "serialize_4 (intval)"
+
+.PP
+serialize 4 signed bytes Write a four byte value in the range of \fB2,147,483,647 to 2,147,483,647\fP into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+if the value is outside the range then only the info from the least significant four bytes will be written into the serialized data stream\&.
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: 4 bytes
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDeserializer\&.deserialize_4\fP 
+.RE
+.PP
+
+.SS "serialize_4u (uintval)"
+
+.PP
+serialize 4 unsigned bytes Write a four byte value in the range of \fB0 to 4,294,967,295\fP into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+if the value is outside the range then only the info from the least significant four bytes will be written into the serialized data stream\&.
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: 4 bytes
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDeserializer\&.deserialize_4u\fP 
+.RE
+.PP
+
+.SS "serialize_8 (numberval)"
+
+.PP
+serialize 8 signed bytes Write an eight byte value in the range of \fB9,223,372,036,854,775,807 to 9,223,372,036,854,775,807\fP into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+JavaScript doesn't directly support 64-bit Integers, so for very large values expect some precision to be lost in the conversion between JavaScript's native double and 64-bit Integer\&. You might want to use \fBserialize_d()\fP instead\&.
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: 8 bytes
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDeserializer\&.deserialize_8\fP 
+.RE
+.PP
+
+.SS "serialize_8u (numberval)"
+
+.PP
+serialize 8 unsigned bytes Write an eight byte value in the range of \fB0 to 18,446,744,073,709,551,615\fP into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+JavaScript doesn't directly support 64-bit Integers, so for very large values expect some precision to be lost in the conversion between JavaScript's native double and 64-bit Integer\&. You might want to use \fBserialize_d()\fP instead\&.
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: 8 bytes
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDeserializer\&.deserialize_8u\fP 
+.RE
+.PP
+
+.SS "serialize_bool (booleanval)"
+
+.PP
+serialize a 1 bit boolean value Write a one bit boolean value (true or false) into the data stream\&. This is optimized collect up to 8 bits in a single byte, so writing a number of boolean values is very space efficient\&.
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, call serializedSize(bool) to determine
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+serializedSize(bool) 
+.PP
+\fBDeserializer\&.deserialize_bool()\fP 
+.RE
+.PP
+
+.SS "serialize_color (\fBColor\fPval)"
+
+.PP
+serialize a \fBColor\fP Write a \fBColor\fP's RBGA values into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+the \fBColor\fP is written as a 24 (no alpha channel) or 32 bit color (with alpha channel)\&. If you need to preserve greater color precision than this, you will need to serialize the components yourself\&.
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, call \fBserializedSize(Color)\fP to determine
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserializedSize(Color)\fP 
+.PP
+\fBDeserializer\&.deserialize_color()\fP 
+.RE
+.PP
+
+.SS "serialize_d (numberval)"
+
+.PP
+serialize a double precision floating point number Write a double precision floating point value in the range of \fB10\*{−308\*}  to 10\*{308\*} \fP with 17 significant digits into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+if the value is outside the range then the results are unknown\&.
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: 8 bytes (IEEE 754-2008 binary64 format)
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDeserializer\&.deserialize_d\fP 
+.RE
+.PP
+
+.SS "serialize_f (numberval)"
+
+.PP
+serialize a single precision floating point number Write a single precision floating point value in the range of \fB10\*{−38\*}  to 10\*{38\*} \fP with 9 significant digits into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+if the value is outside the range then the results are unknown\&.
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: 4 bytes (IEEE 754-2008 binary32 format)
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBDeserializer\&.deserialize_f\fP 
+.RE
+.PP
+
+.SS "serialize_mem (BinaryStringmem)"
+
+.PP
+serialize a binary string Binary strings are a Node\&.js way of handling blocks of arbitrary binary data\&. This serializes that data into the stream\&.
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, call \fBserializedSize(MemBlock)\fP to determine\&. Because binary strings used 2 bytes for each actual byte stored, the serialized data takes less memory than the original string\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_mem(MemBlock)\fP 
+.PP
+\fBserializedSize(MemBlock)\fP 
+.PP
+\fBDeserializer\&.deserialize_mem\fP 
+.RE
+.PP
+
+.SS "serialize_mem (\fBMemBlock\fPmem)"
+
+.PP
+serialize a block of memory MemBlocks are the game engine's way of handling blocks of arbitrary binary data in JavaScript\&. This serializes that data into the stream\&.
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, call \fBserializedSize(MemBlock)\fP to determine\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserializedSize(MemBlock)\fP 
+.PP
+\fBDeserializer\&.deserialize_mem\fP 
+.RE
+.PP
+
+.SS "serialize_obj (\fBISerializable\fPobj)"
+
+.PP
+serialize a serializable object This serializes the object and all its data into the stream\&. It does this by calling the \fBISerializable\fP object's serialize method, which would then in turn call serializer methods for each of the object's data members\&. If the given object's data members include other serializable objects, then \fBserialize_obj()\fP is called recursively to serialize those objects\&.
+.PP
+The \fBSerializer\fP keeps track of what objects have already been added to the stream, and simply serializes a reference to any object that has already been serialized if serialize_obj is called for it again\&.
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, call \fBserializedSize()\fP to determine\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserializedSize(ISerializable)\fP 
+.PP
+\fBDeserializer\&.deserialize_obj\fP 
+.PP
+\fBISerializable\fP 
+.RE
+.PP
+
+.SS "serialize_offset (\fBOffset\fPval)"
+
+.PP
+serialize an \fBOffset\fP's (x,y) values Write an \fBOffset\fP's x and y values into the data stream\&. This is optimized for certain common cases, such as a (0,0) offset and small positive numbers\&.
+.PP
+\fBWarning:\fP
+.RS 4
+because JavaScript handles floating-point numbers as doubles internally but an \fBOffset\fP is streamed using floats, some precision is lost\&. If you need that precision you should serialize the \fBOffset\fP's x and y values yourself using \fBserialize_d()\fP
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, call \fBserializedSize(Offset)\fP to determine
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserializedSize(Offset)\fP 
+.PP
+\fBDeserializer\&.deserialize_offset()\fP 
+.RE
+.PP
+
+.SS "serialize_point (\fBPoint\fPval)"
+
+.PP
+serialize a \fBPoint\fP's (x,y) values Write a \fBPoint\fP's x and y values into the data stream\&. This is optimized for certain common cases, such as Point(0,0) and small positive numbers\&.
+.PP
+\fBWarning:\fP
+.RS 4
+because JavaScript handles floating-point numbers as doubles internally but a \fBPoint\fP is streamed using floats, some precision is lost\&. If you need that precision you should serialize the \fBPoint\fP's x and y values yourself using \fBserialize_d()\fP
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, call \fBserializedSize(Point)\fP to determine
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserializedSize(Point)\fP 
+.PP
+\fBDeserializer\&.deserialize_point()\fP 
+.RE
+.PP
+
+.SS "serialize_quad (\fBQuad\fPval)"
+
+.PP
+serialize a \fBQuad\fP's (x,y) point values Write a \fBQuad\fP's four sets of x and y values into the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+because JavaScript handles floating-point numbers as doubles internally but a \fBQuad\fP is streamed using floats, some precision is lost\&. If you need that precision you should serialize the \fBQuad\fP's array of x and y values yourself using \fBserialize_d()\fP
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, call \fBserializedSize(Quad)\fP to determine
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserializedSize(Quad)\fP 
+.PP
+\fBDeserializer\&.deserialize_quad()\fP 
+.RE
+.PP
+
+.SS "serialize_rect (\fBRect\fPval)"
+
+.PP
+serialize a \fBRect\fP's left, top, right, bottom values Write a \fBRect\fP's left, top, right, and bottom values into the data stream\&. This is optimized for certain common cases, such as empty rectangles and small positive numbers\&.
+.PP
+\fBWarning:\fP
+.RS 4
+because JavaScript handles floating-point numbers as doubles internally but a \fBRect\fP is streamed using floats, some precision is lost\&. If you need that precision you should serialize the \fBRect\fP's left, top, right, and bottom values yourself using \fBserialize_d()\fP
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, call \fBserializedSize(Rect)\fP to determine
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserializedSize(Rect)\fP 
+.PP
+\fBDeserializer\&.deserialize_rect()\fP 
+.RE
+.PP
+
+.SS "serialize_rotr (\fBRotatedRect\fPval)"
+
+.PP
+serialize a \fBRotatedRect\fP's data values Write a \fBRotatedRect\fP's left, top, right, bottom, radians and centerOffset values into the data stream\&. This is optimized for certain common cases, such as empty rectangles, small positive numbers, and no center offset\&.
+.PP
+\fBWarning:\fP
+.RS 4
+because JavaScript handles floating-point numbers as doubles internally but a \fBRotatedRect\fP is streamed using floats, some precision is lost\&. If you need that precision you should serialize the \fBRotatedRect\fP's left, top, right, bottom, radians, centerOffset\&.x and centerOffset\&.y values yourself using \fBserialize_d()\fP
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, call \fBserializedSize(RotatedRect)\fP to determine
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserializedSize(RotatedRect)\fP 
+.PP
+\fBDeserializer\&.deserialize_rotr()\fP 
+.RE
+.PP
+
+.SS "serialize_str (stringstr)"
+
+.PP
+serialize a JavaScript string Writes the string into the data stream\&.
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, call \fBserializedSize()\fP to determine\&. Format is Unicode UTF-8\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserializedSize(string)\fP 
+.PP
+\fBDeserializer\&.deserialize_str\fP 
+.RE
+.PP
+
+.SS "serialize_uint (uintval)"
+
+.PP
+serialize up to 4 unsigned bytes Write a value in the range of \fB0 to 4,294,967,295\fP into the data stream\&. This is optimized for cases where the number is usually small, but can sometimes be quite large\&. If the number is usually large, you are better off just using serialize_4u\&.
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, 1 to 5 bytes, call \fBserializedSize()\fP to determine\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserializedSize(uint)\fP 
+.PP
+\fBserialize_4u\fP 
+.PP
+\fBDeserializer\&.deserialize_uint\fP 
+.RE
+.PP
+
+.SS "serialize_vector (\fBVector\fPval)"
+
+.PP
+serialize a \fBVector\fP's (x,y) values Write a \fBVector\fP's x and y values into the data stream\&. This is optimized for certain common cases, such as a (0,0) offset and small positive numbers\&.
+.PP
+\fBWarning:\fP
+.RS 4
+because JavaScript handles floating-point numbers as doubles internally but a \fBVector\fP is streamed using floats, some precision is lost\&. If you need that precision you should serialize the \fBVector\fP's x and y values yourself using \fBserialize_d()\fP
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+data size: varies, call \fBserializedSize(Vector)\fP to determine
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserializedSize(Vector)\fP 
+.PP
+\fBDeserializer\&.deserialize_vector()\fP 
+.RE
+.PP
+
+.SS "serializedSize (stringstr)"
+
+.PP
+get the number of bytes used to serialize the given string Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_str\fP 
+.RE
+.PP
+
+.SS "serializedSize (booleanarg)"
+
+.PP
+get the number of bytes used to serialize the given boolean Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed (0 or 1)
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this will often return 0, which simply means that the particular boolean bit is being stored along with other boolean bits in a previously reserved space in the stream, so no additional bytes were needed
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_bool\fP 
+.RE
+.PP
+
+.SS "serializedSize (uintn)"
+
+.PP
+get the number of bytes used to serialize the given unsigned integer Does not actually write any data to stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed (1-5) 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_uint\fP 
+.RE
+.PP
+
+.SS "serializedSize (\fBColor\fParg)"
+
+.PP
+get the number of bytes used to serialize the given \fBColor\fP Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed (3-5)
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_color\fP 
+.RE
+.PP
+
+.SS "serializedSize (\fBOffset\fParg)"
+
+.PP
+get the number of bytes used to serialize the given \fBOffset\fP Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed (0-9)
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this can return 0 for an offset whose value is (0,0), since a zero offset is optimized to be stored as a single bit\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_offset\fP 
+.RE
+.PP
+
+.SS "serializedSize (\fBPoint\fParg)"
+
+.PP
+get the number of bytes used to serialize the given \fBPoint\fP Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed (0-9)
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this can return 0 for a \fBPoint\fP whose value is (0,0), since a point at origin is optimized to be stored as a single bit\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_point\fP 
+.RE
+.PP
+
+.SS "serializedSize (\fBVector\fParg)"
+
+.PP
+get the number of bytes used to serialize the given \fBVector\fP Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed (0-9)
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this can return 0 for an vector whose value is (0,0), since a zero vector is optimized to be stored as a single bit\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_vector\fP 
+.RE
+.PP
+
+.SS "serializedSize (\fBRect\fParg)"
+
+.PP
+get the number of bytes used to serialize the given \fBRect\fP Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed (0-17)
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this can return 0 under some conditions, such as an \fBRect\fP located at (0,0) with zero width or height, which is optimized to be stored in 2 bits\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_rect\fP 
+.RE
+.PP
+
+.SS "serializedSize (\fBRotatedRect\fParg)"
+
+.PP
+get the number of bytes used to serialize the given \fBRotatedRect\fP Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed (4-30)
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_rotr\fP 
+.RE
+.PP
+
+.SS "serializedSize (\fBQuad\fParg)"
+
+.PP
+get the number of bytes used to serialize the given \fBQuad\fP Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed (0-34)
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this can return 0 under some conditions, such as a \fBQuad\fP made up of 4 points at the origin, which is optimized to be stored in 4 bits\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_quad\fP 
+.RE
+.PP
+
+.SS "serializedSize (\fBMemBlock\fPmem)"
+
+.PP
+get the number of bytes used to serialize the given block of memory Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_mem\fP 
+.RE
+.PP
+
+.SS "serializedSize (\fBISerializable\fPobj)"
+
+.PP
+get the number of bytes used to serialize the given object, including any objects that it serializes Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_obj\fP 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

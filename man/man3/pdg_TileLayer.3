@@ -1,0 +1,261 @@
+.TH "TileLayer" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+TileLayer \- 
+.PP
+efficiently handles large tile datasets, useful for backgrounds, terrains, etc\&.\&.\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBSpriteLayer\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "number \fBcheckCollision\fP (\fBSprite\fP movingSprite, uint alphaThreshold=128, boolean shortCircuit=true)"
+.br
+.RI "\fIsee if a sprite has collided with tiles in a layer \fP"
+.ti -1c
+.RI "\fBdefineTileSet\fP (int tileWidth, int tileHeight, \fBImage\fP tiles, boolean hasTransparency=true, boolean flipTiles=false)"
+.br
+.RI "\fIdefine image and dimensions for the tiles used by this layer \fP"
+.ti -1c
+.RI "\fBMemBlock\fP \fBgetMapData\fP (int mapWidth=0, int mapHeight=0, int srcX, int srcY)"
+.br
+.ti -1c
+.RI "\fBImage\fP \fBgetTileSetImage\fP ()"
+.br
+.RI "\fIget the \fBImage\fP currently being used as a tile set \fP"
+.ti -1c
+.RI "\fBPoint\fP \fBgetTileSize\fP ()"
+.br
+.RI "\fIget size of a tile in the image \fP"
+.ti -1c
+.RI "object \fBgetTileTypeAndFacingAt\fP (int x, int y)"
+.br
+.RI "\fIget the tile type and the facing/flipped state of the tile \fP"
+.ti -1c
+.RI "number \fBgetTileTypeAt\fP (int x, int y)"
+.br
+.RI "\fIget the tile type at a particular spot on the map \fP"
+.ti -1c
+.RI "\fBRect\fP \fBgetWorldBounds\fP ()"
+.br
+.RI "\fIget the size in layer coordinates of the world map \fP"
+.ti -1c
+.RI "\fBRect\fP \fBgetWorldSize\fP ()"
+.br
+.RI "\fIget the number of tiles in the map \fP"
+.ti -1c
+.RI "\fBloadMapData\fP (BinaryString data, int mapWidth=0, int mapHeight=0, int dstX, int dstY)"
+.br
+.ti -1c
+.RI "\fBloadMapData\fP (\fBMemBlock\fP data, int mapWidth=0, int mapHeight=0, int dstX, int dstY)"
+.br
+.ti -1c
+.RI "\fBsetTileTypeAt\fP (int x, int y, uint t, uint facing=\fBfacing_Ignore\fP)"
+.br
+.RI "\fIsets the type of tile at a given location on the map \fP"
+.ti -1c
+.RI "\fBsetWorldSize\fP (int width, int height, boolean repeatingX=false, boolean repeatingY=false)"
+.br
+.RI "\fIsets the number of tiles in the world map \fP"
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+efficiently handles large tile datasets, useful for backgrounds, terrains, etc\&.\&.\&. 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
+.RE
+.PP
+.SS "Capabilities"
+.PP
+Each \fBTileLayer\fP has a tile set, a set of equal size tiles taken from a single image\&. There can be at most 256 tiles in an image\&.
+.PP
+Tile sets can contain transparency, either through a transparent color or via an alpha channel\&. If a tile set does not contain transparency, then the entire tile world will be filled in solid, there is no way to leave out a tile\&. In tile sets with transparency, tile type 0 is considered empty, even if the there is no transparency in the actual image\&.
+.PP
+Tile sets can support tile rotation (facing) or tile flipping (vertical, horizontal, or both)\&. You cannot use both rotation and flipping in the same layer\&.
+.PP
+\fBWarning:\fP
+.RS 4
+While individual tiles can be rotated, the \fBTileLayer\fP itself cannot\&. This is a departure from the expected capabilities of SpriteLayers in general, and will be addressed in a future release\&.
+.RE
+.PP
+.SS "Getting the Results you Want"
+.PP
+For truly impressive maps, you will rarely use just a single \fBTileLayer\fP\&. Because TileLayers are highly optimized for large areas of transparent/empty tiles, you can use a number of linked TileLayers that each focus on different details: water, terrain, ground cover, flowers and shrubs, trees, etc\&.\&.\&.
+.PP
+You can intersperse regular SpriteLayers in between TileLayers to provided animated effects to make your characters move at the right layer (underneath the tree-tops, for example)\&.
+.PP
+Be sure to link together all your layers using \fBSpriteLayer\&.moveWith()\fP\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBdefineTileSet\fP 
+.PP
+\fBImage\&.setTransparentColor\fP 
+.PP
+\fBSpriteLayer\&.moveWith\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "checkCollision (\fBSprite\fPmovingSprite, uintalphaThreshold = \fC128\fP, booleanshortCircuit = \fCtrue\fP)"
+
+.PP
+see if a sprite has collided with tiles in a layer 
+.SS "defineTileSet (inttileWidth, inttileHeight, \fBImage\fPtiles, booleanhasTransparency = \fCtrue\fP, booleanflipTiles = \fCfalse\fP)"
+
+.PP
+define image and dimensions for the tiles used by this layer Each \fBTileLayer\fP has a set of equal size tiles taken from a single image\&. The tileWidth and tileHeight specify the size of each individual tile in the image, and the image should divide evenly into tiles with no left-over space\&. There can be at most 256 tiles in an image\&.
+.PP
+Tile sets can contain transparency, either through a transparent color or via an alpha channel (See \fBImage\fP for more details on transparency)\&.
+.PP
+Tile sets can support tile rotation (facing) or tile flipping (vertical, horizontal, or both)\&. You cannot use both rotation and flipping in the same layer\&.
+.PP
+To support rotation, you must have a maximum of 64 tiles in your tile set\&. Typically the tiles would be arranged in an 8x8 grid, with the top left corner tile being considered tile 0 and then counting left to right, top to bottom\&.
+.PP
+To support flipping in both directions, your tile set should be laid out just like for rotation, 64 tiles in an 8x8 grid\&. For horizontal flipping only, you should have 128 tiles in an 8x16 grid, and for vertical flipping only you should have 128 tile in a 16x8 grid\&. For all kinds of flipping you must pass true for the flipTiles parameter when you call \fBdefineTileSet()\fP\&. 
+.SS "\fBMemBlock\fP getMapData (intmapWidth = \fC0\fP, intmapHeight = \fC0\fP, intsrcX, intsrcY)"
+
+.SS "getTileSetImage ()"
+
+.PP
+get the \fBImage\fP currently being used as a tile set 
+.SS "getTileSize ()"
+
+.PP
+get size of a tile in the image \fBReturns:\fP
+.RS 4
+\fBPoint\fP with x (width) and y (height) values 
+.RE
+.PP
+
+.SS "getTileTypeAndFacingAt (intx, inty)"
+
+.PP
+get the tile type and the facing/flipped state of the tile \fBParameters:\fP
+.RS 4
+\fIx\fP component of x,y coordinates on the map 
+.br
+\fIy\fP component of x,y coordinates on the map
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a JavaScript object with tileType and facing\&. Unlike \fBgetTileTypeAt()\fP, this separates the facing/flipping information from the raw tile type, so the tile type is the actual index into your tile set\&. 
+.PP
+.nf
+> console.log(myTileLayer.getTileTypeAndFacingAt(0,0);
+{ tileType: 61, facing: 128 }
+
+.fi
+.PP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetTileTypeAt\fP 
+.PP
+\fBgetTileTypeAt\fP 
+.RE
+.PP
+
+.SS "getTileTypeAt (intx, inty)"
+
+.PP
+get the tile type at a particular spot on the map \fBParameters:\fP
+.RS 4
+\fIx\fP component of x,y coordinates on the map 
+.br
+\fIy\fP component of x,y coordinates on the map
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the tile type\&. This is the raw data as stored in the \fBTileLayer\fP, so it includes rotation/flipping information in the high bits\&. It can only be used directly as the index into your tile set on TileLayers that aren't using tile rotation or flipping\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetTileTypeAndFacingAt\fP 
+.PP
+\fBsetTileTypeAt\fP 
+.RE
+.PP
+
+.SS "getWorldBounds ()"
+
+.PP
+get the size in layer coordinates of the world map \fBReturns:\fP
+.RS 4
+the layer coordinates of the boundaries of the world map
+.RE
+.PP
+\fBWarning:\fP
+.RS 4
+this is not necessarily the pixel location for drawing, since it doesn't account for layer movement, rotation or zoom\&. You need to call \fBlayerToPortRect()\fP on this to get pixel drawing coordinates\&. 
+.RE
+.PP
+
+.SS "getWorldSize ()"
+
+.PP
+get the number of tiles in the map \fBReturns:\fP
+.RS 4
+a rectangle with the dimensions of the world map in number of tiles\&. If you want to get the pixel size for drawing use \fBgetWorldBounds()\fP instead\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetWorldBounds\fP 
+.PP
+\fBsetWorldSize\fP 
+.RE
+.PP
+
+.SS "loadMapData (BinaryStringdata, intmapWidth = \fC0\fP, intmapHeight = \fC0\fP, intdstX, intdstY)"
+
+.SS "loadMapData (\fBMemBlock\fPdata, intmapWidth = \fC0\fP, intmapHeight = \fC0\fP, intdstX, intdstY)"
+
+.SS "setTileTypeAt (intx, inty, uintt, uintfacing = \fC\fBfacing_Ignore\fP\fP)"
+
+.PP
+sets the type of tile at a given location on the map \fBParameters:\fP
+.RS 4
+\fIx\fP the horizontal tile position on the map (not pixels) 
+.br
+\fIy\fP the vertical tile position on the map (not pixels) 
+.br
+\fIt\fP the type of tile (the tile index in the tile set image) 
+.br
+\fIfacing\fP the rotation (or flipping) to use for this tile, defaults to none, ignored on layers that aren't using facing or flipping 
+.RE
+.PP
+
+.SS "setWorldSize (intwidth, intheight, booleanrepeatingX = \fCfalse\fP, booleanrepeatingY = \fCfalse\fP)"
+
+.PP
+sets the number of tiles in the world map \fBParameters:\fP
+.RS 4
+\fIwidth\fP how many tiles wide the world should be 
+.br
+\fIheight\fP how many tiles high the world should be 
+.br
+\fIrepeatingX\fP true if the map should wrap around horizontally to appear infinite, defaults to false 
+.br
+\fIrepeatingY\fP true if the map should wrap around vertically to appear infinite, defaults to false 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

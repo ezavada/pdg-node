@@ -1,0 +1,117 @@
+.TH "EventEmitter" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+EventEmitter \- 
+.PP
+Distributes events to event handlers\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBEventManager\fP, \fBSound\fP, \fBSprite\fP, \fBSpriteLayer\fP, and \fBTimerManager\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBaddHandler\fP (\fBIEventHandler\fP inHandler, int inEventType=\fBall_events\fP)"
+.br
+.RI "\fIadd a new handler for some event type, or for all events if no type specified\&. \fP"
+.ti -1c
+.RI "\fBblockEvent\fP (int inEventType)"
+.br
+.RI "\fItemporarily ignore all events of a particular type\&. \fP"
+.ti -1c
+.RI "\fBclear\fP ()"
+.br
+.RI "\fIremove all handlers \fP"
+.ti -1c
+.RI "\fBremoveHandler\fP (\fBIEventHandler\fP inHandler, int inEventType=\fBall_events\fP)"
+.br
+.RI "\fIremove a handler for some event type, or for all events (see note) if no type specified\&. \fP"
+.ti -1c
+.RI "\fBunblockEvent\fP (int inEventType)"
+.br
+.RI "\fIstop ignoring events of a particular type \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Distributes events to event handlers\&. 
+
+\fBPrecondition:\fP
+.RS 4
+\fBAPI Stability: 3 - Stable\fP\&. The API has proven satisfactory, but cleanup in the underlying code may cause minor changes\&. Backwards-compatibility is guaranteed\&.
+.RE
+.PP
+The \fBEventEmitter\fP expects the game developer to implement \fBIEventHandler\fP subclasses and register them to handle various events they are interested in\&. 
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBIEventHandler\fP 
+.PP
+\fBEvents\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "addHandler (\fBIEventHandler\fPinHandler, intinEventType = \fC\fBall_events\fP\fP)"
+
+.PP
+add a new handler for some event type, or for all events if no type specified\&. \fBParameters:\fP
+.RS 4
+\fIinHandler\fP the \fBIEventHandler\fP object which will handle the events 
+.br
+\fIinEventType\fP the type of event to handle 
+.RE
+.PP
+
+.SS "blockEvent (intinEventType)"
+
+.PP
+temporarily ignore all events of a particular type\&. Events that are blocked are NOT cached for later, they are just dropped\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinEventType\fP the type of event to block 
+.RE
+.PP
+
+.SS "clear ()"
+
+.PP
+remove all handlers 
+.SS "removeHandler (\fBIEventHandler\fPinHandler, intinEventType = \fC\fBall_events\fP\fP)"
+
+.PP
+remove a handler for some event type, or for all events (see note) if no type specified\&. If the handler is listed multiple times it will only remove it once\&.
+.PP
+It is safe to call remove handler from within an event handler's handleEvent() call\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinHandler\fP the object to handle events 
+.br
+\fIinEventType\fP the type of event to stop handling
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+inType == all_events doesn't work quite like you might expect\&. If you have registered a handler for multiple events, but not with all_events, doing \fCremoveHandler(handler, all_events)\fP will do nothing\&. Basically, all_events is a special event type that matches all event types when considering whether to invoke a handler or not\&. 
+.RE
+.PP
+
+.SS "unblockEvent (intinEventType)"
+
+.PP
+stop ignoring events of a particular type \fBParameters:\fP
+.RS 4
+\fIinEventType\fP the type of event to unblock 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

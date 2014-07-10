@@ -1,0 +1,183 @@
+.TH "NetClient" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+NetClient \- 
+.PP
+a network endpoint that can initiate a connection  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNetClient\fP (object opts=null)"
+.br
+.RI "\fIconstructor for \fBNetClient\fP, sets client options \fP"
+.ti -1c
+.RI "\fBNetClient\fP \fBconnect\fP (object serverInfo, function callback, string clientKey= '')"
+.br
+.RI "\fIestablish a connection to a server \fP"
+.ti -1c
+.RI "\fBNetClient\fP \fBonError\fP (function callback)"
+.br
+.RI "\fIset the callback function that will handle errors \fP"
+.ti -1c
+.RI "string \fBtoString\fP ()"
+.br
+.RI "\fIreturns '[object NetClient]' \fP"
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "boolean \fBconnection\fP"
+.br
+.RI "\fIreference to the \fBNetConnection\fP, or boolean false if not yet connected \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+a network endpoint that can initiate a connection 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
+.RE
+.PP
+\fBNetClient\fP is part of the PDG Engine's custom protocol for games\&. It handles protocol negotiation and optional connections\&. It establishes both a TCP connection (reliable transport with guaranteed delivery) and UDP communications (small and unreliable but fast) with the server\&.
+.PP
+\fBNetClient\fP doesn't actually handle network communication, it only establishes the connection\&. Once established, it creates \fBNetConnection\fP objects you can use to send and receive data\&.
+.PP
+\fBWarning:\fP
+.RS 4
+\fBNetClient\fP, \fBNetServer\fP, and \fBNetConnection\fP all work together over a custom protocol\&. Do not attempt to use \fBNetClient\fP to connect to other kinds of servers, such as HTTP or raw TCP sockets\&. There are perfectly fine \fCNet\fP and \fCHTTP\fP modules built-in to Node\&.js (and thus to PDG) for that\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBNetConnection\fP 
+.PP
+\fBNetServer\fP 
+.PP
+\fCNode\&.js Net module\fP 
+.PP
+\fCNode\&.js HTTP module\fP 
+.RE
+.PP
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBNetClient\fP (objectopts = \fCnull\fP)"
+
+.PP
+constructor for \fBNetClient\fP, sets client options Construct a new \fBNetClient\fP with particular options or using default values if no options are specified\&.
+.PP
+Available options are:
+.PP
+.IP "1." 4
+noDatagram - flag to indicate that we should not try to establish UDP communication with the server (defaults to false, allowing UDP)
+.PP
+.PP
+\fBParameters:\fP
+.RS 4
+\fIopts\fP a Javascript object with the options above
+.RE
+.PP
+.PP
+.nf
+var myClient = new pdg\&.NetClient( {noDatagram = true} );
+.fi
+.PP
+ 
+.SH "Member Function Documentation"
+.PP 
+.SS "connect (objectserverInfo, functioncallback, stringclientKey = \fC''\fP)"
+
+.PP
+establish a connection to a server Attempts to connect to the given server, and if it succeeds it invokes your callback with a new \fBNetConnection\fP object as the parameter\&. The If the connection fails, you'll get an error callback if you set one up using the \fBonError()\fP call\&.
+.PP
+An option key is passed in to do authentication if the server requires connection reservations\&. See \fBNetServer\&.expectClient\fP for more about client reservations\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIserverInfo\fP an object with host and port that tells us where to find the \fBNetServer\fP 
+.br
+\fIcallback\fP the connection established handler for this connection 
+.br
+\fIclientKey\fP [optional] the reservation key to send to the server
+.RE
+.PP
+.PP
+.nf
+// start trying to connect
+var myConnection = false;
+var myKey = '23dj3C340efp';
+myClient\&.connect( { host: 208\&.122\&.0\&.12, port: 5000 }, function(connection) {
+    myConnection = connection;
+}, myKey);
+
+// now wait for the connection to happen
+var t = pdg\&.tm\&.onInterval( function() {
+    if (myConnection) {
+        console\&.log('Got connection to '+myConnection\&.remoteAddr);
+        t\&.cancel();  // stop checking
+    }
+}, 100);  // check every 100 milleseconds
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBonError\fP 
+.PP
+\fBNetConnection\fP 
+.PP
+\fBNetServer\&.expectClient\fP 
+.RE
+.PP
+
+.SS "onError (functioncallback)"
+
+.PP
+set the callback function that will handle errors This function will be called whenever a call to \fBconnect()\fP fails\&. The function will be called with a single parameter, a string of the error message\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcallback\fP the error handling function for this connection
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+reference to itself for call chaining
+.RE
+.PP
+.PP
+.nf
+myClient\&.onError( function(msg) {
+    console\&.log('Connection failed: '+msg);
+}
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBconnect\fP 
+.RE
+.PP
+
+.SS "toString ()"
+
+.PP
+returns '[object NetClient]' Yep\&. Every time\&. That's all it does\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "connection"
+
+.PP
+reference to the \fBNetConnection\fP, or boolean false if not yet connected 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

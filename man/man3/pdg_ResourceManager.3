@@ -1,0 +1,339 @@
+.TH "ResourceManager" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ResourceManager \- 
+.PP
+used for loading resources  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBcloseResourceFile\fP (int refNum)"
+.br
+.RI "\fIstop searching a file or folder for resources \fP"
+.ti -1c
+.RI "\fBImage\fP \fBgetImage\fP (string imageName)"
+.br
+.RI "\fIload an image by name from the resources \fP"
+.ti -1c
+.RI "\fBImageStrip\fP \fBgetImageStrip\fP (string imageName)"
+.br
+.RI "\fIload an image strip by name from the resources \fP"
+.ti -1c
+.RI "string \fBgetLanguage\fP ()"
+.br
+.RI "\fIreturn the current active language \fP"
+.ti -1c
+.RI "BinaryString \fBgetResource\fP (string resourceName)"
+.br
+.RI "\fIget an untyped resource by name \fP"
+.ti -1c
+.RI "string \fBgetResourcePaths\fP ()"
+.br
+.RI "\fIget the paths that will be searched for resources \fP"
+.ti -1c
+.RI "number \fBgetResourceSize\fP (string resourceName)"
+.br
+.RI "\fIget the size of a resource by name \fP"
+.ti -1c
+.RI "string \fBgetString\fP (int id, int substring=-1)"
+.br
+.RI "\fIfetch a numbered string from the resources \fP"
+.ti -1c
+.RI "number \fBopenResourceFile\fP (string filename)"
+.br
+.RI "\fIadd a zip file or a directory to the resource search path \fP"
+.ti -1c
+.RI "\fBResourceManager\fP \fBsetLanguage\fP (string inLanguage)"
+.br
+.RI "\fIset the currently active language for \fP"
+.in -1c
+.SS "Related Functions"
+(Note that these are not member functions\&.) 
+.in +1c
+.ti -1c
+.RI "\fBgetResourceManager\fP"
+.br
+.RI "\fIget the singleton instance of the \fBResourceManager\fP used by the pdg framework \fP"
+.ti -1c
+.RI "\fBres\fP"
+.br
+.RI "\fIthe singleton instance of the \fBResourceManager\fP \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+used for loading resources 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
+.RE
+.PP
+.SS "Overview"
+.PP
+The Resource Manager lets you conveniently load localized strings, images, and custom resources from a collection of folders and zip files\&. Resource locations are searched for specific resources starting with the most recently added, so it's easy to support modules, plugins or expansion packs that override standard resources\&.
+.PP
+The Resource Manager also makes localization easier by automatically loading strings from the correct localized file, and falling back to the default if no localized string was found\&. There are also utility functions provided for string assembly that works for localized strings, even if the order of substitution items is different in various localization\&.
+.PP
+.SS "Strings Resource File Format"
+.PP
+The strings\&.txt and strings-{lang}\&.txt files must be UTF-8 format, with one string per line\&. Each line must have a resource number, followed by a tab (ASCII 09) character, then the string or string list\&. For string lists, the individual strings are separated by the vertical bar character (|)\&. Comment lines are allowed, and must start with #\&. Blank lines are also allowed\&.
+.PP
+Example File: 
+.PP
+.nf
+# this is a comment line
+
+10  This is a test string
+20  This is string ID 20
+30  Here is a string list|with multiple parts|each section can be fetched separately|getString(30, 3) gets this section
+.fi
+.PP
+ 
+.SH "Member Function Documentation"
+.PP 
+.SS "closeResourceFile (intrefNum)"
+
+.PP
+stop searching a file or folder for resources Given the refNum returned by a previous call to \fBopenResourceFile()\fP for a file or folder, it removes that file or folder from the search list for resources\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIrefNum\fP the reference number for the file or folder 
+.RE
+.PP
+
+.SS "getImage (stringimageName)"
+
+.PP
+load an image by name from the resources Load an image by name from the resources\&. Returns an \fBImage\fP object\&. If the resource doesn't exits, false is returned, so you can check for the image loading with:
+.PP
+.PP
+.nf
+var img = pdg\&.res\&.getImage('myImage\&.png');
+if (img === false) {
+                console\&.log('image not found!');
+} else {
+                port\&.drawImage([0,0], img);  // draw the image
+}
+.fi
+.PP
+.PP
+\fBParameters:\fP
+.RS 4
+\fIimageName\fP The name under which the image is stored in the resources
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+an \fBImage\fP object, or \fBfalse\fP if not found
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetImageStrip()\fP 
+.RE
+.PP
+
+.SS "getImageStrip (stringimageName)"
+
+.PP
+load an image strip by name from the resources \fBParameters:\fP
+.RS 4
+\fIimageName\fP The name under which the image strip is stored in the resources
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the named \fBImageStrip\fP, or \fBfalse\fP if no found
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetImage()\fP 
+.RE
+.PP
+
+.SS "getLanguage ()"
+
+.PP
+return the current active language Returns the last value passed in to \fBsetLanguage()\fP\&. By convention, this would be a 2 character language code, such as 'en', 'fr', 'de' or 'es'\&. If there was no prior call to \fBsetLanguage()\fP this will return an empty string\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the currently active language 
+.RE
+.PP
+
+.SS "getResource (stringresourceName)"
+
+.PP
+get an untyped resource by name Get a resource by name\&. The resource is returned as a block of data in a \fBMemBlock\fP object\&. If the resource doesn't exits, false is returned, so you can check for the resource loading with:
+.PP
+.PP
+.nf
+var res = pdg\&.res\&.getResource('myRes');
+if (res === false) {
+    console\&.log('resource not found!');
+} else {
+    // do something with the resource
+}
+.fi
+.PP
+.PP
+\fBParameters:\fP
+.RS 4
+\fIresourceName\fP the name of the resource
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a \fBMemBlock\fP with the resource data, or \fBfalse\fP if not found
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+the entire resource is loaded into memory, so you might want to check the size before loading it using \fBgetResourceSize()\fP if you are concerned about how large it could be\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetResourceSize()\fP 
+.RE
+.PP
+
+.SS "getResourcePaths ()"
+
+.PP
+get the paths that will be searched for resources Get a semicolon (;) separated list of the paths and zip files that will be searched for resources\&. They are listed in the order searched\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a string with the paths and files
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBopenResourceFile()\fP 
+.PP
+\fBcloseResourceFile()\fP 
+.RE
+.PP
+
+.SS "getResourceSize (stringresourceName)"
+
+.PP
+get the size of a resource by name Get the total number of bytes needed to load a particular named resource\&. If the resource does not exist this will return zero (0)\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIresourceName\fP the name of the resource to check
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the size in bytes of the resource 
+.RE
+.PP
+
+.SS "getString (intid, intsubstring = \fC-1\fP)"
+
+.PP
+fetch a numbered string from the resources Get a string by resource number from the first resource file it can be found in\&. Files are searched in the reverse order they were added, and if a language is set using \fBsetLanguage()\fP it will search that localized version first, then fall back to the non-localized string next\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIid\fP the string id number to find 
+.br
+\fIsubstring\fP optionally fetch a particular substring from a string list\&.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the desired string, or an empty string if not found
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+in order to locate strings, they must be stored in a strings\&.txt file (or strings-{lang}\&.txt for localized strings), either inside the resource zip file or at the top level of the resource directory\&. See the Detailed Description section for \fBResourceManager\fP above for details on the strings\&.txt format\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetLanguage()\fP 
+.PP
+\fBopenResourceFile()\fP 
+.RE
+.PP
+
+.SS "openResourceFile (stringfilename)"
+
+.PP
+add a zip file or a directory to the resource search path Add a zip file or a resource directory to the list of locations searched for resources\&. Returns a resource file reference number, which can be passed to \fBcloseResourceFile()\fP to remove it from the list\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename\fP the name of a zip file; or the name of a directory that contains non-zip resources
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a resource file reference number
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+the ref number returned is not a file system ref number, and cannot be used for any file system operations\&. It can only be passed to \fBcloseResourceFile()\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBcloseResourceFile()\fP 
+.RE
+.PP
+
+.SS "setLanguage (stringinLanguage)"
+
+.PP
+set the currently active language for Set the language that should be used when searching for string resources\&.
+.PP
+By convention, inLanguage should be a 2 character language code, such as 'en', 'fr', 'de' or 'es', however it can be anything you want\&. This does nothing to affect previously loaded strings, it only applies to new calls to \fBgetString()\fP\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinLanguage\fP the new language to treat as active
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetLanguage()\fP 
+.PP
+\fBgetString()\fP
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+This works by \fBgetString()\fP calls searching for strings-{lang}\&.txt instead of strings\&.txt\&. If the string is not found, it will try strings\&.txt as well\&. 
+.RE
+.PP
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "getResourceManager\fC [related]\fP"
+
+.PP
+get the singleton instance of the \fBResourceManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBResourceManager\fP singleton object 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

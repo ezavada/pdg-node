@@ -1,0 +1,626 @@
+.TH "Deserializer" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Deserializer \- 
+.PP
+deserialize data from a serialized data stream  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "number \fBdeserialize_1\fP ()"
+.br
+.RI "\fIdeserialize 1 signed byte \fP"
+.ti -1c
+.RI "number \fBdeserialize_1u\fP ()"
+.br
+.RI "\fIdeserialize 1 unsigned byte \fP"
+.ti -1c
+.RI "number \fBdeserialize_2\fP ()"
+.br
+.RI "\fIdeserialize 2 signed bytes \fP"
+.ti -1c
+.RI "number \fBdeserialize_2u\fP ()"
+.br
+.RI "\fIdeserialize 2 unsigned bytes \fP"
+.ti -1c
+.RI "number \fBdeserialize_3u\fP ()"
+.br
+.RI "\fIdeserialize 3 unsigned bytes \fP"
+.ti -1c
+.RI "number \fBdeserialize_4\fP ()"
+.br
+.RI "\fIdeserialize 4 signed bytes \fP"
+.ti -1c
+.RI "number \fBdeserialize_4u\fP ()"
+.br
+.RI "\fIdeserialize 4 unsigned bytes \fP"
+.ti -1c
+.RI "number \fBdeserialize_8\fP ()"
+.br
+.RI "\fIdeserialize 8 signed bytes \fP"
+.ti -1c
+.RI "number \fBdeserialize_8u\fP ()"
+.br
+.RI "\fIdeserialize 8 unsigned bytes \fP"
+.ti -1c
+.RI "boolean \fBdeserialize_bool\fP ()"
+.br
+.RI "\fIdeserialize a 1 bit boolean value \fP"
+.ti -1c
+.RI "\fBColor\fP \fBdeserialize_color\fP ()"
+.br
+.RI "\fIdeserialize a \fBColor\fP \fP"
+.ti -1c
+.RI "number \fBdeserialize_d\fP ()"
+.br
+.RI "\fIdeserialize a double precision floating point value \fP"
+.ti -1c
+.RI "number \fBdeserialize_f\fP ()"
+.br
+.RI "\fIdeserialize a single precision floating point value \fP"
+.ti -1c
+.RI "\fBMemBlock\fP \fBdeserialize_mem\fP ()"
+.br
+.RI "\fIdeserialize arbitrary binary data \fP"
+.ti -1c
+.RI "number \fBdeserialize_memGetLen\fP ()"
+.br
+.RI "\fIget size of mem block that is next in the stream \fP"
+.ti -1c
+.RI "\fBISerializable\fP \fBdeserialize_obj\fP ()"
+.br
+.RI "\fIdeserialize an object \fP"
+.ti -1c
+.RI "\fBOffset\fP \fBdeserialize_offset\fP ()"
+.br
+.RI "\fIdeserialize an \fBOffset\fP \fP"
+.ti -1c
+.RI "\fBPoint\fP \fBdeserialize_point\fP ()"
+.br
+.RI "\fIdeserialize a \fBPoint\fP \fP"
+.ti -1c
+.RI "\fBQuad\fP \fBdeserialize_quad\fP ()"
+.br
+.RI "\fIdeserialize a \fBQuad\fP \fP"
+.ti -1c
+.RI "\fBRect\fP \fBdeserialize_rect\fP ()"
+.br
+.RI "\fIdeserialize a \fBRect\fP \fP"
+.ti -1c
+.RI "\fBRotatedRect\fP \fBdeserialize_rotr\fP ()"
+.br
+.RI "\fIdeserialize a \fBRotatedRect\fP \fP"
+.ti -1c
+.RI "string \fBdeserialize_str\fP ()"
+.br
+.RI "\fIdeserialize an arbitrary string \fP"
+.ti -1c
+.RI "number \fBdeserialize_uint\fP ()"
+.br
+.RI "\fIdeserialize an unsigned number \fP"
+.ti -1c
+.RI "\fBVector\fP \fBdeserialize_vector\fP ()"
+.br
+.RI "\fIdeserialize a \fBVector\fP \fP"
+.ti -1c
+.RI "\fBsetDataPtr\fP (BinaryString data)"
+.br
+.RI "\fIset the serialized data \fP"
+.ti -1c
+.RI "\fBsetDataPtr\fP (\fBMemBlock\fP data)"
+.br
+.RI "\fIset the serialized data \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+deserialize data from a serialized data stream 
+
+\fBPrecondition:\fP
+.RS 4
+\fBAPI Stability: 3 - Stable\fP\&. The API has proven satisfactory, but cleanup in the underlying code may cause minor changes\&. Backwards-compatibility is guaranteed\&.
+.RE
+.PP
+\fBDeserializer\fP retrieves and reconstructs complex data from a serialized data stream in memory\&. The stream must have been created by a \fBSerializer\fP\&. It will correctly rebuild entire object hierarchies, creating new objects of the correct classes without duplication as needed\&. In order to deserialize objects, you must register them using \fBpdg\&.registerSerializableClass\fP\&. Built in serializable objects, such as Sprites and SpriteLayers are pre-registered\&.
+.PP
+The data stream format written by \fBSerializer\fP is platform neutral, so it can be decoded on a different platform (or even language) than it was created with\&. Thus it is suitable for saved game files and network messages between client and server\&.
+.PP
+\fBRemarks:\fP
+.RS 4
+The \fBNetConnection\fP object automatically reconstructs \fBISerializable\fP objects and gives them to you in your receive callback function\&.
+.RE
+.PP
+\fBDeserializer\fP looks for tags written by \fBSerializer\fP at key points in the stream to verify things haven't gotten out of sync\&. However, if you want your serialized data streams to be versioned, you will have to add that yourself; either on a per object/message basis or for an entire saved stream\&.
+.PP
+.SS "Method Groups"
+.PP
+.IP "\(bu" 2
+\fBdeserialize_x()\fP: These methods read the given data of type \fIx\fP from the stream\&. Where \fIx\fP is a number (ie: deserialize_1 or deserialize_2u) the number represents the number of bytes that will be used from the data stream\&. Others, such as uint, str, mem and obj are all variable sized based on the actual data that was written\&.
+.IP "\(bu" 2
+\fB\fBdeserialize_memGetLen()\fP\fP - get the size of the next memory block data element that is about to be read from the stream\&. Intended for cases where you need to know the length of the memory block before reading it from the stream\&. You generally won't need to use this\&.
+.PP
+.PP
+\fBWarning:\fP
+.RS 4
+You \fImust\fP deserialize data in the same order it was serialized and with the deserialize call that corresponds to the serialize call used\&. Example:
+.RE
+.PP
+.PP
+.nf
+// correct serialization
+function serializeStuff(ser) {
+   ser\&.serialize_1u(val1);
+   ser\&.serialize_2u(val2);
+   ser\&.serialize_1(signedVal);
+   ser\&.serialize_uint(unsignedVal);
+   ser\&.serialize_str(myMessage);
+}
+
+// correct deserialization for above
+// each call matches in order and type
+function deserializeStuff(des) {
+   val1 =        des\&.serialize_1u();
+   val2 =        des\&.serialize_2u();
+   signedVal =   des\&.serialize_1();
+   unsignedVal = des\&.serialize_uint();
+   myMessage =   des\&.serialize_str();
+}
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\fP 
+.PP
+\fBISerializable\fP 
+.PP
+\fBpdg\&.registerSerializableClass\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "deserialize_1 ()"
+
+.PP
+deserialize 1 signed byte Read a one byte signed value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a number in the range of \fB127 to 127\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_1\fP 
+.RE
+.PP
+
+.SS "deserialize_1u ()"
+
+.PP
+deserialize 1 unsigned byte Read an unsigned one byte value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a number in the range of \fB0 to 255\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_1u\fP 
+.RE
+.PP
+
+.SS "deserialize_2 ()"
+
+.PP
+deserialize 2 signed bytes Read a signed two byte value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a number in the range of \fB32,767 to 32,767\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_2\fP 
+.RE
+.PP
+
+.SS "deserialize_2u ()"
+
+.PP
+deserialize 2 unsigned bytes Read an unsigned two byte value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a number in the range of \fB0 to 65,535\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_2u\fP 
+.RE
+.PP
+
+.SS "deserialize_3u ()"
+
+.PP
+deserialize 3 unsigned bytes Read an unsigned three byte value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a number in the range of \fB0 to 16,777,216\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_3u\fP 
+.RE
+.PP
+
+.SS "deserialize_4 ()"
+
+.PP
+deserialize 4 signed bytes Read a signed four byte value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a number in the range of \fB2,147,483,647 to 2,147,483,647\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_4\fP 
+.RE
+.PP
+
+.SS "deserialize_4u ()"
+
+.PP
+deserialize 4 unsigned bytes Read an unsigned four byte value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a number in the range of \fB0 to 4,294,967,295\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_4u\fP 
+.RE
+.PP
+
+.SS "deserialize_8 ()"
+
+.PP
+deserialize 8 signed bytes Read a signed eight byte value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a number in the range of \fB9,223,372,036,854,775,807 to 9,223,372,036,854,775,807\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_8\fP 
+.RE
+.PP
+
+.SS "deserialize_8u ()"
+
+.PP
+deserialize 8 unsigned bytes Read an unsigned eight byte value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a number in the range of \fB0 to 18,446,744,073,709,551,615\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_8u\fP 
+.RE
+.PP
+
+.SS "deserialize_bool ()"
+
+.PP
+deserialize a 1 bit boolean value Read an one bit boolean (true/false) value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a boolean, either true or false
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_bool\fP 
+.RE
+.PP
+
+.SS "deserialize_color ()"
+
+.PP
+deserialize a \fBColor\fP Read a \fBColor\fP value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a \fBColor\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_color\fP 
+.RE
+.PP
+
+.SS "deserialize_d ()"
+
+.PP
+deserialize a double precision floating point value Read an eight byte double precision floating point value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a number in the range of \fB10\*{−308\*}  to 10\*{308\*} \fP, with 17 significant digits
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_d\fP 
+.RE
+.PP
+
+.SS "deserialize_f ()"
+
+.PP
+deserialize a single precision floating point value Read a four byte single precision floating point value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a number in the range of \fB10\*{−38\*}  to 10\*{38\*} \fP, with 9 significant digits
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_f\fP 
+.RE
+.PP
+
+.SS "deserialize_mem ()"
+
+.PP
+deserialize arbitrary binary data Read a chunk of arbitrary binary data from the stream into a \fBMemBlock\fP\&. The amount of data that will be read can be discovered by calling \fBdeserialize_memGetLen()\fP \fIbefore\fP you call \fBdeserialize_mem()\fP\&. If you want to get the size afterwards, you must call \fBMemBlock\&.getDataSize()\fP on the data returned
+.PP
+\fBRemarks:\fP
+.RS 4
+there is no way to read only part of the binary data
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+an arbitrary block of binary data as a \fBMemBlock\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_mem\fP 
+.PP
+\fBdeserialize_memGetLen\fP 
+.PP
+\fBMemBlock\&.getDataSize\fP 
+.RE
+.PP
+
+.SS "deserialize_memGetLen ()"
+
+.PP
+get size of mem block that is next in the stream Reports the size of the \fBMemBlock\fP that will be created by an immediate call to \fBdeserialize_mem()\fP\&. If you want to get the size after you've made the \fBdeserialize_mem()\fP call, use \fBMemBlock\&.getDataSize()\fP
+.PP
+\fBReturns:\fP
+.RS 4
+the size in bytes of the \fBMemBlock\fP that will be created
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+derserialize_mem 
+.PP
+\fBMemBlock\&.getDataSize\fP 
+.RE
+.PP
+
+.SS "deserialize_obj ()"
+
+.PP
+deserialize an object This deserializes a object and all its data into the stream\&. It does this by instantiating a new object of the correct type, then calling that object's deserialize method\&. The object's deserialize() in turn calls deserialize methods for each of the object's data members\&. If the given object's data members include other \fBISerializable\fP objects, then \fBdeserialize_obj()\fP is called recursively to deserialize those objects\&.
+.PP
+The \fBDeserializer\fP keeps track of what objects have already been deserialized from the stream\&. So if \fBdeserialize_obj()\fP is called for an object that has already been deserialized, it just returns a reference to the existing object rather than creating a duplicate object
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_obj\fP 
+.PP
+\fBISerializable\fP 
+.RE
+.PP
+
+.SS "deserialize_offset ()"
+
+.PP
+deserialize an \fBOffset\fP Read an \fBOffset\fP's x and y values value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+an \fBOffset\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_offset\fP 
+.RE
+.PP
+
+.SS "deserialize_point ()"
+
+.PP
+deserialize a \fBPoint\fP Read a \fBPoint\fP value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a \fBPoint\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_point\fP 
+.RE
+.PP
+
+.SS "deserialize_quad ()"
+
+.PP
+deserialize a \fBQuad\fP Read a \fBQuad\fP (4 point) value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a \fBQuad\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_quad\fP 
+.RE
+.PP
+
+.SS "deserialize_rect ()"
+
+.PP
+deserialize a \fBRect\fP Read a \fBRect\fP value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a \fBRect\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_rect\fP 
+.RE
+.PP
+
+.SS "deserialize_rotr ()"
+
+.PP
+deserialize a \fBRotatedRect\fP Read a \fBRotatedRect\fP value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a \fBRotatedRect\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_rotr\fP 
+.RE
+.PP
+
+.SS "deserialize_str ()"
+
+.PP
+deserialize an arbitrary string Read an arbitrary string from the stream\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+a Unicode string
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_str\fP 
+.RE
+.PP
+
+.SS "deserialize_uint ()"
+
+.PP
+deserialize an unsigned number Read an unsigned value from the data stream\&.
+.PP
+\fBWarning:\fP
+.RS 4
+this can only deserialize values encoded with serialize_uint, not with serialize_4u even though the range is identical
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a number in the range of \fB0 to 4,294,967,295\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_uint\fP 
+.RE
+.PP
+
+.SS "deserialize_vector ()"
+
+.PP
+deserialize a \fBVector\fP Read a \fBVector\fP value from the data stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a \fBVector\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSerializer\&.serialize_vector\fP 
+.RE
+.PP
+
+.SS "setDataPtr (BinaryStringdata)"
+
+.PP
+set the serialized data Set the data block that should be deserialized\&. It should have been created at some point by a \fBpdg\&.Serializer\fP\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata\fP the BinaryString object with the serialized data
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetDataPtr(MemBlock)\fP 
+.PP
+\fBSerializer\&.getDataPtr\fP 
+.RE
+.PP
+
+.SS "setDataPtr (\fBMemBlock\fPdata)"
+
+.PP
+set the serialized data Set the data block that should be deserialized\&. It should have been created at some point by a \fBpdg\&.Serializer\fP\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdata\fP the \fBMemBlock\fP object with the serialized data
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetDataPtr(BinaryString)\fP 
+.PP
+\fBSerializer\&.getDataPtr\fP 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

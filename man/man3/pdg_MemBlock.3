@@ -1,0 +1,119 @@
+.TH "MemBlock" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+MemBlock \- 
+.PP
+holds arbitrary blocks of memory  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "number \fBgetByte\fP (uint i)"
+.br
+.RI "\fIget a single byte from an specific location in the block \fP"
+.ti -1c
+.RI "BinaryString \fBgetBytes\fP (uint start, uint len)"
+.br
+.RI "\fIget a subset of the memory block \fP"
+.ti -1c
+.RI "BinaryString \fBgetData\fP ()"
+.br
+.RI "\fIget the data as a JavaScript string \fP"
+.ti -1c
+.RI "number \fBgetDataSize\fP ()"
+.br
+.RI "\fIget the number of bytes in the block \fP"
+.ti -1c
+.RI "Buffer \fBtoBuffer\fP ()"
+.br
+.RI "\fIconvert \fBMemBlock\fP to Node\&.js Buffer object \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+holds arbitrary blocks of memory 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
+.RE
+.PP
+Many functions of PDG, such as \fBImage\fP and Resource data, Streaming I/O, and Networking deal with blocks of memory\&. Since JavaScript has no way to natively deal with these, PDG adds the \fBMemBlock\fP class to pass those blocks of data between various parts of the PDG libraries\&.
+.PP
+This class is very similar to the Node\&.js Buffer class, but has no Node\&.js dependencies\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "getByte (uinti)"
+
+.PP
+get a single byte from an specific location in the block \fBParameters:\fP
+.RS 4
+\fIi\fP the offset to the desired byte within the block
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the byte value stored at the offset (0\&.\&.255) 
+.RE
+.PP
+
+.SS "getBytes (uintstart, uintlen)"
+
+.PP
+get a subset of the memory block The data is returned as a JavaScript string with binary data (values from 0\&.\&.255 represented in JavaScript's native 2 byte per char string format)\&. Use pdg\&.log\&.binaryDump() to see the data contents in a human readable hex-dump form\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstart\fP the offset in the block to start from 
+.br
+\fIlen\fP then number of bytes to fetch
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a JavaScript string with binary data
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBLogManager\&.binaryDump\fP 
+.RE
+.PP
+
+.SS "getData ()"
+
+.PP
+get the data as a JavaScript string The data is returned as a JavaScript string with binary data (values from 0\&.\&.255 represented in JavaScript's native 2 byte per char string format)\&. Use pdg\&.log\&.binaryDump() to see the data contents in a human readable hex-dump form\&.
+.PP
+\fBReturns:\fP
+.RS 4
+a JavaScript string with binary data
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBLogManager\&.binaryDump\fP 
+.RE
+.PP
+
+.SS "getDataSize ()"
+
+.PP
+get the number of bytes in the block \fBReturns:\fP
+.RS 4
+the count of bytes in the block 
+.RE
+.PP
+
+.SS "toBuffer ()"
+
+.PP
+convert \fBMemBlock\fP to Node\&.js Buffer object Converts a \fBMemBlock\fP into a Node\&.js Buffer object\&. See Node\&.js docs for details on the Buffer class\&. This makes it easier to use a \fBMemBlock\fP with Node\&.js calls that work with Buffers\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

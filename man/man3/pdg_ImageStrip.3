@@ -1,0 +1,159 @@
+.TH "ImageStrip" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ImageStrip \- 
+.PP
+bitmap image containing a number of frames that can be blitted onto the screen  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBImage\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBImage\fP \fBgetFrame\fP (int frameNum)"
+.br
+.RI "\fIget image that is a single frame of this multi-frame image \fP"
+.ti -1c
+.RI "number \fBgetFrameWidth\fP ()"
+.br
+.RI "\fIget the width in pixels of a single frame of this image \fP"
+.ti -1c
+.RI "number \fBgetNumFrames\fP ()"
+.br
+.RI "\fIhow many frames in this multi-frame image \fP"
+.ti -1c
+.RI "\fBImageStrip\fP \fBsetFrameWidth\fP (int inFrameWidth)"
+.br
+.RI "\fIset the width in pixels of a single frame of this image \fP"
+.ti -1c
+.RI "\fBImageStrip\fP \fBsetNumFrames\fP (int inNumFrames)"
+.br
+.RI "\fIset the number of frames that are in this image strip \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+bitmap image containing a number of frames that can be blitted onto the screen 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
+.RE
+.PP
+You can create an image strip directly from a file, or by loading it from resource files with the \fBResourceManager\fP\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "getFrame (intframeNum)"
+
+.PP
+get image that is a single frame of this multi-frame image \fBReturns:\fP
+.RS 4
+a new \fBImage\fP object with the sub image
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this is done by referencing the original, the storage space is not duplicated
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIframeNum\fP which frame of the multiframe image to extract 
+.RE
+.PP
+
+.SS "getFrameWidth ()"
+
+.PP
+get the width in pixels of a single frame of this image \fBReturns:\fP
+.RS 4
+the width in pixels
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+there is no getFrameHeight() method since frames are arranged horizontally in an image strip, so the frame height is the same as the image height\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetHeight()\fP 
+.PP
+\fBgetWidth()\fP 
+.RE
+.PP
+
+.SS "getNumFrames ()"
+
+.PP
+how many frames in this multi-frame image Frames are arranged horizontally within an \fBImageStrip\fP, so this is the same as setting the number of horizontal slices the image is divided into, one frame per slice, like a filmstrip\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the number of frames
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetNumFrames()\fP 
+.PP
+\fBsetFrameWidth()\fP 
+.RE
+.PP
+
+.SS "setFrameWidth (intinFrameWidth)"
+
+.PP
+set the width in pixels of a single frame of this image \fBReturns:\fP
+.RS 4
+the width in pixels
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+there is no setFrameHeight() method since frames are arranged horizontally in an image strip, so the frame height is the same as the image height\&.
+.PP
+this is an alternative to \fBsetNumFrames()\fP, for use when it is more convenient to set the width rather than the frame count\&. You can call either one to set up an \fBImageStrip\fP's frames\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetNumFrames()\fP 
+.PP
+getFrameHeight() 
+.RE
+.PP
+
+.SS "setNumFrames (intinNumFrames)"
+
+.PP
+set the number of frames that are in this image strip The frames are all in a horizontal row within the image strip, and this makes the frame width be the total width divided by number of frames
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinNumFrames\fP the total number of frames across
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this is an alternative to \fBsetFrameWidth()\fP, for use when it is more convenient to set the frame count rather than the width\&. You can call either one to set up an \fBImageStrip\fP's frames\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetFrameWidth()\fP 
+.PP
+\fBgetNumFrames()\fP 
+.PP
+\fBgetFrameWidth()\fP 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

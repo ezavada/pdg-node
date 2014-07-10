@@ -1,0 +1,246 @@
+.TH "Port" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Port \- 
+.PP
+area in which drawing is done, a viewport (\fIGUI Only\fP)  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBdrawImage\fP (\fBImage\fP img, \fBPoint\fP loc)"
+.br
+.ti -1c
+.RI "\fBdrawImage\fP (\fBImage\fP img, \fBQuad\fP quad)"
+.br
+.ti -1c
+.RI "\fBdrawImage\fP (\fBImage\fP img, \fBRect\fP rect, int fitType=\fBfit_Fill\fP, boolean clipOverflow=false)"
+.br
+.ti -1c
+.RI "\fBdrawLine\fP (\fBPoint\fP from, \fBPoint\fP to, \fBColor\fP rgba='black')"
+.br
+.ti -1c
+.RI "\fBdrawLineEx\fP (\fBPoint\fP from, \fBPoint\fP to, uint thickness, uint pattern, uint patternShift, \fBColor\fP rgba)"
+.br
+.ti -1c
+.RI "\fBdrawText\fP (string text, \fBPoint\fP location, int size, uint style=\fBtextStyle_Plain\fP, \fBColor\fP rgba= 'black')"
+.br
+.ti -1c
+.RI "\fBdrawText\fP (string text, \fBQuad\fP quad, int size, uint style=\fBtextStyle_Plain\fP, \fBColor\fP rgba= 'black')"
+.br
+.ti -1c
+.RI "\fBdrawText\fP (string text, \fBRect\fP rect, int size, uint style=\fBtextStyle_Plain\fP, \fBColor\fP rgba= 'black')"
+.br
+.ti -1c
+.RI "\fBdrawTexture\fP (\fBImage\fP img, \fBRect\fP r)"
+.br
+.ti -1c
+.RI "\fBdrawTexturedSphere\fP (\fBImage\fP img, \fBPoint\fP loc, number radius, number rotation=0, \fBOffset\fP polarOffsetRadians=\fBOffset\fP(0, 0), \fBOffset\fP lightOffsetRadians=\fBOffset\fP(0, 0))"
+.br
+.ti -1c
+.RI "\fBdrawTexturedSphere\fP (\fBImageStrip\fP imgStrip, int frameNum, \fBPoint\fP loc, number radius, number rotation=0, \fBOffset\fP polarOffsetRadians=\fBOffset\fP(0, 0), \fBOffset\fP lightOffsetRadians=\fBOffset\fP(0, 0))"
+.br
+.ti -1c
+.RI "\fBfillCircle\fP (\fBPoint\fP centerPt, number radius, \fBColor\fP rgba='black')"
+.br
+.ti -1c
+.RI "\fBfillOval\fP (\fBPoint\fP centerPt, number xRadius, number yRadius, \fBColor\fP rgba='black')"
+.br
+.ti -1c
+.RI "\fBfillRect\fP (\fBQuad\fP quad, \fBColor\fP rgba='black')"
+.br
+.ti -1c
+.RI "\fBfillRect\fP (\fBRect\fP quad, \fBColor\fP rgba='black')"
+.br
+.ti -1c
+.RI "\fBfillRectEx\fP (\fBQuad\fP quad, uint pattern, uint patternShift, \fBColor\fP rgba)"
+.br
+.ti -1c
+.RI "\fBfillRectEx\fP (\fBRect\fP quad, uint pattern, uint patternShift, \fBColor\fP rgba)"
+.br
+.ti -1c
+.RI "\fBfillRectWithGradient\fP (\fBQuad\fP quad, \fBColor\fP startColor, \fBColor\fP endColor)"
+.br
+.ti -1c
+.RI "\fBfillRectWithGradient\fP (\fBRect\fP quad, \fBColor\fP startColor, \fBColor\fP endColor)"
+.br
+.ti -1c
+.RI "\fBfillRoundRect\fP (\fBRect\fP rect, number radius, \fBColor\fP rgba='black')"
+.br
+.ti -1c
+.RI "\fBframeCircle\fP (\fBPoint\fP centerPt, number radius, \fBColor\fP rgba='black')"
+.br
+.ti -1c
+.RI "\fBframeOval\fP (\fBPoint\fP centerPt, number xRadius, number yRadius, \fBColor\fP rgba='black')"
+.br
+.ti -1c
+.RI "\fBframeRect\fP (\fBQuad\fP quad, \fBColor\fP rgba='black')"
+.br
+.ti -1c
+.RI "\fBframeRect\fP (\fBRect\fP quad, \fBColor\fP rgba='black')"
+.br
+.ti -1c
+.RI "\fBframeRectEx\fP (\fBQuad\fP quad, uint thickness, uint pattern, uint patternShift, \fBColor\fP rgba)"
+.br
+.ti -1c
+.RI "\fBframeRectEx\fP (\fBRect\fP quad, uint thickness, uint pattern, uint patternShift, \fBColor\fP rgba)"
+.br
+.ti -1c
+.RI "\fBframeRoundRect\fP (\fBRect\fP rect, number radius, \fBColor\fP rgba='black')"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBgetClipRect\fP ()"
+.br
+.ti -1c
+.RI "\fBFont\fP \fBgetCurrentFont\fP (uint style=\fBtextStyle_Plain\fP)"
+.br
+.ti -1c
+.RI "\fBImage\fP \fBgetCursor\fP ()"
+.br
+.RI "\fIget the \fBImage\fP that is being used as the cursor \fINOT IMPLEMENTED\fP \fP"
+.ti -1c
+.RI "\fBRect\fP \fBgetDrawingArea\fP ()"
+.br
+.ti -1c
+.RI "number \fBgetTextWidth\fP (string text, int size, uint style=\fBtextStyle_Plain\fP, int len=-1)"
+.br
+.ti -1c
+.RI "\fBresetCursor\fP ()"
+.br
+.RI "\fINOT IMPLEMENTED\&. \fP"
+.ti -1c
+.RI "\fBPort\fP \fBsetClipRect\fP (\fBRect\fP inClipRect)"
+.br
+.ti -1c
+.RI "\fBsetCursor\fP (\fBImage\fP cursorImage, \fBPoint\fP hotSpot)"
+.br
+.RI "\fINOT IMPLEMENTED\&. \fP"
+.ti -1c
+.RI "\fBsetFont\fP (\fBFont\fP font=DEFAULT_FONT)"
+.br
+.ti -1c
+.RI "\fBsetFontForStyle\fP (uint style, \fBFont\fP font=DEFAULT_FONT)"
+.br
+.ti -1c
+.RI "\fBsetFontScalingFactor\fP (number scaleBy)"
+.br
+.ti -1c
+.RI "number \fBstartTrackingMouse\fP (\fBRect\fP rect)"
+.br
+.RI "\fINOT IMPLEMENTED\&. \fP"
+.ti -1c
+.RI "\fBstopTrackingMouse\fP (int trackingRef)"
+.br
+.RI "\fINOT IMPLEMENTED\&. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+area in which drawing is done, a viewport (\fIGUI Only\fP) 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
+.RE
+.PP
+A \fBPort\fP can be a full screen drawing context or a window\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "drawImage (\fBImage\fPimg, \fBPoint\fPloc)"
+
+.SS "drawImage (\fBImage\fPimg, \fBQuad\fPquad)"
+
+.SS "drawImage (\fBImage\fPimg, \fBRect\fPrect, intfitType = \fC\fBfit_Fill\fP\fP, booleanclipOverflow = \fCfalse\fP)"
+
+.SS "drawLine (\fBPoint\fPfrom, \fBPoint\fPto, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "drawLineEx (\fBPoint\fPfrom, \fBPoint\fPto, uintthickness, uintpattern, uintpatternShift, \fBColor\fPrgba)"
+
+.SS "drawText (stringtext, \fBPoint\fPlocation, intsize, uintstyle = \fC\fBtextStyle_Plain\fP\fP, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "drawText (stringtext, \fBQuad\fPquad, intsize, uintstyle = \fC\fBtextStyle_Plain\fP\fP, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "drawText (stringtext, \fBRect\fPrect, intsize, uintstyle = \fC\fBtextStyle_Plain\fP\fP, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "drawTexture (\fBImage\fPimg, \fBRect\fPr)"
+
+.SS "drawTexturedSphere (\fBImage\fPimg, \fBPoint\fPloc, numberradius, numberrotation = \fC0\fP, \fBOffset\fPpolarOffsetRadians = \fC\fBOffset\fP(0, 0)\fP, \fBOffset\fPlightOffsetRadians = \fC\fBOffset\fP(0, 0)\fP)"
+
+.SS "drawTexturedSphere (\fBImageStrip\fPimgStrip, intframeNum, \fBPoint\fPloc, numberradius, numberrotation = \fC0\fP, \fBOffset\fPpolarOffsetRadians = \fC\fBOffset\fP(0, 0)\fP, \fBOffset\fPlightOffsetRadians = \fC\fBOffset\fP(0, 0)\fP)"
+
+.SS "fillCircle (\fBPoint\fPcenterPt, numberradius, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "fillOval (\fBPoint\fPcenterPt, numberxRadius, numberyRadius, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "fillRect (\fBQuad\fPquad, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "fillRect (\fBRect\fPquad, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "fillRectEx (\fBQuad\fPquad, uintpattern, uintpatternShift, \fBColor\fPrgba)"
+
+.SS "fillRectEx (\fBRect\fPquad, uintpattern, uintpatternShift, \fBColor\fPrgba)"
+
+.SS "fillRectWithGradient (\fBQuad\fPquad, \fBColor\fPstartColor, \fBColor\fPendColor)"
+
+.SS "fillRectWithGradient (\fBRect\fPquad, \fBColor\fPstartColor, \fBColor\fPendColor)"
+
+.SS "fillRoundRect (\fBRect\fPrect, numberradius, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "frameCircle (\fBPoint\fPcenterPt, numberradius, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "frameOval (\fBPoint\fPcenterPt, numberxRadius, numberyRadius, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "frameRect (\fBQuad\fPquad, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "frameRect (\fBRect\fPquad, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "frameRectEx (\fBQuad\fPquad, uintthickness, uintpattern, uintpatternShift, \fBColor\fPrgba)"
+
+.SS "frameRectEx (\fBRect\fPquad, uintthickness, uintpattern, uintpatternShift, \fBColor\fPrgba)"
+
+.SS "frameRoundRect (\fBRect\fPrect, numberradius, \fBColor\fPrgba = \fC'black'\fP)"
+
+.SS "\fBRect\fP getClipRect ()"
+
+.SS "\fBFont\fP getCurrentFont (uintstyle = \fC\fBtextStyle_Plain\fP\fP)"
+
+.SS "getCursor ()"
+
+.PP
+get the \fBImage\fP that is being used as the cursor \fINOT IMPLEMENTED\fP 
+.SS "\fBRect\fP getDrawingArea ()"
+
+.SS "number getTextWidth (stringtext, intsize, uintstyle = \fC\fBtextStyle_Plain\fP\fP, intlen = \fC-1\fP)"
+
+.SS "resetCursor ()"
+
+.PP
+NOT IMPLEMENTED\&. 
+.SS "\fBPort\fP setClipRect (\fBRect\fPinClipRect)"
+
+.SS "setCursor (\fBImage\fPcursorImage, \fBPoint\fPhotSpot)"
+
+.PP
+NOT IMPLEMENTED\&. 
+.SS "setFont (\fBFont\fPfont = \fCDEFAULT_FONT\fP)"
+
+.SS "setFontForStyle (uintstyle, \fBFont\fPfont = \fCDEFAULT_FONT\fP)"
+
+.SS "setFontScalingFactor (numberscaleBy)"
+
+.SS "startTrackingMouse (\fBRect\fPrect)"
+
+.PP
+NOT IMPLEMENTED\&. 
+.SS "stopTrackingMouse (inttrackingRef)"
+
+.PP
+NOT IMPLEMENTED\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

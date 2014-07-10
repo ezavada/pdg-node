@@ -1,0 +1,81 @@
+.TH "Vector" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Vector \- 
+.PP
+vector (magnitude and direction) within a 2D coordinate system\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBOffset\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBVector\fP ()"
+.br
+.ti -1c
+.RI "\fBVector\fP (number \fBx\fP, number \fBy\fP)"
+.br
+.ti -1c
+.RI "\fBVector\fP (number[] xy)"
+.br
+.ti -1c
+.RI "\fBVector\fP (object xy)"
+.br
+.ti -1c
+.RI "number \fBdotProduct\fP (\fBVector\fP vector)"
+.br
+.ti -1c
+.RI "number \fBvectorAngle\fP ()"
+.br
+.ti -1c
+.RI "number \fBvectorLength\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "number \fBx\fP"
+.br
+.ti -1c
+.RI "number \fBy\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+vector (magnitude and direction) within a 2D coordinate system\&. 
+
+\fBPoint\fP provides support for dealing with vectors as x, y floating point values in 2 dimensional space\&. A vector is similar to an \fBOffset\fP but can be treated as a magnitude and direction where an \fBOffset\fP can't\&. The PDG coordinate space starts with the top left corner of the drawing port at Point(0,0) and the bottom left corner at Point( width, height ); 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBVector\fP ()"
+
+.SS "\fBVector\fP (numberx, numbery)"
+
+.SS "\fBVector\fP (number[]xy)"
+
+.SS "\fBVector\fP (objectxy)"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "number dotProduct (\fBVector\fPvector)"
+
+.SS "number vectorAngle ()"
+
+.SS "number vectorLength ()"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "number x"
+
+.SS "number y"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

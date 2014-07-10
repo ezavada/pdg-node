@@ -1,0 +1,9 @@
+*.tgz
+build/*
+deps/png/contrib/*
+deps/png/projects/*
+deps/png/scripts/*
+deps/scml-pp/reference/*
+deps/scml-pp/samples/*
+deps/zlib/Release/*
+

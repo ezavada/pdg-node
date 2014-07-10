@@ -1,0 +1,543 @@
+.TH "Animated" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Animated \- 
+.PP
+something that can be automatically moved, spun or resized over time\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBSprite\fP, and \fBSpriteLayer\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBaccelerate\fP (number deltaSpeed, int msDuration=\fBduration_Instantaneous\fP, int easing=\fBlinearTween\fP)"
+.br
+.RI "\fIchange the object's speed over time \fP"
+.ti -1c
+.RI "\fBaccelerateTo\fP (number speed, int msDuration=\fBduration_Instantaneous\fP, int easing=\fBlinearTween\fP)"
+.br
+.RI "\fIchange the object's speed to a particular value over time \fP"
+.ti -1c
+.RI "\fBaddAnimationHelper\fP (\fBIAnimationHelper\fP helper)"
+.br
+.RI "\fIsetup a helper to handle custom animation \fP"
+.ti -1c
+.RI "boolean \fBanimate\fP (int msElapsed)"
+.br
+.RI "\fIanimate based on the passage of time \fP"
+.ti -1c
+.RI "\fBapplyForce\fP (\fBVector\fP force, int msDuration=\fBduration_Instantaneous\fP)"
+.br
+.RI "\fIapply a force to the object over time \fP"
+.ti -1c
+.RI "\fBapplyTorque\fP (number forceSpin, int msDuration=\fBduration_Instantaneous\fP)"
+.br
+.RI "\fIapply torque to the object over time \fP"
+.ti -1c
+.RI "\fBchangeCenter\fP (\fBOffset\fP offset, int msDuration=\fBduration_Instantaneous\fP, int easing=\fBeaseInOutQuad\fP)"
+.br
+.RI "\fIshift the center point of the object over time \fP"
+.ti -1c
+.RI "\fBchangeCenterTo\fP (\fBOffset\fP offset, int msDuration=\fBduration_Instantaneous\fP, int easing=\fBeaseInOutQuad\fP)"
+.br
+.RI "\fIshift the center point of the object to a particular offset from true center over time \fP"
+.ti -1c
+.RI "\fBclearAnimationHelpers\fP ()"
+.br
+.RI "\fIremove all previously added animation helpers \fP"
+.ti -1c
+.RI "\fBRect\fP \fBgetBoundingBox\fP ()"
+.br
+.RI "\fIget the rectangle that completely encloses the object \fP"
+.ti -1c
+.RI "\fBOffset\fP \fBgetCenterOffset\fP ()"
+.br
+.RI "\fIget the current offset of the center relative to the true center point \fP"
+.ti -1c
+.RI "number \fBgetHeight\fP ()"
+.br
+.RI "\fIget height of the object \fP"
+.ti -1c
+.RI "\fBPoint\fP \fBgetLocation\fP ()"
+.br
+.RI "\fIget the position of the object \fP"
+.ti -1c
+.RI "number \fBgetMass\fP ()"
+.br
+.RI "\fIget the mass of the object \fP"
+.ti -1c
+.RI "number \fBgetMoveFriction\fP ()"
+.br
+.RI "\fIget the amount of friction for movement \fP"
+.ti -1c
+.RI "number \fBgetMovementDirectionInRadians\fP ()"
+.br
+.RI "\fIget the direction the object is moving \fP"
+.ti -1c
+.RI "\fBRect\fP \fBgetRotatedBounds\fP ()"
+.br
+.RI "\fIget the bounds with rotation \fP"
+.ti -1c
+.RI "number \fBgetRotation\fP ()"
+.br
+.RI "\fIget how much the object is rotated \fP"
+.ti -1c
+.RI "number \fBgetSizeFriction\fP ()"
+.br
+.RI "\fIget the friction applied to size changes (growing or shrinking) \fP"
+.ti -1c
+.RI "number \fBgetSpeed\fP ()"
+.br
+.RI "\fIget how fast the object is moving in pixels/sec \fP"
+.ti -1c
+.RI "number \fBgetSpin\fP ()"
+.br
+.RI "\fIget how fast the object is spinning in radians per second \fP"
+.ti -1c
+.RI "number \fBgetSpinFriction\fP ()"
+.br
+.RI "\fIget the friction applied toward spinning \fP"
+.ti -1c
+.RI "\fBVector\fP \fBgetVelocity\fP ()"
+.br
+.RI "\fIget the vector that expresses magnitude and direction of the object's movement in pixels/sec \fP"
+.ti -1c
+.RI "number \fBgetWidth\fP ()"
+.br
+.RI "\fIget the width of the object \fP"
+.ti -1c
+.RI "\fBgrow\fP (number factor, int msDuration=\fBduration_Instantaneous\fP, int easing=\fBeaseInOutQuad\fP)"
+.br
+.RI "\fIchange size of the object by a factor over time \fP"
+.ti -1c
+.RI "\fBmove\fP (\fBOffset\fP delta, int msDuration=\fBduration_Instantaneous\fP, int easing=\fBeaseInOutQuad\fP)"
+.br
+.RI "\fImove the object by a certain amount over time \fP"
+.ti -1c
+.RI "\fBmoveTo\fP (\fBPoint\fP where, int msDuration=\fBduration_Instantaneous\fP, int easing=\fBeaseInOutQuad\fP)"
+.br
+.RI "\fImove the object to a particular location over time \fP"
+.ti -1c
+.RI "\fBremoveAnimationHelper\fP (\fBIAnimationHelper\fP helper)"
+.br
+.RI "\fIremove a specific animation helper \fP"
+.ti -1c
+.RI "\fBresize\fP (number deltaWidth, number deltaHeight, int msDuration=\fBduration_Instantaneous\fP, int easing=\fBeaseInOutQuad\fP)"
+.br
+.RI "\fIchange the size of an object by a given amount over time \fP"
+.ti -1c
+.RI "\fBresizeTo\fP (number width, number height, int msDuration=\fBduration_Instantaneous\fP, int easing=\fBeaseInOutQuad\fP)"
+.br
+.RI "\fIresize the object to a specific size over time \fP"
+.ti -1c
+.RI "\fBrotate\fP (number radians, int msDuration=\fBduration_Instantaneous\fP, int easing=\fBeaseInOutQuad\fP)"
+.br
+.RI "\fIrotate the object by a specific amount over time \fP"
+.ti -1c
+.RI "\fBrotateTo\fP (number radiansRotation, int msDuration=\fBduration_Instantaneous\fP, int easing=\fBeaseInOutQuad\fP)"
+.br
+.RI "\fIrotate the object to face a particular direction over time \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetCenterOffset\fP (\fBOffset\fP inCenterOffset)"
+.br
+.RI "\fIset the offset of the center point relative to the true center \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetFriction\fP (number frictionCoefficient)"
+.br
+.RI "\fIset friction for movement, rotation and resizing all at once \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetHeight\fP (number inHeight)"
+.br
+.RI "\fIset the object's height \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetLocation\fP (\fBPoint\fP inLocation)"
+.br
+.RI "\fIplace the object at a particular location \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetMass\fP (number inMass)"
+.br
+.RI "\fIset the object's mass, used when forces are applied \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetMoveFriction\fP (number inMoveFriction)"
+.br
+.RI "\fIset the object's friction for movement \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetRotation\fP (number inRotation)"
+.br
+.RI "\fIset the direction the object is facing in radians \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetSize\fP (number width, number height)"
+.br
+.RI "\fIset the size of the object \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetSizeFriction\fP (number inSizeFriction)"
+.br
+.RI "\fIset the friction applied for object resizing \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetSpeed\fP (number inSpeed)"
+.br
+.RI "\fIset the speed the object is moving in its current direction of motion \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetSpin\fP (number inSpin)"
+.br
+.RI "\fIset the rate at which the object is spinning, in radians/sec \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetSpinFriction\fP (number inSpinFriction)"
+.br
+.RI "\fIset the friction the object faces for spinning \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetVelocity\fP (\fBVector\fP deltaPerSec)"
+.br
+.RI "\fIset the speed and direction the object is moving \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetVelocity\fP (number deltaXPerSec, number deltaYPerSec)"
+.br
+.RI "\fIset the speed and direction the object is moving \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetVelocityInRadians\fP (number speed, number direction)"
+.br
+.RI "\fIset the speed and direction the object is moving \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBsetWidth\fP (number inWidth)"
+.br
+.RI "\fIset the width of the object \fP"
+.ti -1c
+.RI "\fBstartGrowing\fP (number amountPerSecond)"
+.br
+.RI "\fIset the growth rate of the object in pixels/sec \fP"
+.ti -1c
+.RI "\fBstartStretching\fP (number widthPerSecond, number heightPerSecond)"
+.br
+.RI "\fIset the growth rate of the object in pixels/sec, with varied rates for width and height \fP"
+.ti -1c
+.RI "\fBstopAllForces\fP ()"
+.br
+.RI "\fIremove all forces that were acting on the object (except friction) \fP"
+.ti -1c
+.RI "\fBstopGrowing\fP ()"
+.br
+.RI "\fIstop any size change \fP"
+.ti -1c
+.RI "\fBstopMoving\fP ()"
+.br
+.RI "\fIstop any movement the object was doing (except spinning) \fP"
+.ti -1c
+.RI "\fBstopSpinning\fP ()"
+.br
+.RI "\fIstop any spinning the object was doing \fP"
+.ti -1c
+.RI "\fBstopStretching\fP ()"
+.br
+.RI "\fIstop any stretching the object was doing \fP"
+.ti -1c
+.RI "\fBstretch\fP (number widthFactor, number heightFactor, int msDuration=\fBduration_Instantaneous\fP, int easing=\fBeaseInOutQuad\fP)"
+.br
+.RI "\fIchange the dimensions of the object over time \fP"
+.ti -1c
+.RI "\fBAnimated\fP \fBwait\fP (int msDuration)"
+.br
+.RI "\fIwait before beginning the next animation call that operates over time \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+something that can be automatically moved, spun or resized over time\&. 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&. It has no drawing capabilities, so it is not intended to be used directly in most cases, but rather as a base class for items that can be animated\&. It could be used on a server to drive animation that is rendered on the client\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSprite\fP 
+.PP
+\fBSpriteLayer\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "accelerate (numberdeltaSpeed, intmsDuration = \fC\fBduration_Instantaneous\fP\fP, inteasing = \fC\fBlinearTween\fP\fP)"
+
+.PP
+change the object's speed over time Change the speed of an object in the current direction of motion\&.
+.PP
+Honors delay given by \fBwait()\fP 
+.SS "accelerateTo (numberspeed, intmsDuration = \fC\fBduration_Instantaneous\fP\fP, inteasing = \fC\fBlinearTween\fP\fP)"
+
+.PP
+change the object's speed to a particular value over time Honors delay given by \fBwait()\fP 
+.SS "addAnimationHelper (\fBIAnimationHelper\fPhelper)"
+
+.PP
+setup a helper to handle custom animation \fBSee Also:\fP
+.RS 4
+\fBIAnimationHelper\fP 
+.RE
+.PP
+
+.SS "animate (intmsElapsed)"
+
+.PP
+animate based on the passage of time \fBReturns:\fP
+.RS 4
+true if anything (position, size, movement, etc\&.\&.\&.) changed 
+.RE
+.PP
+
+.SS "applyForce (\fBVector\fPforce, intmsDuration = \fC\fBduration_Instantaneous\fP\fP)"
+
+.PP
+apply a force to the object over time Honors delay given by \fBwait()\fP 
+.SS "applyTorque (numberforceSpin, intmsDuration = \fC\fBduration_Instantaneous\fP\fP)"
+
+.PP
+apply torque to the object over time Honors delay given by \fBwait()\fP 
+.SS "changeCenter (\fBOffset\fPoffset, intmsDuration = \fC\fBduration_Instantaneous\fP\fP, inteasing = \fC\fBeaseInOutQuad\fP\fP)"
+
+.PP
+shift the center point of the object over time Honors delay given by \fBwait()\fP 
+.SS "changeCenterTo (\fBOffset\fPoffset, intmsDuration = \fC\fBduration_Instantaneous\fP\fP, inteasing = \fC\fBeaseInOutQuad\fP\fP)"
+
+.PP
+shift the center point of the object to a particular offset from true center over time Honors delay given by \fBwait()\fP 
+.SS "clearAnimationHelpers ()"
+
+.PP
+remove all previously added animation helpers \fBSee Also:\fP
+.RS 4
+\fBaddAnimationHelper\fP 
+.RE
+.PP
+
+.SS "getBoundingBox ()"
+
+.PP
+get the rectangle that completely encloses the object 
+.SS "getCenterOffset ()"
+
+.PP
+get the current offset of the center relative to the true center point 
+.SS "getHeight ()"
+
+.PP
+get height of the object 
+.SS "getLocation ()"
+
+.PP
+get the position of the object 
+.SS "getMass ()"
+
+.PP
+get the mass of the object 
+.SS "getMoveFriction ()"
+
+.PP
+get the amount of friction for movement 
+.SS "getMovementDirectionInRadians ()"
+
+.PP
+get the direction the object is moving 
+.SS "getRotatedBounds ()"
+
+.PP
+get the bounds with rotation 
+.SS "getRotation ()"
+
+.PP
+get how much the object is rotated 
+.SS "getSizeFriction ()"
+
+.PP
+get the friction applied to size changes (growing or shrinking) 
+.SS "getSpeed ()"
+
+.PP
+get how fast the object is moving in pixels/sec 
+.SS "getSpin ()"
+
+.PP
+get how fast the object is spinning in radians per second 
+.SS "getSpinFriction ()"
+
+.PP
+get the friction applied toward spinning 
+.SS "getVelocity ()"
+
+.PP
+get the vector that expresses magnitude and direction of the object's movement in pixels/sec 
+.SS "getWidth ()"
+
+.PP
+get the width of the object 
+.SS "grow (numberfactor, intmsDuration = \fC\fBduration_Instantaneous\fP\fP, inteasing = \fC\fBeaseInOutQuad\fP\fP)"
+
+.PP
+change size of the object by a factor over time If factor is greater than 1\&.0, the object will grow, if less than 1\&.0, the object will shrink\&.
+.PP
+Honors delay given by \fBwait()\fP 
+.SS "move (\fBOffset\fPdelta, intmsDuration = \fC\fBduration_Instantaneous\fP\fP, inteasing = \fC\fBeaseInOutQuad\fP\fP)"
+
+.PP
+move the object by a certain amount over time Honors delay given by \fBwait()\fP 
+.PP
+.nf
+myAnimated.wait(10).move(offset); // waits 10 ms before move
+
+myAnimated.move(offset); // move immediately
+.fi
+.PP
+ 
+.SS "moveTo (\fBPoint\fPwhere, intmsDuration = \fC\fBduration_Instantaneous\fP\fP, inteasing = \fC\fBeaseInOutQuad\fP\fP)"
+
+.PP
+move the object to a particular location over time Honors delay given by \fBwait()\fP 
+.PP
+.nf
+myAnimated.wait(10).moveTo(p); // waits 10 ms before move
+
+myAnimated.moveTo(p); // move immediately
+.fi
+.PP
+ 
+.SS "removeAnimationHelper (\fBIAnimationHelper\fPhelper)"
+
+.PP
+remove a specific animation helper \fBSee Also:\fP
+.RS 4
+\fBaddAnimationHelper\fP 
+.RE
+.PP
+
+.SS "resize (numberdeltaWidth, numberdeltaHeight, intmsDuration = \fC\fBduration_Instantaneous\fP\fP, inteasing = \fC\fBeaseInOutQuad\fP\fP)"
+
+.PP
+change the size of an object by a given amount over time Honors delay given by \fBwait()\fP 
+.SS "resizeTo (numberwidth, numberheight, intmsDuration = \fC\fBduration_Instantaneous\fP\fP, inteasing = \fC\fBeaseInOutQuad\fP\fP)"
+
+.PP
+resize the object to a specific size over time Honors delay given by \fBwait()\fP 
+.SS "rotate (numberradians, intmsDuration = \fC\fBduration_Instantaneous\fP\fP, inteasing = \fC\fBeaseInOutQuad\fP\fP)"
+
+.PP
+rotate the object by a specific amount over time Honors delay given by \fBwait()\fP 
+.SS "rotateTo (numberradiansRotation, intmsDuration = \fC\fBduration_Instantaneous\fP\fP, inteasing = \fC\fBeaseInOutQuad\fP\fP)"
+
+.PP
+rotate the object to face a particular direction over time Honors delay given by \fBwait()\fP 
+.SS "setCenterOffset (\fBOffset\fPinCenterOffset)"
+
+.PP
+set the offset of the center point relative to the true center 
+.SS "setFriction (numberfrictionCoefficient)"
+
+.PP
+set friction for movement, rotation and resizing all at once 
+.SS "setHeight (numberinHeight)"
+
+.PP
+set the object's height 
+.SS "setLocation (\fBPoint\fPinLocation)"
+
+.PP
+place the object at a particular location 
+.SS "setMass (numberinMass)"
+
+.PP
+set the object's mass, used when forces are applied 
+.SS "setMoveFriction (numberinMoveFriction)"
+
+.PP
+set the object's friction for movement 
+.SS "setRotation (numberinRotation)"
+
+.PP
+set the direction the object is facing in radians 
+.SS "setSize (numberwidth, numberheight)"
+
+.PP
+set the size of the object 
+.SS "setSizeFriction (numberinSizeFriction)"
+
+.PP
+set the friction applied for object resizing 
+.SS "setSpeed (numberinSpeed)"
+
+.PP
+set the speed the object is moving in its current direction of motion 
+.SS "setSpin (numberinSpin)"
+
+.PP
+set the rate at which the object is spinning, in radians/sec 
+.SS "setSpinFriction (numberinSpinFriction)"
+
+.PP
+set the friction the object faces for spinning 
+.SS "setVelocity (\fBVector\fPdeltaPerSec)"
+
+.PP
+set the speed and direction the object is moving 
+.SS "setVelocity (numberdeltaXPerSec, numberdeltaYPerSec)"
+
+.PP
+set the speed and direction the object is moving 
+.SS "setVelocityInRadians (numberspeed, numberdirection)"
+
+.PP
+set the speed and direction the object is moving 
+.SS "setWidth (numberinWidth)"
+
+.PP
+set the width of the object 
+.SS "startGrowing (numberamountPerSecond)"
+
+.PP
+set the growth rate of the object in pixels/sec 
+.SS "startStretching (numberwidthPerSecond, numberheightPerSecond)"
+
+.PP
+set the growth rate of the object in pixels/sec, with varied rates for width and height 
+.SS "stopAllForces ()"
+
+.PP
+remove all forces that were acting on the object (except friction) 
+.SS "stopGrowing ()"
+
+.PP
+stop any size change \fBSee Also:\fP
+.RS 4
+\fBstartGrowing\fP 
+.RE
+.PP
+
+.SS "stopMoving ()"
+
+.PP
+stop any movement the object was doing (except spinning) 
+.SS "stopSpinning ()"
+
+.PP
+stop any spinning the object was doing 
+.SS "stopStretching ()"
+
+.PP
+stop any stretching the object was doing 
+.SS "stretch (numberwidthFactor, numberheightFactor, intmsDuration = \fC\fBduration_Instantaneous\fP\fP, inteasing = \fC\fBeaseInOutQuad\fP\fP)"
+
+.PP
+change the dimensions of the object over time Honors delay given by \fBwait()\fP 
+.SS "wait (intmsDuration)"
+
+.PP
+wait before beginning the next animation call that operates over time Only applies to the next call, and only applies to calls where a duration can be passed in
+.PP
+Works with: \fBmove()\fP, \fBmoveTo()\fP, \fBaccelerateTo()\fP, \fBresize()\fP, \fBstretch()\fP, \fBgrow()\fP, \fBresizeTo()\fP, \fBrotate()\fP, \fBrotateTo()\fP, \fBchangeCenter()\fP, \fBchangeCenterTo()\fP, \fBapplyForce()\fP, \fBapplyTorque()\fP, 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

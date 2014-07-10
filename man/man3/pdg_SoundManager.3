@@ -1,0 +1,84 @@
+.TH "SoundManager" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+SoundManager \- 
+.PP
+used for application wide sound settings and options (\fIGUI Only\fP)  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsetMute\fP (boolean muted)"
+.br
+.RI "\fImutes all sounds from the game \fP"
+.ti -1c
+.RI "\fBsetVolume\fP (number level)"
+.br
+.RI "\fIsets the overall volume level \fP"
+.in -1c
+.SS "Related Functions"
+(Note that these are not member functions\&.) 
+.in +1c
+.ti -1c
+.RI "\fBgetSoundManager\fP"
+.br
+.RI "\fIget the singleton instance of the \fBSoundManager\fP used by the pdg framework \fP"
+.ti -1c
+.RI "\fBsnd\fP"
+.br
+.RI "\fIthe singleton instance of the \fBSoundManager\fP \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+used for application wide sound settings and options (\fIGUI Only\fP) 
+
+used for application wide sound settings and options
+.PP
+\fBWarning:\fP
+.RS 4
+\fBAPI Stability: 1 - Experimental\fP\&. This API was introduced recently and gotten little or no real use\&. It may change or be removed in future versions\&. It may not be completely implemented and may be missing important pieces of functionality\&. Please try it out and provide feedback\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "setMute (booleanmuted)"
+
+.PP
+mutes all sounds from the game When muted, sounds will all play at volume level 0, including any new sounds, until un-muted, at which point the previous master volume and all individual sound volumes will be restored\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fImuted\fP true to mute, false to unmute
+.RE
+.PP
+
+.SS "setVolume (numberlevel)"
+
+.PP
+sets the overall volume level \fBParameters:\fP
+.RS 4
+\fIlevel\fP the desired level (0\&.0 - silent to 1\&.0 - full volume)
+.RE
+.PP
+Sets the max volume level for all sounds\&. Individual sounds can still be played at separate volume levels, but they are scaled to be within the level set by the \fBSound\fP Manager
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "getSoundManager\fC [related]\fP"
+
+.PP
+get the singleton instance of the \fBSoundManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBSoundManager\fP singleton object 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

@@ -1,0 +1,364 @@
+.TH "Rect" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Rect \- 
+.PP
+Rectangle for 2D coordinate system\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBRotatedRect\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBRect\fP \fBadd\fP (\fBRect\fP r2)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBadd\fP (\fBPoint\fP p)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBassign\fP (\fBRect\fP r2)"
+.br
+.ti -1c
+.RI "\fBcenter\fP (\fBRect\fP r)"
+.br
+.ti -1c
+.RI "\fBcenter\fP (\fBPoint\fP p)"
+.br
+.ti -1c
+.RI "\fBPoint\fP \fBcenterPoint\fP ()"
+.br
+.ti -1c
+.RI "boolean \fBcontains\fP (\fBRect\fP r)"
+.br
+.ti -1c
+.RI "boolean \fBcontains\fP (\fBPoint\fP p)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBdiv\fP (\fBRect\fP r2)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBdiv\fP (\fBPoint\fP p)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBdividedby\fP (\fBRect\fP r2)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBdividedby\fP (\fBPoint\fP p)"
+.br
+.ti -1c
+.RI "boolean \fBempty\fP ()"
+.br
+.ti -1c
+.RI "boolean \fBequals\fP (\fBRect\fP r2)"
+.br
+.ti -1c
+.RI "\fBgrow\fP (number delta)"
+.br
+.ti -1c
+.RI "number \fBheight\fP ()"
+.br
+.ti -1c
+.RI "\fBhorzGrow\fP (number delta)"
+.br
+.ti -1c
+.RI "\fBhorzScale\fP (number f)"
+.br
+.ti -1c
+.RI "\fBhorzShrink\fP (number delta)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBintersection\fP (\fBRect\fP r)"
+.br
+.ti -1c
+.RI "\fBPoint\fP \fBleftBottom\fP ()"
+.br
+.ti -1c
+.RI "\fBPoint\fP \fBleftTop\fP ()"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBminus\fP (\fBRect\fP r2)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBminus\fP (\fBPoint\fP p)"
+.br
+.ti -1c
+.RI "\fBmoveDown\fP (number delta)"
+.br
+.ti -1c
+.RI "\fBmoveLeft\fP (number delta)"
+.br
+.ti -1c
+.RI "\fBmoveRight\fP (number delta)"
+.br
+.ti -1c
+.RI "\fBmoveTo\fP (number x, number y)"
+.br
+.ti -1c
+.RI "\fBmoveTo\fP (\fBPoint\fP p)"
+.br
+.ti -1c
+.RI "\fBmoveUp\fP (number delta)"
+.br
+.ti -1c
+.RI "\fBmoveXTo\fP (number x)"
+.br
+.ti -1c
+.RI "\fBmoveYTo\fP (number y)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBmul\fP (\fBRect\fP r2)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBmul\fP (\fBPoint\fP p)"
+.br
+.ti -1c
+.RI "boolean \fBnotEquals\fP (\fBRect\fP r2)"
+.br
+.ti -1c
+.RI "boolean \fBoverlaps\fP (\fBRect\fP r)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBplus\fP (\fBRect\fP r2)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBplus\fP (\fBPoint\fP p)"
+.br
+.ti -1c
+.RI "\fBPoint\fP \fBrightBottom\fP ()"
+.br
+.ti -1c
+.RI "\fBPoint\fP \fBrightTop\fP ()"
+.br
+.ti -1c
+.RI "\fBround\fP ()"
+.br
+.ti -1c
+.RI "\fBscale\fP (number f)"
+.br
+.ti -1c
+.RI "\fBsetHeight\fP (number h)"
+.br
+.ti -1c
+.RI "\fBsetSize\fP (number n)"
+.br
+.ti -1c
+.RI "\fBsetWidth\fP (number w)"
+.br
+.ti -1c
+.RI "\fBshrink\fP (number delta)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBsub\fP (\fBRect\fP r2)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBsub\fP (\fBPoint\fP p)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBtimes\fP (\fBRect\fP r2)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBtimes\fP (\fBPoint\fP p)"
+.br
+.ti -1c
+.RI "\fBQuad\fP \fBtoQuad\fP ()"
+.br
+.ti -1c
+.RI "string \fBtoString\fP ()"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBunionWith\fP (\fBRect\fP r)"
+.br
+.ti -1c
+.RI "\fBvertGrow\fP (number delta)"
+.br
+.ti -1c
+.RI "\fBvertScale\fP (number f)"
+.br
+.ti -1c
+.RI "\fBvertShrink\fP (number delta)"
+.br
+.ti -1c
+.RI "number \fBwidth\fP ()"
+.br
+.ti -1c
+.RI "number \fBx1\fP ()"
+.br
+.ti -1c
+.RI "number \fBx2\fP ()"
+.br
+.ti -1c
+.RI "number \fBy1\fP ()"
+.br
+.ti -1c
+.RI "number \fBy2\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "number \fBbottom\fP"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBException\fP: Cannot read property '\fBtop\fP' of null'"
+.br
+.ti -1c
+.RI "number \fBleft\fP"
+.br
+.ti -1c
+.RI "number \fBright\fP"
+.br
+.ti -1c
+.RI "number \fBtop\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Rectangle for 2D coordinate system\&. 
+
+\fBRect\fP is a class that provides support for dealing with rectangles in 2 dimensional space\&. The PDG coordinate space starts with the top left corner of the drawing port at Point(0,0) and the bottom left corner at Point( width, height ); 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBRect\fP add (\fBRect\fPr2)"
+
+.SS "\fBRect\fP add (\fBPoint\fPp)"
+
+.SS "\fBRect\fP assign (\fBRect\fPr2)"
+
+.SS "center (\fBRect\fPr)"
+
+.SS "center (\fBPoint\fPp)"
+
+.SS "\fBPoint\fP centerPoint ()"
+
+.SS "boolean contains (\fBRect\fPr)"
+
+.SS "boolean contains (\fBPoint\fPp)"
+
+.SS "\fBRect\fP div (\fBRect\fPr2)"
+
+.SS "\fBRect\fP div (\fBPoint\fPp)"
+
+.SS "\fBRect\fP dividedby (\fBRect\fPr2)"
+
+.SS "\fBRect\fP dividedby (\fBPoint\fPp)"
+
+.SS "boolean empty ()"
+
+.SS "boolean equals (\fBRect\fPr2)"
+
+.SS "grow (numberdelta)"
+
+.SS "number height ()"
+
+.SS "horzGrow (numberdelta)"
+
+.SS "horzScale (numberf)"
+
+.SS "horzShrink (numberdelta)"
+
+.SS "\fBRect\fP intersection (\fBRect\fPr)"
+
+.SS "\fBPoint\fP leftBottom ()"
+
+.SS "\fBPoint\fP leftTop ()"
+
+.SS "\fBRect\fP minus (\fBRect\fPr2)"
+
+.SS "\fBRect\fP minus (\fBPoint\fPp)"
+
+.SS "moveDown (numberdelta)"
+
+.SS "moveLeft (numberdelta)"
+
+.SS "moveRight (numberdelta)"
+
+.SS "moveTo (numberx, numbery)"
+
+.SS "moveTo (\fBPoint\fPp)"
+
+.SS "moveUp (numberdelta)"
+
+.SS "moveXTo (numberx)"
+
+.SS "moveYTo (numbery)"
+
+.SS "\fBRect\fP mul (\fBRect\fPr2)"
+
+.SS "\fBRect\fP mul (\fBPoint\fPp)"
+
+.SS "boolean notEquals (\fBRect\fPr2)"
+
+.SS "boolean overlaps (\fBRect\fPr)"
+
+.SS "\fBRect\fP plus (\fBRect\fPr2)"
+
+.SS "\fBRect\fP plus (\fBPoint\fPp)"
+
+.SS "\fBPoint\fP rightBottom ()"
+
+.SS "\fBPoint\fP rightTop ()"
+
+.SS "round ()"
+
+.SS "scale (numberf)"
+
+.SS "setHeight (numberh)"
+
+.SS "setSize (numbern)"
+
+.SS "setWidth (numberw)"
+
+.SS "shrink (numberdelta)"
+
+.SS "\fBRect\fP sub (\fBRect\fPr2)"
+
+.SS "\fBRect\fP sub (\fBPoint\fPp)"
+
+.SS "\fBRect\fP times (\fBRect\fPr2)"
+
+.SS "\fBRect\fP times (\fBPoint\fPp)"
+
+.SS "\fBQuad\fP toQuad ()"
+
+.SS "string toString ()"
+
+.SS "\fBRect\fP unionWith (\fBRect\fPr)"
+
+.SS "vertGrow (numberdelta)"
+
+.SS "vertScale (numberf)"
+
+.SS "vertShrink (numberdelta)"
+
+.SS "number width ()"
+
+.SS "number x1 ()"
+
+.SS "number x2 ()"
+
+.SS "number y1 ()"
+
+.SS "number y2 ()"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "number bottom"
+
+.SS "\fBRect\fP Exception"
+
+.SS "number left"
+
+.SS "number right"
+
+.SS "number top"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

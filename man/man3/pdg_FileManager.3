@@ -1,0 +1,240 @@
+.TH "FileManager" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+FileManager \- 
+.PP
+extras beyond what Node\&.js FileSystem provides  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBfindClose\fP (object inFindData)"
+.br
+.RI "\fIstop and cleanup after a file/directory search \fP"
+.ti -1c
+.RI "string[] \fBfindDirs\fP (string name)"
+.br
+.RI "\fIreturn a list of directories that match the given name \fP"
+.ti -1c
+.RI "string[] \fBfindFiles\fP (string name)"
+.br
+.RI "\fIreturn a list of files that match the given name \fP"
+.ti -1c
+.RI "object \fBfindFirst\fP (string inFindName)"
+.br
+.RI "\fIget the first matching file or directory \fP"
+.ti -1c
+.RI "object \fBfindNext\fP (object inFindData)"
+.br
+.RI "\fIreturn the next matching file or directory \fP"
+.ti -1c
+.RI "string \fBgetApplicationDataDirectory\fP ()"
+.br
+.RI "\fIreturn the path to the location the application should store its user data \fP"
+.ti -1c
+.RI "string \fBgetApplicationDirectory\fP ()"
+.br
+.RI "\fIreturn the path to the location the application is installed \fP"
+.ti -1c
+.RI "string \fBgetApplicationResourceDirectory\fP ()"
+.br
+.RI "\fIreturn the path to the location where the application's internal resources are stored \fP"
+.in -1c
+.SS "Related Functions"
+(Note that these are not member functions\&.) 
+.in +1c
+.ti -1c
+.RI "\fBfs\fP"
+.br
+.RI "\fIthe singleton instance of the \fBFileManager\fP \fP"
+.ti -1c
+.RI "\fBgetFileManager\fP"
+.br
+.RI "\fIget the singleton instance of the \fBFileManager\fP used by the pdg framework \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+extras beyond what Node\&.js FileSystem provides 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
+.RE
+.PP
+Most functions for file manipulation are provided by Node\&.js though the FileSystem class\&. The PDG \fBFileManager\fP just adds calls to get particular directory paths and to do file searchs\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+http://nodejs.org/api/fs.html 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "findClose (objectinFindData)"
+
+.PP
+stop and cleanup after a file/directory search This takes the object returned from a \fBfindFirst()\fP or \fBfindNext()\fP, and cleans up after the search, releasing all resources used by the search\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinFindData\fP the object returned from a prior call to \fBfindFirst()\fP or \fBfindNext()\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBfindFirst\fP 
+.PP
+\fBfindNext\fP 
+.RE
+.PP
+
+.SS "findDirs (stringname)"
+
+.PP
+return a list of directories that match the given name This uses the \fBfindFirst()\fP and \fBfindNext()\fP calls to search for any directories that match the name passed in\&. The name can contain wildcard characters (*\&.txt, or f1?\&.dat)\&. If the name includes a path, it must use Unix format (forward slash '/' as path separators)\&. Colon and backslash are both illegal characters\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the directory name to find
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+an array of directories that match the name
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBfindFirst\fP 
+.PP
+\fBfindNext\fP 
+.RE
+.PP
+
+.SS "findFiles (stringname)"
+
+.PP
+return a list of files that match the given name This uses the \fBfindFirst()\fP and \fBfindNext()\fP calls to search for any files that match the name passed in\&. The name can contain wildcard characters (*\&.txt, or f1?\&.dat)\&. If the name includes a path, it must use Unix format (forward slash '/' as path separators)\&. Colon and backslash are both illegal characters\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP the filename to find
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+an array of files that match the name
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBfindFirst\fP 
+.PP
+\fBfindNext\fP 
+.RE
+.PP
+
+.SS "findFirst (stringinFindName)"
+
+.PP
+get the first matching file or directory This searches for any files or directories that match the name passed in, and returns the first one it finds\&. The name can contain wildcard characters (*\&.txt, or f1?\&.dat)\&. If the name includes a path, it must use Unix format (forward slash '/' as path separators)\&. Colon and backslash are both illegal characters\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinFindName\fP the directory or file name to find
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+an object with nodeName, isDirectory, and found fields: \fBnodeName\fP is the full path of the found item; \fBisDirectory\fP is true if the node is a directory, false for files; \fBfound\fP is false if no matching item was found\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBfindNext\fP 
+.PP
+\fBfindClose\fP 
+.RE
+.PP
+
+.SS "findNext (objectinFindData)"
+
+.PP
+return the next matching file or directory This uses the object returned from a \fBfindFirst()\fP call to continue the search and find additional matching files or directories\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinFindData\fP the object returned from a prior call to \fBfindFirst()\fP or \fBfindNext()\fP
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+an object with nodeName, isDirectory, and found fields: \fBnodeName\fP is the full path of the next found item; \fBisDirectory\fP is true if the node is a directory, false for files; \fBfound\fP is false if no additional matching item was found\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBfindFirst\fP 
+.PP
+\fBfindClose\fP 
+.RE
+.PP
+
+.SS "getApplicationDataDirectory ()"
+
+.PP
+return the path to the location the application should store its user data \fBReturns:\fP
+.RS 4
+a full path to the application's user data directory 
+.RE
+.PP
+
+.SS "getApplicationDirectory ()"
+
+.PP
+return the path to the location the application is installed \fBReturns:\fP
+.RS 4
+a full path to the application's directory
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+For Mac OS X this is the location of the application bundle 
+.RE
+.PP
+
+.SS "getApplicationResourceDirectory ()"
+
+.PP
+return the path to the location where the application's internal resources are stored \fBReturns:\fP
+.RS 4
+a full path to the application's resource directory
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+on Mac OS X the is the Contents/Resources directory within the application bundle 
+.RE
+.PP
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "getFileManager\fC [related]\fP"
+
+.PP
+get the singleton instance of the \fBFileManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBFileManager\fP singleton object 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

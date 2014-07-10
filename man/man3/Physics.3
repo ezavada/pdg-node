@@ -1,0 +1,255 @@
+.TH "Physics" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Physics \- 
+.PP
+Things used for handling physics simulation\&.  
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBCpArbiter\fP"
+.br
+.RI "\fIarbitrates collisions between sprites using Chipmunk Physics (\fIChipmunk Physics Only\fP) \fP"
+.ti -1c
+.RI "class \fBCpConstraint\fP"
+.br
+.RI "\fIdescribes how two sprites are connected to one another (\fIChipmunk Physics Only\fP) \fP"
+.ti -1c
+.RI "class \fBCpSpace\fP"
+.br
+.RI "\fIcontainer for simulating objects (\fIChipmunk Physics Only\fP) \fP"
+.ti -1c
+.RI "class \fBISpriteCollideHelper\fP"
+.br
+.RI "\fIhelper for deciding whether 2 sprites should collide or not \fP"
+.ti -1c
+.RI "struct \fBSpriteBreakEvent\fP"
+.br
+.RI "\fIa \fBSprite\fP joint is breaking because it was overstressed (\fIChipmunk Physics Only\fP) \fP"
+.ti -1c
+.RI "struct \fBSpriteCollideEvent\fP"
+.br
+.RI "\fIa \fBSprite\fP collided with something (\fIOptional\fP) \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "const \fBaction_CollideSprite\fP = 0"
+.br
+.ti -1c
+.RI "const \fBaction_CollideWall\fP = 1"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite has hit the edge of the sprite layer \fP"
+.ti -1c
+.RI "const \fBaction_JointBreak\fP = 13"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Things used for handling physics simulation\&. 
+
+
+.SH "Class Documentation"
+.PP 
+.SH "class pdg::ISpriteCollideHelper"
+.PP 
+helper for deciding whether 2 sprites should collide or not 
+
+\fBWarning:\fP
+.RS 4
+\fBAPI Stability: 1 - Experimental\fP\&. This API was introduced recently and gotten little or no real use\&. It may change or be removed in future versions\&. It may not be completely implemented and may be missing important pieces of functionality\&. Please try it out and provide feedback\&.
+.RE
+.PP
+Implement this interface to do handle special case collision logic between two sprites\&. For example, you might want bullet sprites to collide with enemy sprites but not with one another\&. If a collide helper is installed, then on initial contact between two sprites the collide helper for the moving sprite will be called, and you the helper can decide if the collision should happen or not\&.
+.PP
+For those coding in Javascript, there is an implementation of \fBISpriteCollideHelper\fP that maps a function definition to the draw call\&. So to create a helper:
+.PP
+.PP
+.nf
+var myHelper = new pdg\&.ISpriteCollideHelper(function(sprite, withSprite) {
+                console\&.log('in my sprite collide helper for ' + sprite );
+                if (withSprite\&.id == 100) {
+                                return true;  // only collide with the player sprite (id 100)
+                }
+                return false;  // don't collide with anything else
+});
+mySprite\&.setCollisionHelper(myHelper);
+.fi
+.PP
+.PP
+If you need something more complex, you can also use classify to create a new Javascript class that derives from \fBpdg\&.ISpriteCollideHelper\fP, and it will call the allowCollision() method of your class\&. For example:
+.PP
+.PP
+.nf
+classify(pdg\&.ISpriteCollideHelper, 'MyCollideHelperClass', function() {
+                def('allowCollision', function(sprite, withSprite) {
+                                console\&.log('MyCollideHelperClass\&.allowCollision(' + sprite + ', ' + withSprite + ')' );
+                                return true;  // let these sprites collide
+                });
+});
+mySprite\&.setCollisionHelper( new MyDrawHelperClass() );
+.fi
+.PP
+.PP
+.SS "Your Custom Function:"
+.PP
+As you can see from the examples above, your \fBSprite\fP Collide Helper function (or allowCollision() method) will be called with two parameters, and return a boolean: 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsprite\fP the \fBSprite\fP that is moving 
+.br
+\fIwithSprite\fP the \fBSprite\fP it came in contact with 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBtrue\fP if the collision should happen; or \fBfalse\fP if the collision should be ignored\&.
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+You should use other techniques wherever possible to eliminate unnecessary collision helper callback, since these callbacks are relatively expensive\&. You should turn off collisions for sprites that never collide with anything; put sets of sprites that collide only with each other in separate layers; and use collision groups to set up groups of sprites that collide with other things but not each other\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSprite\&.setCollisionHelper()\fP 
+.PP
+\fBSprite\&.enableCollisions()\fP 
+.PP
+\fBSprite\&.disableCollisions()\fP 
+.PP
+\fBSprite\&.setCollideGroup()\fP 
+.PP
+\fBSpriteLayer\&.enableCollisions()\fP 
+.PP
+\fBSpriteLayer\&.disableCollisions()\fP 
+.PP
+\fBSpriteLayer\&.enableCollisionsWithLayer()\fP 
+.PP
+\fBSpriteLayer\&.disableCollisionsWithLayer()\fP 
+.RE
+.PP
+
+.SH "struct pdg::SpriteBreakEvent"
+.PP 
+a \fBSprite\fP joint is breaking because it was overstressed (\fIChipmunk Physics Only\fP) 
+
+This event is generated by a \fBSprite\fP whenever the forces acting on a joint with another \fBSprite\fP are greater then the breaking force of the joint\&. To prevent the break from happening, return true from the handler that gets this event\&. If you return false then the joint will go ahead and break\&. 
+.PP
+.nf
+{
+    emitter: {},            // the emitter that generated this event
+    eventType: 21,          // the event type (eventType_SpriteBreak)
+    action: 13,                 // what happened (action_JointBreak)
+    actingSprite: {},       // the Sprite to which the forces were applied
+    inLayer: {},            // the SpriteLayer that contains the Sprite
+    targetSprite: {},       // the Sprite that was previously joined
+    impulse: {              // the impulse applied 
+      x: 29.35,
+      y: 0.883
+    },
+    force: 384.0,           // the force of the collision
+    breakForce: 100.0,      // the maximum force the joint could stand before breaking
+    joint: {}               // the CpConstraint that defines the joint
+}
+
+.fi
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+Only joints that have a breaking force assigned will generate these events; without it joints between sprites are considered unbreakable\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_SpriteBreak\fP 
+.PP
+\fBSprite\&.makeJointBreakable()\fP 
+.PP
+\fBSprite\&.makeJointUnbreakable()\fP 
+.PP
+\fBPhysics\fP 
+.RE
+.PP
+
+.SH "struct pdg::SpriteCollideEvent"
+.PP 
+a \fBSprite\fP collided with something (\fIOptional\fP) 
+
+This event is generated by a \fBSprite\fP whenever it hits something\&. If it hits another \fBSprite\fP action will be \fBaction_CollideSprite\fP, if it hits a wall it will be \fBaction_CollideWall\fP\&. 
+.PP
+.nf
+{
+    emitter: {},            // the emitter that generated this event
+    eventType: 20,          // the event type (eventType_SpriteCollide)
+    action: 0,                  // what happened (action_CollideSprite or action_CollideWall)
+    actingSprite: {},       // the moving Sprite
+    inLayer: {},            // the SpriteLayer that contains the Sprite
+    targetSprite: {},       // the Sprite that was collided with (if action was action_CollideSprite)
+    normal: {               // the normal vector for the collision
+      x: 1.0,
+      y: 0.0
+    },
+    impulse: {              // the impulse imparted by the collision
+      x: 29.35,
+      y: 0.883
+    },
+    force: 384.0,           // the force of the collision
+    kineticEnergy:883       // the total kinetic energy of the collision
+}
+
+.fi
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+Collisions must be turned on for each \fBSprite\fP using \fBSprite\&.enableCollisions()\fP or \fBSprite\&.setCollisionRadius()\fP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_SpriteCollide\fP 
+.PP
+\fBaction_CollideSprite\fP 
+.PP
+\fBaction_CollideWall\fP 
+.PP
+\fBSprite\&.enableCollisions()\fP 
+.PP
+\fBSprite\&.setCollisionRadius()\fP 
+.RE
+.PP
+
+.SH "Variable Documentation"
+.PP 
+.SS "action_CollideSprite = 0"
+
+.SS "action_CollideWall = 1"
+
+.PP
+eventType_SpriteAnimate action: a sprite has hit the edge of the sprite layer These events are only sent for sprites that have setWantsCollideWallEvents(true) and where the \fBSpriteLayer\fP has a size explicitly set\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSprite\&.setWantsCollideWallEvents()\fP 
+.PP
+\fBSpriteLayer\&.setSize()\fP 
+.PP
+\fBeventType_SpriteCollide\fP 
+.PP
+\fBaction_ExitLayer\fP
+.RE
+.PP
+
+.SS "action_JointBreak = 13"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

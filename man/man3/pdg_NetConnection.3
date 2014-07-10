@@ -1,0 +1,470 @@
+.TH "NetConnection" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+NetConnection \- 
+.PP
+sends data between two network endpoints  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNetConnection\fP (object socket)"
+.br
+.RI "\fIcreate a new net connection from a socket \fP"
+.ti -1c
+.RI "\fBclose\fP (boolean kill)"
+.br
+.RI "\fIclose a connection The remote endpoint of the connection will get an \fBonClose()\fP callback\&. \fP"
+.ti -1c
+.RI "\fBNetConnection\fP \fBonClose\fP (function callback)"
+.br
+.RI "\fIset callback to handle connection closing \fP"
+.ti -1c
+.RI "\fBNetConnection\fP \fBonMessage\fP (function callback)"
+.br
+.RI "\fIset callback to handle receipt of a network message \fP"
+.ti -1c
+.RI "\fBsend\fP (string message)"
+.br
+.RI "\fIsend a string to the remote endpoint \fP"
+.ti -1c
+.RI "\fBsend\fP (\fBMemBlock\fP message)"
+.br
+.RI "\fIsend a block of memory to the remote endpoint \fP"
+.ti -1c
+.RI "\fBsend\fP (\fBISerializable\fP message)"
+.br
+.RI "\fIsend a serializable object to the remote endpoint \fP"
+.ti -1c
+.RI "\fBsend\fP (object message)"
+.br
+.RI "\fIsend a JavaScript object to the remote endpoint \fP"
+.ti -1c
+.RI "\fBsendDgram\fP (string message)"
+.br
+.RI "\fIsend a string to the remote endpoint via UDP \fP"
+.ti -1c
+.RI "\fBsendDgram\fP (\fBMemBlock\fP message)"
+.br
+.RI "\fIsend a block of memory to the remote endpoint via UDP \fP"
+.ti -1c
+.RI "\fBsendDgram\fP (\fBISerializable\fP message)"
+.br
+.RI "\fIsend a serializable object to the remote endpoint via UDP \fP"
+.ti -1c
+.RI "\fBsendDgram\fP (object message)"
+.br
+.RI "\fIsend a JavaScript object to the remote endpoint via UDP \fP"
+.ti -1c
+.RI "string \fBtoString\fP ()"
+.br
+.RI "\fIreturns '[object NetConnection]' \fP"
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "boolean \fBhasDgram\fP"
+.br
+.RI "\fItrue if the connection supports UDP/Datagram communications \fP"
+.ti -1c
+.RI "string \fBlocalAddr\fP"
+.br
+.RI "\fIthe ip address of the local end of the connection \fP"
+.ti -1c
+.RI "number \fBlocalPort\fP"
+.br
+.RI "\fIthe port that the local end of the connection is communicating over \fP"
+.ti -1c
+.RI "string \fBremoteAddr\fP"
+.br
+.RI "\fIthe ip address of the remote end of the connection \fP"
+.ti -1c
+.RI "number \fBremotePort\fP"
+.br
+.RI "\fIthe port that the remote end of the connection is communicating over \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+sends data between two network endpoints 
+
+\fBNote:\fP
+.RS 4
+\fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
+.RE
+.PP
+\fBNetConnection\fP is part of the PDG Engine's custom protocol for games\&. It handles protocol negotiation\&. It manages communication over both a TCP connection (reliable transport with guaranteed delivery) and UDP communications (small and unreliable but fast) with the server\&.
+.PP
+\fBNetConnection\fP only represents an established connection created by \fBNetClient\fP or \fBNetServer\fP\&.
+.PP
+\fBWarning:\fP
+.RS 4
+\fBNetClient\fP, \fBNetServer\fP, and \fBNetConnection\fP all work together over a custom protocol\&. Do not attempt to use \fBNetConnection\fP to communicate with other kinds of servers, such as HTTP or raw TCP sockets\&. All you'll do is get a bunch of error messages\&. There are perfectly fine \fCNet\fP and \fCHTTP\fP modules built-in to Node\&.js (and thus to PDG) for communicating with other kinds of servers\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBNetClient\fP 
+.PP
+\fBNetServer\fP 
+.PP
+\fCNode\&.js Net module\fP 
+.PP
+\fCNode\&.js HTTP module\fP 
+.RE
+.PP
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBNetConnection\fP (objectsocket)"
+
+.PP
+create a new net connection from a socket \fBParameters:\fP
+.RS 4
+\fIsocket\fP a Node\&.js net\&.Socket object
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+you generally won't have to call this directly since \fBNetClient\fP and \fBNetServer\fP both create \fBNetConnection\fP objects for you\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBNetClient\fP 
+.PP
+\fBNetServer\fP 
+.PP
+\fCNode\&.js net\&.Socket\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "close (booleankill)"
+
+.PP
+close a connection The remote endpoint of the connection will get an \fBonClose()\fP callback\&. close a connection
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkill\fP true if the connection should be abruptly dropped rather than cleanly disconnected\&. See AlsoNetConnection\&.onClose
+.RE
+.PP
+The remote endpoint of the connection will get their \fBonClose()\fP callback\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkill\fP true if the connection should be abruptly dropped rather than cleanly disconnected\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBNetConnection\&.onClose\fP 
+.RE
+.PP
+
+.SS "onClose (functioncallback)"
+
+.PP
+set callback to handle connection closing Whenever a network connection is dropped by the remote end (whether cleanly or abrubtly), you will get an onClose callback to the function specified\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcallback\fP the function that should be called
+.RE
+.PP
+
+.SS "onMessage (functioncallback)"
+
+.PP
+set callback to handle receipt of a network message Whenever the remote end sends a message, you will get an onMessage callback to the function specified with the message that was sent\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcallback\fP the function that should be called when a message is received\&. The message is the first parameter passed to the callback function\&. Second parameter is the connection object\&. Third parameter is a string with the transport type (currently either 'upd' or 'tcp', where 'udp' means it was sent via \fBsendDgram()\fP and 'tcp' means it was sent via \fBsend()\fP ) 
+.RE
+.PP
+
+.SS "send (stringmessage)"
+
+.PP
+send a string to the remote endpoint The string is sent guaranteed delivery (TCP), and will arrive in the order sent with other messages\&.
+.PP
+\fBNetConnection\fP handles packet framing for you, so the \fBNetConnection\fP on the remote endpoint will receive an onMessage callback with the string you sent\&. If the message cannot be sent, you will eventually get an \fBonClose()\fP callback to indicate that the connection has been lost\&.
+.PP
+\fBNote:\fP
+.RS 4
+sending multiple strings in a row is fine, they will all be received as separate onMessage callbacks each with the string as sent\&. They will not be combined\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fImessage\fP the string to send
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+itself (for call chaining) 
+.RE
+.PP
+
+.SS "send (\fBMemBlock\fPmessage)"
+
+.PP
+send a block of memory to the remote endpoint The block is sent guaranteed delivery (TCP), and will arrive in the order sent with other messages\&.
+.PP
+\fBNetConnection\fP handles packet framing for you, so the \fBNetConnection\fP on the remote endpoint will receive an onMessage callback with the string you sent\&. If the message cannot be sent, you will eventually get an \fBonClose()\fP callback to indicate that the connection has been lost\&.
+.PP
+\fBNote:\fP
+.RS 4
+sending multiple \fBMemBlock\fP in a row is fine, they will all be received as separate onMessage callbacks each with the block as sent\&. They will not be combined\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fImessage\fP the \fBMemBlock\fP to send
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+itself (for call chaining) 
+.RE
+.PP
+
+.SS "send (\fBISerializable\fPmessage)"
+
+.PP
+send a serializable object to the remote endpoint The object is sent guaranteed delivery (TCP), and will arrive in the order sent with other messages\&.
+.PP
+\fBNetConnection\fP handles packet framing for you, so the \fBNetConnection\fP on the remote endpoint will receive an onMessage callback with the object you sent\&. If the message cannot be sent, you will eventually get an \fBonClose()\fP callback to indicate that the connection has been lost\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fImessage\fP the serializable object to send
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+itself (for call chaining)
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBISerializable\fP 
+.RE
+.PP
+
+.SS "send (objectmessage)"
+
+.PP
+send a JavaScript object to the remote endpoint The object is sent guaranteed delivery (TCP), and will arrive in the order sent with other messages\&.
+.PP
+\fBNetConnection\fP handles packet framing for you, so the \fBNetConnection\fP on the remote endpoint will receive an onMessage callback with the object you sent\&. If the message cannot be sent, you will eventually get an \fBonClose()\fP callback to indicate that the connection has been lost\&.
+.PP
+\fBNote:\fP
+.RS 4
+the object is converted to JSON before being sent, then back again on the receiving side\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fImessage\fP the object to send
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+itself (for call chaining)
+.RE
+.PP
+\fBWarning:\fP
+.RS 4
+Only use this for native JavaScript objects\&. No PDG objects can be sent over the network this way\&. 
+.RE
+.PP
+
+.SS "sendDgram (stringmessage)"
+
+.PP
+send a string to the remote endpoint via UDP The string will be sent using UDP if it is available\&. Delivery is not guaranteed and neither is in-order deliver of messages\&. This is ideal for small bits of information that are frequently resent, such as position or status updates\&.
+.PP
+\fBNetConnection\fP handles packet framing for you, so if the packet arrives, the \fBNetConnection\fP on the remote endpoint will receive an onMessage callback with the string you sent\&. If the message cannot be sent you will not get any notification\&. It will simply disappear into the ether\&.
+.PP
+\fBNote:\fP
+.RS 4
+sending multiple strings in a row is fine, they will all be received as separate onMessage callbacks each with the string as sent\&. They will not be combined\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fImessage\fP the string to send
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+itself (for call chaining)
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsend(string)\fP
+.RE
+.PP
+\fBRemarks:\fP
+.RS 4
+To guard against out-of-order delivery, you should always use a sequence number so you can drop older updates that arrive after newer ones\&.
+.RE
+.PP
+\fBWarning:\fP
+.RS 4
+Any string longer than MTU (generally 1500 bytes, but can be smaller) will always fail to send 
+.RE
+.PP
+
+.SS "sendDgram (\fBMemBlock\fPmessage)"
+
+.PP
+send a block of memory to the remote endpoint via UDP The block will be sent using UDP if it is available\&. Delivery is not guaranteed and neither is in-order deliver of messages\&. This is ideal for small bits of information that are frequently resent, such as position or status updates\&.
+.PP
+\fBNetConnection\fP handles packet framing for you, so if the packet arrives, the \fBNetConnection\fP on the remote endpoint will receive an onMessage callback with the object you sent\&. If the message cannot be sent you will not get any notification\&. It will simply disappear into the ether\&.
+.PP
+\fBNote:\fP
+.RS 4
+sending multiple blocks in a row is fine, they will all be received as separate onMessage callbacks each with the string as sent\&. They will not be combined\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fImessage\fP the \fBMemBlock\fP to send
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+itself (for call chaining)
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsend(MemBlock)\fP
+.RE
+.PP
+\fBRemarks:\fP
+.RS 4
+To guard against out-of-order delivery, you should always use a sequence number so you can drop older updates that arrive after newer ones\&.
+.RE
+.PP
+\fBWarning:\fP
+.RS 4
+Any block longer than MTU (generally 1500 bytes, but can be smaller) will always fail to send\&. 
+.RE
+.PP
+
+.SS "sendDgram (\fBISerializable\fPmessage)"
+
+.PP
+send a serializable object to the remote endpoint via UDP The object will be sent using UDP if it is available\&. Delivery is not guaranteed and neither is in-order deliver of messages\&. This is ideal for small bits of information that are frequently resent, such as position or status updates\&.
+.PP
+\fBNetConnection\fP handles packet framing for you, so if the packet arrives, the \fBNetConnection\fP on the remote endpoint will receive an onMessage callback with the object you sent\&. If the message cannot be sent you will not get any notification\&. It will simply disappear into the ether\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fImessage\fP the serializable object to send
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+itself (for call chaining)
+.RE
+.PP
+\fBRemarks:\fP
+.RS 4
+To guard against out-of-order delivery, you should always use a sequence number so you can drop older updates that arrive after newer ones\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBISerializable\fP 
+.PP
+\fBsend(ISerializable)\fP 
+.PP
+\fBsendDgram(object)\fP
+.RE
+.PP
+\fBWarning:\fP
+.RS 4
+Any object with a serialized size greater than MTU (generally 1500 bytes, but can be smaller) will always fail to send 
+.RE
+.PP
+
+.SS "sendDgram (objectmessage)"
+
+.PP
+send a JavaScript object to the remote endpoint via UDP The object will be sent using UDP if it is available\&. Delivery is not guaranteed and neither is in-order deliver of messages\&. This is ideal for small bits of information that are frequently resent, such as position or status updates\&.
+.PP
+\fBNetConnection\fP handles packet framing for you, so if the packet arrives, the \fBNetConnection\fP on the remote endpoint will receive an onMessage callback with the string you sent\&. If the message cannot be sent you will not get any notification\&. It will simply disappear into the ether\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fImessage\fP the object to send
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+itself (for call chaining)
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsend(object)\fP 
+.PP
+\fBsendDgram(ISerializable)\fP
+.RE
+.PP
+\fBRemarks:\fP
+.RS 4
+To guard against out-of-order delivery, you should always use a sequence number so you can drop older updates that arrive after newer ones\&.
+.RE
+.PP
+\fBWarning:\fP
+.RS 4
+Any string longer than MTU (generally 1500 bytes, but can be smaller) will always fail to send
+.PP
+Only use this for native JavaScript objects\&. No PDG objects can be sent over the network this way\&. 
+.RE
+.PP
+
+.SS "toString ()"
+
+.PP
+returns '[object NetConnection]' It's not very original, but at least it's honest\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "hasDgram"
+
+.PP
+true if the connection supports UDP/Datagram communications 
+.SS "localAddr"
+
+.PP
+the ip address of the local end of the connection 
+.SS "localPort"
+
+.PP
+the port that the local end of the connection is communicating over 
+.SS "remoteAddr"
+
+.PP
+the ip address of the remote end of the connection 
+.SS "remotePort"
+
+.PP
+the port that the remote end of the connection is communicating over 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

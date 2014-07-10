@@ -1,0 +1,152 @@
+.TH "Font" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Font \- 
+.PP
+font for text drawing and measuring (\fIGUI Only\fP)  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "number \fBgetFontAscent\fP (number size, int style=\fBtextStyle_Plain\fP)"
+.br
+.RI "\fIget the distance from the top of the font to the baseline \fP"
+.ti -1c
+.RI "number \fBgetFontDescent\fP (number size, int style=\fBtextStyle_Plain\fP)"
+.br
+.RI "\fIget the distance from the baseline to the bottom of the font \fP"
+.ti -1c
+.RI "number \fBgetFontHeight\fP (number size, int style=\fBtextStyle_Plain\fP)"
+.br
+.RI "\fIget the total height of a line of text in this font, including spacing \fP"
+.ti -1c
+.RI "number \fBgetFontLeading\fP (number size, int style=\fBtextStyle_Plain\fP)"
+.br
+.RI "\fIget the distance between lines of the font \fP"
+.ti -1c
+.RI "string \fBgetFontName\fP ()"
+.br
+.RI "\fIget the name of this font \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+font for text drawing and measuring (\fIGUI Only\fP) 
+
+\fBPrecondition:\fP
+.RS 4
+\fBAPI Stability: 3 - Stable\fP\&. The API has proven satisfactory, but cleanup in the underlying code may cause minor changes\&. Backwards-compatibility is guaranteed\&.
+.RE
+.PP
+You cannot create fonts directly, they must be loaded by the Graphics Manager\&. Drawing text is done through the \fBPort\fP class after assigning a font\&. The \fBFont\fP object is read only, and has methods for getting measurement info (\fBFont\fP Metrics) for the font\&.
+.PP
+.SS "\fBFont\fP Metrics:"
+.PP
+.IP "\(bu" 2
+Height: the total height of a line of text, including the normal spacing between lines\&.
+.IP "\(bu" 2
+Ascent: the distance from the top of the font to the baseline
+.IP "\(bu" 2
+Descent: the distance from the baseline to the bottom of the font
+.IP "\(bu" 2
+Leading: the space between the bottom of one line and the top of the next at normal spacing
+.PP
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBGraphicsManager\&.createFont\fP 
+.PP
+\fBPort\&.getCurrentFont\fP 
+.PP
+\fBPort\&.setFont\fP 
+.PP
+\fBPort\&.setFontForStyle\fP 
+.PP
+\fBPort\&.setFontScalingFactor\fP 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "getFontAscent (numbersize, intstyle = \fC\fBtextStyle_Plain\fP\fP)"
+
+.PP
+get the distance from the top of the font to the baseline \fBParameters:\fP
+.RS 4
+\fIsize\fP the font size you are getting the ascent for 
+.br
+\fIstyle\fP (optional) the \fBFont\fP Style, defaults to textStyle_Plain if not passed
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the distance in pixels 
+.RE
+.PP
+
+.SS "getFontDescent (numbersize, intstyle = \fC\fBtextStyle_Plain\fP\fP)"
+
+.PP
+get the distance from the baseline to the bottom of the font \fBParameters:\fP
+.RS 4
+\fIsize\fP the font size you are getting the descent for 
+.br
+\fIstyle\fP (optional) the \fBFont\fP Style, defaults to textStyle_Plain if not passed
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the distance in pixels 
+.RE
+.PP
+
+.SS "getFontHeight (numbersize, intstyle = \fC\fBtextStyle_Plain\fP\fP)"
+
+.PP
+get the total height of a line of text in this font, including spacing \fBParameters:\fP
+.RS 4
+\fIsize\fP the font size you are getting the height for 
+.br
+\fIstyle\fP (optional) the \fBFont\fP Style, defaults to textStyle_Plain if not passed
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the distance in pixels 
+.RE
+.PP
+
+.SS "getFontLeading (numbersize, intstyle = \fC\fBtextStyle_Plain\fP\fP)"
+
+.PP
+get the distance between lines of the font \fBParameters:\fP
+.RS 4
+\fIsize\fP the font size you are getting the leading for 
+.br
+\fIstyle\fP (optional) the \fBFont\fP Style, defaults to textStyle_Plain if not passed
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the distance in pixels 
+.RE
+.PP
+
+.SS "getFontName ()"
+
+.PP
+get the name of this font \fBReturns:\fP
+.RS 4
+a string with the font name 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

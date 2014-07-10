@@ -1,0 +1,99 @@
+.TH "Quad" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Quad \- 
+.PP
+4 point polygon in 2D system  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQuad\fP (args\&.\&.\&.)"
+.br
+.ti -1c
+.RI "\fBPoint\fP \fBcenterPoint\fP ()"
+.br
+.ti -1c
+.RI "boolean \fBcontains\fP (\fBPoint\fP p)"
+.br
+.ti -1c
+.RI "boolean \fBequals\fP (\fBQuad\fP q2)"
+.br
+.ti -1c
+.RI "\fBRect\fP \fBgetBounds\fP ()"
+.br
+.ti -1c
+.RI "\fBmoveDown\fP (number delta)"
+.br
+.ti -1c
+.RI "\fBmoveLeft\fP (number delta)"
+.br
+.ti -1c
+.RI "\fBmoveRight\fP (number delta)"
+.br
+.ti -1c
+.RI "\fBmoveUp\fP (number delta)"
+.br
+.ti -1c
+.RI "boolean \fBnotEquals\fP (\fBQuad\fP q2)"
+.br
+.ti -1c
+.RI "\fBrotate\fP (number rotationRadians, \fBOffset\fP centerPtOffset=\fBPoint\fP(0, 0))"
+.br
+.ti -1c
+.RI "string \fBtoString\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBPoint\fP[] \fBpoints\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+4 point polygon in 2D system 
+
+\fBQuad\fP is a class that provides support for dealing with 4 point ploygons in 2 dimensional space The PDG coordinate space starts with the top left corner of the drawing port at Point(0,0) and the bottom left corner at Point( width, height ); 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBQuad\fP (args\&.\&.\&.)"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBPoint\fP centerPoint ()"
+
+.SS "boolean contains (\fBPoint\fPp)"
+
+.SS "boolean equals (\fBQuad\fPq2)"
+
+.SS "\fBRect\fP getBounds ()"
+
+.SS "moveDown (numberdelta)"
+
+.SS "moveLeft (numberdelta)"
+
+.SS "moveRight (numberdelta)"
+
+.SS "moveUp (numberdelta)"
+
+.SS "boolean notEquals (\fBQuad\fPq2)"
+
+.SS "rotate (numberrotationRadians, \fBOffset\fPcenterPtOffset = \fC\fBPoint\fP(0, 0)\fP)"
+
+.SS "string toString ()"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBPoint\fP [] points"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

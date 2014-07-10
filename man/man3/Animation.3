@@ -1,0 +1,444 @@
+.TH "Animation" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Animation \- 
+.PP
+Things related to animation\&.  
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBAnimated\fP"
+.br
+.RI "\fIsomething that can be automatically moved, spun or resized over time\&. \fP"
+.ti -1c
+.RI "class \fBIAnimationHelper\fP"
+.br
+.RI "\fIhelper for add-on or complex motion during animation \fP"
+.ti -1c
+.RI "class \fBOffset\fP"
+.br
+.RI "\fIoffset within a 2D coordinate system \fP"
+.ti -1c
+.RI "class \fBPoint\fP"
+.br
+.RI "\fIpoint for 2D coordinate system \fP"
+.ti -1c
+.RI "class \fBQuad\fP"
+.br
+.RI "\fI4 point polygon in 2D system \fP"
+.ti -1c
+.RI "class \fBRect\fP"
+.br
+.RI "\fIRectangle for 2D coordinate system\&. \fP"
+.ti -1c
+.RI "class \fBRotatedRect\fP"
+.br
+.RI "\fIrectangle with rotation for 2D coordinate system\&. \fP"
+.ti -1c
+.RI "class \fBSprite\fP"
+.br
+.RI "\fIanimated, moving image that is automatically moved, animated, and drawn \fP"
+.ti -1c
+.RI "struct \fBSpriteAnimateEvent\fP"
+.br
+.RI "\fIa \fBSprite\fP did some animation (\fIOptional\fP) \fP"
+.ti -1c
+.RI "class \fBSpriteLayer\fP"
+.br
+.RI "\fIcreates and tracks collections of sprites \fP"
+.ti -1c
+.RI "class \fBVector\fP"
+.br
+.RI "\fIvector (magnitude and direction) within a 2D coordinate system\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "const \fBaction_AnimationComplete\fP = 47"
+.br
+.RI "\fIeventType_SpriteLayer action: all animations for every \fBSpriteLayer\fP have completed \fP"
+.ti -1c
+.RI "const \fBaction_AnimationEnd\fP = 9"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite animation has completed \fP"
+.ti -1c
+.RI "const \fBaction_AnimationLoop\fP = 8"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite animation has completed and is looping back to the start \fP"
+.ti -1c
+.RI "const \fBaction_AnimationStart\fP = 44"
+.br
+.RI "\fIeventType_SpriteLayer action: starting animations for all SpriteLayers \fP"
+.ti -1c
+.RI "const \fBaction_ExitLayer\fP = 4"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite has moved outside the layer boundaries\&. \fP"
+.ti -1c
+.RI "const \fBaction_FadeComplete\fP = 10"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite fadeTo() has completed \fP"
+.ti -1c
+.RI "const \fBaction_FadeInComplete\fP = 11"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite fade-in has completed \fP"
+.ti -1c
+.RI "const \fBaction_FadeOutComplete\fP = 12"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite fade-out has completed \fP"
+.ti -1c
+.RI "const \fBaction_LayerFadeInComplete\fP = 49"
+.br
+.RI "\fIeventType_SpriteLayer action: the fade-in of a layer has been completed \fP"
+.ti -1c
+.RI "const \fBaction_LayerFadeOutComplete\fP = 50"
+.br
+.RI "\fIeventType_SpriteLayer action: the fade-out of a layer has been completed \fP"
+.ti -1c
+.RI "const \fBaction_Offscreen\fP = 2"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite has gone completely offscreen (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "const \fBaction_Onscreen\fP = 3"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite that was off screen has moved onscreen (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "const \fBaction_PostAnimateLayer\fP = 46"
+.br
+.RI "\fIeventType_SpriteLayer action: all animations for a particular \fBSpriteLayer\fP have completed \fP"
+.ti -1c
+.RI "const \fBaction_PreAnimateLayer\fP = 45"
+.br
+.RI "\fIeventType_SpriteLayer action: about to start animations for a particular \fBSpriteLayer\fP \fP"
+.ti -1c
+.RI "const \fBaction_ZoomComplete\fP = 48"
+.br
+.RI "\fIeventType_SpriteLayer action: zooming a particular sprite layer is complete \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Things related to animation\&. 
+
+
+.SH "Class Documentation"
+.PP 
+.SH "class pdg::IAnimationHelper"
+.PP 
+helper for add-on or complex motion during animation 
+
+\fBWarning:\fP
+.RS 4
+\fBAPI Stability: 1 - Experimental\fP\&. This API was introduced recently and gotten little or no real use\&. It may change or be removed in future versions\&. It may not be completely implemented and may be missing important pieces of functionality\&. Please try it out and provide feedback\&.
+.RE
+.PP
+Implement this interface to do extra animation stuff for a specific \fBAnimated\fP object then add by calling the object's addAnimationHelper() method\&. You can have multiple Animation Helpers attached to the same object\&. Your helper will then be called every time movement for the object is calculated\&.
+.PP
+To create a helper:
+.PP
+.PP
+.nf
+var myHelper = new pdg\&.IAnimationHelper(function(what, msElapsed) {
+                console\&.log('in my animation helper for ' + what + ' after ' + msElapsed + 'ms' );
+                return true;  // not done, keep helping
+});
+myAnimatedObj\&.addAnimationHelper(myHelper);
+.fi
+.PP
+.PP
+If you need something more complex, you can also use classify to create a new Javascript class that derives from \fBpdg\&.IAnimationHelper\fP, and it will call the animated() method of your class\&. For example:
+.PP
+.PP
+.nf
+classify(pdg\&.IAnimationHelper, 'MyAnimationHelperClass', function() {
+                def('animate', function(what, msElapsed) {
+                                console\&.log('MyAnimationHelper\&.animate(' + what + ', ' + msElapsed + 'ms)' );
+                                return false;  // all done, delete the helper
+                });
+});
+myAnimatedObj\&.addAnimationHelper( new MyAnimationHelperClass() );
+.fi
+.PP
+.PP
+.SS "Your Custom Function:"
+.PP
+As you can see from the examples above, your Animation Helper function (or animate() method) will be called with two parameters, and return a boolean: 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIwhat\fP the \fBAnimated\fP object that is being animated 
+.br
+\fImsElapsed\fP the number of milliseconds that have elapsed since the last time this object's movement was calculated 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBtrue\fP if the helper should continue to be called; or \fBfalse\fP if it is done and should be removed from this \fBAnimated\fP object\&. 
+.RE
+.PP
+
+.SH "struct pdg::SpriteAnimateEvent"
+.PP 
+a \fBSprite\fP did some animation (\fIOptional\fP) 
+
+A \fBSprite\fP will generate one of these events when it completes an animation including fades (opacity animations)\&.
+.PP
+For frame based animations -- that is, calls to \fBSprite\&.startFrameAnimation()\fP -- if it reaches the last frame and is not set to loop, action will be \fBaction_AnimationEnd\fP\&. For looping animations \fBaction_AnimationLoop\fP will be received each time the animation completes and starts over with the first frame\&.
+.PP
+For fades, one of three action types are possible: \fBaction_FadeComplete\fP for calls to \fBSprite\&.fadeTo()\fP, \fBaction_FadeInComplete\fP for calls to \fBSprite\&.fadeIn()\fP, and \fBaction_FadeOutComplete\fP for calls to \fBSprite\&.fadeOut()\fP\&. 
+.PP
+.nf
+{
+    emitter: {},            // the emitter that generated this event
+    eventType: 17,          // the event type (eventType_SpriteAnimate)
+    action: 0,              // what happened (action_AnimationEnd/Loop or action_Fade/In/OutComplete)
+    actingSprite: {},       // the Sprite that was animating
+    inLayer: {}             // the SpriteLayer that contains the Sprite
+}
+
+.fi
+.PP
+.PP
+\fBNote:\fP
+.RS 4
+At this time other kinds of animations such as calls to \fBSprite\&.startAnimation()\fP do not generate any events\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_SpriteAnimate\fP 
+.PP
+\fBSprite\&.startFrameAnimation()\fP 
+.PP
+\fBSprite\&.fadeTo()\fP 
+.PP
+\fBSprite\&.fadeIn()\fP 
+.PP
+\fBSprite\&.fadeOut()\fP 
+.RE
+.PP
+
+.SH "Variable Documentation"
+.PP 
+.SS "action_AnimationComplete = 47"
+
+.PP
+eventType_SpriteLayer action: all animations for every \fBSpriteLayer\fP have completed Emitted once per animation step, after all animation has completed\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBaction_AnimationComplete\fP 
+.PP
+\fBeventType_SpriteLayer\fP 
+.RE
+.PP
+
+.SS "action_AnimationEnd = 9"
+
+.PP
+eventType_SpriteAnimate action: a sprite animation has completed \fBSee Also:\fP
+.RS 4
+\fBSprite\&.setWantsAnimEndEvents()\fP 
+.PP
+\fBSprite\&.startFrameAnimation()\fP 
+.PP
+\fBaction_AnimationLoop\fP 
+.PP
+\fBeventType_SpriteAnimate\fP 
+.RE
+.PP
+
+.SS "action_AnimationLoop = 8"
+
+.PP
+eventType_SpriteAnimate action: a sprite animation has completed and is looping back to the start \fBSee Also:\fP
+.RS 4
+\fBSprite\&.setWantsAnimLoopEvents()\fP 
+.PP
+\fBSprite\&.startFrameAnimation()\fP 
+.PP
+\fBaction_AnimationEnd\fP 
+.PP
+\fBeventType_SpriteAnimate\fP 
+.RE
+.PP
+
+.SS "action_AnimationStart = 44"
+
+.PP
+eventType_SpriteLayer action: starting animations for all SpriteLayers Emitted once per animation step, before any animation is done\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBaction_AnimationComplete\fP 
+.PP
+\fBeventType_SpriteLayer\fP 
+.RE
+.PP
+
+.SS "action_ExitLayer = 4"
+
+.PP
+eventType_SpriteAnimate action: a sprite has moved outside the layer boundaries\&. These events are only generated for sprites that have setWantsCollideWallEvents(true) called for them, and that the \fBSpriteLayer\fP that holds the sprite has had its size explicitly set\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSprite\&.setWantsCollideWallEvents()\fP 
+.PP
+\fBSpriteLayer\&.setSize()\fP 
+.PP
+\fBeventType_SpriteAnimate\fP 
+.PP
+\fBaction_Offscreen\fP 
+.PP
+\fBaction_Onscreen\fP 
+.RE
+.PP
+
+.SS "action_FadeComplete = 10"
+
+.PP
+eventType_SpriteAnimate action: a sprite fadeTo() has completed \fBSee Also:\fP
+.RS 4
+\fBSprite\&.fadeTo()\fP 
+.PP
+\fBaction_FadeInComplete\fP 
+.PP
+\fBaction_FadeOutComplete\fP 
+.PP
+\fBeventType_SpriteAnimate\fP 
+.RE
+.PP
+
+.SS "action_FadeInComplete = 11"
+
+.PP
+eventType_SpriteAnimate action: a sprite fade-in has completed \fBSee Also:\fP
+.RS 4
+\fBSprite\&.fadeIn()\fP 
+.PP
+\fBaction_FadeComplete\fP 
+.PP
+\fBaction_FadeOutComplete\fP 
+.PP
+\fBeventType_SpriteAnimate\fP 
+.RE
+.PP
+
+.SS "action_FadeOutComplete = 12"
+
+.PP
+eventType_SpriteAnimate action: a sprite fade-out has completed \fBSee Also:\fP
+.RS 4
+\fBSprite\&.fadeOut()\fP 
+.PP
+\fBaction_FadeComplete\fP 
+.PP
+\fBaction_FadeInComplete\fP 
+.PP
+\fBeventType_SpriteAnimate\fP 
+.RE
+.PP
+
+.SS "action_LayerFadeInComplete = 49"
+
+.PP
+eventType_SpriteLayer action: the fade-in of a layer has been completed \fBSee Also:\fP
+.RS 4
+\fBSpriteLayer\&.fadeIn()\fP 
+.PP
+\fBaction_LayerFadeOutComplete\fP 
+.PP
+\fBeventType_SpriteLayer\fP 
+.RE
+.PP
+
+.SS "action_LayerFadeOutComplete = 50"
+
+.PP
+eventType_SpriteLayer action: the fade-out of a layer has been completed \fBSee Also:\fP
+.RS 4
+\fBSpriteLayer\&.fadeOut()\fP 
+.PP
+\fBaction_LayerFadeInComplete\fP 
+.PP
+\fBeventType_SpriteLayer\fP 
+.RE
+.PP
+
+.SS "action_Offscreen = 2"
+
+.PP
+eventType_SpriteAnimate action: a sprite has gone completely offscreen (\fIGUI Only\fP) This event is only generated for sprites that have setWantsOffscreenEvents(true) called\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSprite\&.setWantsOffscreenEvents()\fP 
+.PP
+\fBeventType_SpriteAnimate\fP 
+.PP
+\fBaction_Onscreen\fP 
+.RE
+.PP
+
+.SS "action_Onscreen = 3"
+
+.PP
+eventType_SpriteAnimate action: a sprite that was off screen has moved onscreen (\fIGUI Only\fP) These events are only generated for sprites that have setWantsOffscreenEvents(true) called for them\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSprite\&.setWantsOffscreenEvents()\fP 
+.PP
+\fBeventType_SpriteAnimate\fP 
+.PP
+\fBaction_Offscreen\fP 
+.RE
+.PP
+
+.SS "action_PostAnimateLayer = 46"
+
+.PP
+eventType_SpriteLayer action: all animations for a particular \fBSpriteLayer\fP have completed Emitted once per layer per animation step, after all animation for the layer is complete\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBaction_AnimationComplete\fP 
+.PP
+\fBaction_PreAnimateLayer\fP 
+.PP
+\fBeventType_SpriteLayer\fP 
+.RE
+.PP
+
+.SS "action_PreAnimateLayer = 45"
+
+.PP
+eventType_SpriteLayer action: about to start animations for a particular \fBSpriteLayer\fP Emitted once per layer per animation step, before any animation for that layer is performed\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBaction_AnimationStart\fP 
+.PP
+\fBaction_PostAnimateLayer\fP 
+.PP
+\fBeventType_SpriteLayer\fP 
+.RE
+.PP
+
+.SS "action_ZoomComplete = 48"
+
+.PP
+eventType_SpriteLayer action: zooming a particular sprite layer is complete \fBSee Also:\fP
+.RS 4
+\fBSpriteLayer\&.zoom()\fP 
+.PP
+\fBeventType_SpriteLayer\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

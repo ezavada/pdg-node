@@ -1,0 +1,430 @@
+.TH "TimerManager" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+TimerManager \- 
+.PP
+manages timers that can fire at a particular time, or repeatedly at an interval  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBEventEmitter\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBcancelAllTimers\fP ()"
+.br
+.RI "\fIstop and remove all timers \fP"
+.ti -1c
+.RI "\fBcancelTimer\fP (int id)"
+.br
+.RI "\fIstop and remove a timer \fP"
+.ti -1c
+.RI "\fBdelayTimer\fP (int id, uint delay)"
+.br
+.RI "\fIdelay the normal firing by a given amount \fP"
+.ti -1c
+.RI "\fBdelayTimerUntil\fP (int id, uint msTime)"
+.br
+.RI "\fIpostpone the normal firing of a timer until a specific time \fP"
+.ti -1c
+.RI "number \fBgetMilliseconds\fP ()"
+.br
+.RI "\fIget the current time in milliseconds \fP"
+.ti -1c
+.RI "number \fBgetWhenTimerFiresNext\fP (int id)"
+.br
+.RI "\fIget the millisecond time when the timer will fire \fP"
+.ti -1c
+.RI "boolean \fBisPaused\fP ()"
+.br
+.RI "\fIcheck if the \fBTimerManager\fP is paused \fP"
+.ti -1c
+.RI "boolean \fBisTimerPaused\fP (int id)"
+.br
+.RI "\fIcheck if a timer is paused \fP"
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonInterval\fP (function func, int interval)"
+.br
+.RI "\fIsetup handler to be called at a regular interval \fP"
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonTimeout\fP (function func, int delay)"
+.br
+.RI "\fIsetup handler to be called once after a delay \fP"
+.ti -1c
+.RI "\fBpause\fP ()"
+.br
+.RI "\fIpause all timers indefinitely \fP"
+.ti -1c
+.RI "\fBpauseTimer\fP (int id)"
+.br
+.RI "\fIpause a timer indefinitely \fP"
+.ti -1c
+.RI "\fBstartTimer\fP (int id, uint delay, boolean oneShot=true)"
+.br
+.RI "\fIcreate and start a new timer \fP"
+.ti -1c
+.RI "\fBunpause\fP ()"
+.br
+.RI "\fIresume all paused timers \fP"
+.ti -1c
+.RI "\fBunpauseTimer\fP (int id)"
+.br
+.RI "\fIresume a specific timer \fP"
+.in -1c
+.SS "Related Functions"
+(Note that these are not member functions\&.) 
+.in +1c
+.ti -1c
+.RI "\fBgetTimerManager\fP"
+.br
+.RI "\fIget the singleton instance of the \fBTimerManager\fP used by the pdg framework \fP"
+.ti -1c
+.RI "\fBtm\fP"
+.br
+.RI "\fIthe singleton instance of the \fBTimerManager\fP \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+manages timers that can fire at a particular time, or repeatedly at an interval 
+
+\fBPrecondition:\fP
+.RS 4
+\fBAPI Stability: 3 - Stable\fP\&. The API has proven satisfactory, but cleanup in the underlying code may cause minor changes\&. Backwards-compatibility is guaranteed\&.
+.RE
+.PP
+The singleton instance of the \fBTimerManager\fP can be accessed at \fBpdg\&.tm\fP, for example:
+.PP
+.PP
+.nf
+pdg\&.tm\&.onTimeout(function(evt) {
+                console\&.log(evt);
+}, 1000);
+.fi
+.PP
+.PP
+All \fBTimerManager\fP functions are safe to perform while a timer is firing\&. Functions that alter a timer can be safely used even from within the handler of the timer being changed (ie: while the target timer is in the process of firing)
+.PP
+The \fBTimerManager\fP is an \fBEventEmitter\fP, and will generate \fBpdg\&.eventType_Timer\fP events: 
+.PP
+.nf
+{ 
+    emitter: {},            // the emitter that generated this event
+    eventType: 3,           // the event type (pdg.eventType_Timer)
+    id: 117440512,          // the timer id (auto-generated up by onTimeout())
+    millisec: 1025448321,   // the millisecond time when the timer fired
+    msElapsed: 18896        // the time elapsed since the timer was started or last fired
+} 
+.fi
+.PP
+ 
+.SH "Member Function Documentation"
+.PP 
+.SS "cancelAllTimers ()"
+
+.PP
+stop and remove all timers This is the same as calling \fBcancelTimer()\fP on every timer in the \fBTimerManager\fP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBcancelTimer()\fP 
+.RE
+.PP
+
+.SS "cancelTimer (intid)"
+
+.PP
+stop and remove a timer \fBParameters:\fP
+.RS 4
+\fIid\fP the id number of the timer to stop
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBcancelAllTimers()\fP 
+.RE
+.PP
+
+.SS "delayTimer (intid, uintdelay)"
+
+.PP
+delay the normal firing by a given amount Delay a timer's normal firing by the number of milliseconds passed in\&. If the timer is a repeating timer, this will only delay the next firing time; the interval will return to normal after the next firing\&.
+.PP
+If the timer is paused, this adds the delay but does not unpause the timer\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIid\fP the id number of the timer to delay 
+.br
+\fIdelay\fP the number of milliseconds to delay
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBpauseTimer()\fP 
+.PP
+\fBdelayTimerUntil()\fP 
+.RE
+.PP
+
+.SS "delayTimerUntil (intid, uintmsTime)"
+
+.PP
+postpone the normal firing of a timer until a specific time Sets the specific time in milliseconds (as returned by \fBgetMilliseconds()\fP ) at which the timer should fire\&. If the timer is a repeating timer, this will only postpone the next firing time; it will fire at it's normal interval from then on\&.
+.PP
+If the timer is paused, this un-pauses the timer so it can fire at the specified time\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIid\fP the id number of the timer to postpone 
+.br
+\fImsTime\fP the millisecond time when it should fire
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+Millisecond accuracy is attempted but not guaranteed\&. An additional delay of several milliseconds is common\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBdelayTimer()\fP 
+.PP
+\fBpauseTimer()\fP 
+.RE
+.PP
+
+.SS "getMilliseconds ()"
+
+.PP
+get the current time in milliseconds Gets the current millisecond time, from an arbitrary base time prior to the application start\&.
+.PP
+\fBNote:\fP
+.RS 4
+Many events and callbacks pass this value (or a ms delta since the last call), so you can often avoid repeated calls to \fBgetMilliseconds()\fP by using the value or millisecond delta passed in\&. 
+.RE
+.PP
+
+.SS "getWhenTimerFiresNext (intid)"
+
+.PP
+get the millisecond time when the timer will fire Gets the millisecond time when the timer is set to fire next\&. If the timer is paused, or is a one-shot timer that is current firing, then it will return \fBpdg\&.timer_Never\fP\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the millisecond time the timer will fire 
+.RE
+.PP
+
+.SS "isPaused ()"
+
+.PP
+check if the \fBTimerManager\fP is paused \fBReturns:\fP
+.RS 4
+true if the \fBTimerManager\fP is paused, false if not
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBpause()\fP 
+.PP
+\fBisTimerPaused()\fP 
+.RE
+.PP
+
+.SS "isTimerPaused (intid)"
+
+.PP
+check if a timer is paused \fBParameters:\fP
+.RS 4
+\fIid\fP the id number of the timer to check
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+true if the timer is paused, false if not
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBpause()\fP 
+.PP
+\fBpauseTimer()\fP 
+.RE
+.PP
+
+.SS "onInterval (functionfunc, intinterval)"
+
+.PP
+setup handler to be called at a regular interval This creates a handler from your function and automatically assigns a timer id\&. You can call cancel() on the handler object returned to remove the timer and cleanup the handler\&. The timer field of the handler object contains the timer's id number for use in other \fBTimerManager\fP calls\&.
+.PP
+.PP
+.nf
+var t = pdg\&.tm\&.onInterval( function(evt) {
+                console\&.log('fired ');
+}, 1000);
+pdg\&.tm\&.delayTimer(t\&.timer, 500);  // wait an extra 1/2 second to fire
+t\&.cancel();   // removes the timer and the handler for it
+.fi
+.PP
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfunc\fP the handler function to call 
+.br
+\fIinterval\fP the number of milliseconds between calls
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+an \fBIEventHandler\fP object with a cancel() method and a timer value
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBonTimeout()\fP 
+.PP
+\fBstartTimer()\fP 
+.RE
+.PP
+
+.SS "onTimeout (functionfunc, intdelay)"
+
+.PP
+setup handler to be called once after a delay This creates a handler from your function and automatically assigns a timer id\&. You can call cancel() on the handler object returned to remove the timer and cleanup the handler\&. The timer field of the handler object contains the timer's id number for use in other \fBTimerManager\fP calls\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfunc\fP the handler function to call 
+.br
+\fIdelay\fP the number of milliseconds to wait
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+an \fBIEventHandler\fP object with a cancel() method and a timer value
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBonInterval()\fP 
+.PP
+\fBstartTimer()\fP 
+.RE
+.PP
+
+.SS "pause ()"
+
+.PP
+pause all timers indefinitely Pause all timers in the \fBTimerManager\fP until \fBunpause()\fP or \fBunpauseTimer()\fP are called\&. When unpaused they continue their behavior as if no time had passed between the \fBpause()\fP and \fBunpause()\fP calls\&.
+.PP
+\fBNote:\fP
+.RS 4
+timers added \fIafter\fP \fBpause()\fP is called are not paused and will run as normal\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBunpause()\fP 
+.PP
+\fBunpauseTimer()\fP 
+.PP
+\fBisPaused()\fP 
+.RE
+.PP
+
+.SS "pauseTimer (intid)"
+
+.PP
+pause a timer indefinitely Pause the specified timer until \fBunpause()\fP or \fBunpauseTimer()\fP are called\&. When unpaused, the timer will continue as if no time had passed between the \fBpauseTimer()\fP and \fBunpauseTimer()\fP calls\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBunpauseTimer()\fP 
+.PP
+\fBunpause()\fP 
+.PP
+\fBisTimerPaused()\fP 
+.RE
+.PP
+
+.SS "startTimer (intid, uintdelay, booleanoneShot = \fCtrue\fP)"
+
+.PP
+create and start a new timer Create a new timer and start it running\&. If the timer is a one-shot timer, it will wait \fIdelay\fP ms then fire off a \fBpdg\&.eventType_Timer\fP event\&. If it is a repeating timer it will fire repeatedly at the \fBdelay\fP ms interval until canceled by a call to \fBcancelTimer()\fP\&.
+.PP
+If there is already a timer with the given id, it will be removed and the new timer will replace it\&.
+.PP
+You must install an event handler to get the timer events, either in the \fBTimerManager\fP itself, or in the \fBEventManager\fP\&. For that reason it is often more convenient to use \fBonTimeout()\fP or \fBonInterval()\fP, since they set up the event handler for you\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIid\fP the id number of the timer to start or reset 
+.br
+\fIdelay\fP the time before the timer should fire (or the firing interval if this is a repeating timer) 
+.br
+\fIoneShot\fP true mean
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+This is a safe to do even if from within the handler of a timer with the same id
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBcancelTimer()\fP 
+.PP
+\fBonTimeout()\fP 
+.PP
+\fBonInterval()\fP 
+.RE
+.PP
+
+.SS "unpause ()"
+
+.PP
+resume all paused timers This is the same as calling \fBunpauseTimer()\fP for every timer in the \fBTimerManager\fP\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBunpauseTimer()\fP 
+.PP
+\fBpause()\fP 
+.RE
+.PP
+
+.SS "unpauseTimer (intid)"
+
+.PP
+resume a specific timer \fBParameters:\fP
+.RS 4
+\fIid\fP the id number of the timer to be resumed
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBpauseTimer()\fP 
+.PP
+\fBunpause()\fP 
+.RE
+.PP
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "getTimerManager\fC [related]\fP"
+
+.PP
+get the singleton instance of the \fBTimerManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBTimerManager\fP singleton object 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

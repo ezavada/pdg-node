@@ -1,0 +1,229 @@
+.TH "ConfigManager" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ConfigManager \- 
+.PP
+used for loading and saving application configuration info  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "boolean \fBgetConfigBool\fP (string inConfigItemName)"
+.br
+.RI "\fIget boolean configuration value \fP"
+.ti -1c
+.RI "number \fBgetConfigFloat\fP (string inConfigItemName)"
+.br
+.RI "\fIget floating point numerical configuration value \fP"
+.ti -1c
+.RI "number \fBgetConfigLong\fP (string inConfigItemName)"
+.br
+.RI "\fIget integer numerical configuration value \fP"
+.ti -1c
+.RI "string \fBgetConfigString\fP (string inConfigItemName)"
+.br
+.RI "\fIget string configuration value \fP"
+.ti -1c
+.RI "\fBsetConfigBool\fP (string inConfigItemName, boolean inValue)"
+.br
+.RI "\fIset boolean configuration value \fP"
+.ti -1c
+.RI "\fBsetConfigFloat\fP (string inConfigItemName, number inValue)"
+.br
+.RI "\fIset floating point numerical configuration value \fP"
+.ti -1c
+.RI "\fBsetConfigLong\fP (string inConfigItemName, int inValue)"
+.br
+.RI "\fIset integer numerical configuration value \fP"
+.ti -1c
+.RI "\fBsetConfigString\fP (string inConfigItemName, string inValue)"
+.br
+.RI "\fIset string configuration value \fP"
+.ti -1c
+.RI "boolean \fBuseConfig\fP (string inConfigName)"
+.br
+.RI "\fIspecify the abstract configuration \fP"
+.in -1c
+.SS "Related Functions"
+(Note that these are not member functions\&.) 
+.in +1c
+.ti -1c
+.RI "\fBcfg\fP"
+.br
+.RI "\fIthe singleton instance of the \fBConfigManager\fP \fP"
+.ti -1c
+.RI "\fBgetConfigManager\fP"
+.br
+.RI "\fIget the singleton instance of the \fBConfigManager\fP used by the pdg framework \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+used for loading and saving application configuration info 
+
+\fBPrecondition:\fP
+.RS 4
+\fBAPI Stability: 3 - Stable\fP\&. The API has proven satisfactory, but cleanup in the underlying code may cause minor changes\&. Backwards-compatibility is guaranteed\&.
+.RE
+.PP
+Interface to Save and Load game config values\&. This class provides simple platform neutral configuration management\&. It does the right thing on each platform to save and load values that need to persist between game sessions\&. It is not intended to be used to hold saved games\&.
+.PP
+\fBNote:\fP
+.RS 4
+config item names are not case-sensitive, and case is not preserved in the internal implementation 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "getConfigBool (stringinConfigItemName)"
+
+.PP
+get boolean configuration value Get the boolean value for a named configuration item\&. If the item does not exist, undefined will be returned rather than a boolean\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinConfigItemName\fP the name of the configuration item
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a boolean value, \fIor\fP \fBundefined\fP if that config item was not set 
+.RE
+.PP
+
+.SS "getConfigFloat (stringinConfigItemName)"
+
+.PP
+get floating point numerical configuration value Get the numerical value for a named configuration item\&. If the item does not exist, undefined will be returned rather than a number\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinConfigItemName\fP the name of the configuration item
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a numerical value, \fIor\fP \fBundefined\fP if that config item was not set 
+.RE
+.PP
+
+.SS "getConfigLong (stringinConfigItemName)"
+
+.PP
+get integer numerical configuration value Get the numerical value for a named configuration item\&. If the item does not exist, undefined will be returned rather than a number\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinConfigItemName\fP the name of the configuration item
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a numerical value, \fIor\fP \fBundefined\fP if that config item was not set 
+.RE
+.PP
+
+.SS "getConfigString (stringinConfigItemName)"
+
+.PP
+get string configuration value Get the string value for a named configuration item\&. If the item does not exist, undefined will be returned rather than a string\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinConfigItemName\fP the name of the configuration item
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+a string value, \fIor\fP \fBundefined\fP if that config item was not set 
+.RE
+.PP
+
+.SS "setConfigBool (stringinConfigItemName, booleaninValue)"
+
+.PP
+set boolean configuration value Set the boolean value for the named configuration item
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinConfigItemName\fP the name of the configuration item 
+.br
+\fIinValue\fP the value for the config item 
+.RE
+.PP
+
+.SS "setConfigFloat (stringinConfigItemName, numberinValue)"
+
+.PP
+set floating point numerical configuration value Set the numeric value for the named configuration item
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinConfigItemName\fP the name of the configuration item 
+.br
+\fIinValue\fP the value for the config item 
+.RE
+.PP
+
+.SS "setConfigLong (stringinConfigItemName, intinValue)"
+
+.PP
+set integer numerical configuration value Set the integer value for the named configuration item
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinConfigItemName\fP the name of the configuration item 
+.br
+\fIinValue\fP the value for the config item 
+.RE
+.PP
+
+.SS "setConfigString (stringinConfigItemName, stringinValue)"
+
+.PP
+set string configuration value Set the string value for the named configuration item
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinConfigItemName\fP the name of the configuration item 
+.br
+\fIinValue\fP the value for the config item 
+.RE
+.PP
+
+.SS "useConfig (stringinConfigName)"
+
+.PP
+specify the abstract configuration Specify an abstract name for the config to be used\&. Implementations will use this to build the name of a file on disk, a registry entry, or something else that's appropriate for the platform you are running on\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIinConfigName\fP Only alpha characters (uppercase and lowercase) are allowed, name is not case sensitive 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+false if config not found, unusable or empty 
+.RE
+.PP
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "getConfigManager\fC [related]\fP"
+
+.PP
+get the singleton instance of the \fBConfigManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBConfigManager\fP singleton object 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

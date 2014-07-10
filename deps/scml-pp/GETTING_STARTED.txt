@@ -1,0 +1,128 @@
+Getting Started with SCMLpp
+---------------------------
+
+SCMLpp is a C++ API for loading and using the Spriter SCML character animation format.
+
+The source distribution of SCMLpp contains an interface for loading SCML files into memory, creating independent entities, and updating and drawing the entities.  It also contains several sample SCML projects and a demo C++ project for viewing the samples.
+
+SCMLpp supports multiple rendering backends (renderers), but only one at runtime.  Hence, the library is meant to be compiled into your application along with the renderer files specific to your application's needs.  New renderers can be created easily (see below).
+
+As of 1-17-13, the currently implemented renderers are:
+SDL_gpu
+SPriG
+SFML 2.0
+
+
+HELP!
+-----
+
+SCMLpp could really use your help!  Together we can answer the following questions.  If you have any answers you'd like to share, please contact me.  I'm also looking for direct help in implementing features, interfaces, and renderers.
+
+What should the interface do?
+What are some good use-cases?
+Who is interested in the library?
+What other renderers should be included?
+How can the library help you make great games?
+
+
+Documentation
+-------------
+
+SCMLpp uses Doxygen to generate documentation from commented source code.  Run the Doxygen system on the file source/Doxyfile.  When SCMLpp is more mature, pre-generated documentation will be available elsewhere, too.
+
+
+File Layout
+-----------
+
+SCMLpp itself is contained in two files:
+source/SCMLpp.h
+source/SCMLpp.cpp
+
+SCMLpp depends on TinyXML and some helper functions to handle the XML parsing:
+source/libraries/tinyxml.h
+source/libraries/tinyxml.cpp
+source/libraries/tinystr.h
+source/libraries/tinystr.cpp
+source/libraries/tinyxmlparser.cpp
+source/libraries/tinyxmlerror.cpp
+source/libraries/XML_Helpers.h
+source/libraries/XML_Helpers.cpp
+
+Each renderer is contained in two more files:
+source/renderers/SCML_*.h
+source/renderers/SCML_*.cpp
+
+(e.g. SCML_SFML.h and SCML_SFML.cpp for the SFML 2.0 renderer)
+
+So, to put SCMLpp into your (for example) SDL_gpu project, you would use these files:
+source/SCMLpp.h
+source/SCMLpp.cpp
+source/renderers/SCML_SDL_gpu.h
+source/renderers/SCML_SDL_gpu.cpp
+source/libraries/tinyxml.h
+source/libraries/tinyxml.cpp
+source/libraries/tinystr.h
+source/libraries/tinystr.cpp
+source/libraries/tinyxmlparser.cpp
+source/libraries/tinyxmlerror.cpp
+source/libraries/XML_Helpers.h
+source/libraries/XML_Helpers.cpp
+
+
+Basic usage
+-----------
+
+See the demo program (source/renderers/*_main.cpp) for an example of how to use SCMLpp.
+
+The gist is to load a SCML data file:
+SCML::Data data("my_guy.scml");
+
+Then let the renderer-specific FileSystem class load the images:
+FileSystem fs;
+fs.load(&data);
+
+Create renderer-specific Entities:
+list<Entity*> entities;
+for(map<int, SCML::Data::Entity*>::iterator e = data.entities.begin(); e != data.entities.end(); e++)
+{
+    Entity* entity = new Entity(&data, e->first);
+    entity->setFileSystem(&fs);
+    entity->setScreen(screen);
+    entities.push_back(entity);
+}
+
+Then in the main loop, update:
+for(list<Entity*>::iterator e = entities.begin(); e != entities.end(); e++)
+{
+    (*e)->update(dt_ms);  // dt_ms is the change in time, in milliseconds
+}
+
+And draw:
+for(list<Entity*>::iterator e = entities.begin(); e != entities.end(); e++)
+{
+    (*e)->draw(x, y, angle, scale, scale);
+}
+
+
+Writing a new renderer
+----------------------
+
+If your favorite rendering API is not yet available, have no fear!  It is incredibly simple to write your own for any C or C++ rendering API.  All of the SCML-specific functionality is separated from the renderers.  You need to know the following:
+How to load images, given a file name.
+How to draw a centered image.
+
+The comments in SCML_SDL_gpu.h and SCML_SDL_gpu.cpp will guide you through the specifics.  Just copy these files to start writing your own renderer interface.  I strongly encourage you to send your results to me so I can share them through the source repository.  If you want to write the corresponding demo program *_main.cpp for your renderer, that'd be even better!
+
+
+
+License
+-------
+
+SCMLpp is distributed under the MIT license.  In short, do whatever you want with it, but give me credit for the original work.  See LICENSE.txt for the full license text.
+
+
+Have fun!  Make great games!
+-Jonny D
+
+grimfang4 [at] gmail [dot] com
+

@@ -1,0 +1,1474 @@
+.TH "pdg" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+pdg \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBAnimated\fP"
+.br
+.RI "\fIsomething that can be automatically moved, spun or resized over time\&. \fP"
+.ti -1c
+.RI "class \fBColor\fP"
+.br
+.RI "\fIcolor in RGB space, with optional alpha \fP"
+.ti -1c
+.RI "class \fBConfigManager\fP"
+.br
+.RI "\fIused for loading and saving application configuration info \fP"
+.ti -1c
+.RI "class \fBCpArbiter\fP"
+.br
+.RI "\fIarbitrates collisions between sprites using Chipmunk Physics (\fIChipmunk Physics Only\fP) \fP"
+.ti -1c
+.RI "class \fBCpConstraint\fP"
+.br
+.RI "\fIdescribes how two sprites are connected to one another (\fIChipmunk Physics Only\fP) \fP"
+.ti -1c
+.RI "class \fBCpSpace\fP"
+.br
+.RI "\fIcontainer for simulating objects (\fIChipmunk Physics Only\fP) \fP"
+.ti -1c
+.RI "class \fBDeserializer\fP"
+.br
+.RI "\fIdeserialize data from a serialized data stream \fP"
+.ti -1c
+.RI "class \fBEventEmitter\fP"
+.br
+.RI "\fIDistributes events to event handlers\&. \fP"
+.ti -1c
+.RI "class \fBEventManager\fP"
+.br
+.RI "\fIDistributes events to event handlers\&. \fP"
+.ti -1c
+.RI "class \fBFileManager\fP"
+.br
+.RI "\fIextras beyond what Node\&.js FileSystem provides \fP"
+.ti -1c
+.RI "class \fBFont\fP"
+.br
+.RI "\fIfont for text drawing and measuring (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "class \fBGraphicsManager\fP"
+.br
+.RI "\fIUsed to create and track ports (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "class \fBIAnimationHelper\fP"
+.br
+.RI "\fIhelper for add-on or complex motion during animation \fP"
+.ti -1c
+.RI "class \fBIEventHandler\fP"
+.br
+.RI "\fIInterface for any class which handles events\&. \fP"
+.ti -1c
+.RI "class \fBImage\fP"
+.br
+.RI "\fIA bitmap image that can be blitted onto the screen\&. \fP"
+.ti -1c
+.RI "class \fBImageStrip\fP"
+.br
+.RI "\fIbitmap image containing a number of frames that can be blitted onto the screen \fP"
+.ti -1c
+.RI "class \fBISerializable\fP"
+.br
+.RI "\fIinterface for an object which can be serialized \fP"
+.ti -1c
+.RI "class \fBISpriteCollideHelper\fP"
+.br
+.RI "\fIhelper for deciding whether 2 sprites should collide or not \fP"
+.ti -1c
+.RI "class \fBISpriteDrawHelper\fP"
+.br
+.RI "\fIhelper for drawing sprite overlays and add-on effects \fP"
+.ti -1c
+.RI "struct \fBKeyEvent\fP"
+.br
+.RI "\fIa key down or up event \fP"
+.ti -1c
+.RI "struct \fBKeyPressEvent\fP"
+.br
+.RI "\fIthe user pressed and released a key \fP"
+.ti -1c
+.RI "class \fBLogManager\fP"
+.br
+.RI "\fIused for doing logging with variable debug levels \fP"
+.ti -1c
+.RI "class \fBMemBlock\fP"
+.br
+.RI "\fIholds arbitrary blocks of memory \fP"
+.ti -1c
+.RI "struct \fBMouseEvent\fP"
+.br
+.RI "\fIthe user did something with the mouse \fP"
+.ti -1c
+.RI "struct \fBMouseTrackingEvent\fP"
+.br
+.RI "\fIthe mouse entered or left a tracking region (\fINOT IMPLEMENTED\fP) \fP"
+.ti -1c
+.RI "class \fBNetClient\fP"
+.br
+.RI "\fIa network endpoint that can initiate a connection \fP"
+.ti -1c
+.RI "class \fBNetConnection\fP"
+.br
+.RI "\fIsends data between two network endpoints \fP"
+.ti -1c
+.RI "class \fBNetServer\fP"
+.br
+.RI "\fIa network endpoint that can accept incoming connections \fP"
+.ti -1c
+.RI "class \fBOffset\fP"
+.br
+.RI "\fIoffset within a 2D coordinate system \fP"
+.ti -1c
+.RI "class \fBPoint\fP"
+.br
+.RI "\fIpoint for 2D coordinate system \fP"
+.ti -1c
+.RI "class \fBPort\fP"
+.br
+.RI "\fIarea in which drawing is done, a viewport (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "struct \fBPortDrawEvent\fP"
+.br
+.RI "\fIa port needs to be redrawn (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "struct \fBPortResizedEvent\fP"
+.br
+.RI "\fIa port has been resized (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "class \fBQuad\fP"
+.br
+.RI "\fI4 point polygon in 2D system \fP"
+.ti -1c
+.RI "class \fBRect\fP"
+.br
+.RI "\fIRectangle for 2D coordinate system\&. \fP"
+.ti -1c
+.RI "class \fBResourceManager\fP"
+.br
+.RI "\fIused for loading resources \fP"
+.ti -1c
+.RI "class \fBRotatedRect\fP"
+.br
+.RI "\fIrectangle with rotation for 2D coordinate system\&. \fP"
+.ti -1c
+.RI "struct \fBScrollWheelEvent\fP"
+.br
+.RI "\fIthe user repositioned the scroll wheel \fP"
+.ti -1c
+.RI "class \fBSerializer\fP"
+.br
+.RI "\fIserialize data into memory \fP"
+.ti -1c
+.RI "struct \fBShutdownEvent\fP"
+.br
+.RI "\fIa timer fire event \fP"
+.ti -1c
+.RI "class \fBSound\fP"
+.br
+.RI "\fIhandles both short sounds and music (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "struct \fBSoundEvent\fP"
+.br
+.RI "\fIa sound completed or is looping (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "class \fBSoundManager\fP"
+.br
+.RI "\fIused for application wide sound settings and options (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "class \fBSprite\fP"
+.br
+.RI "\fIanimated, moving image that is automatically moved, animated, and drawn \fP"
+.ti -1c
+.RI "struct \fBSpriteAnimateEvent\fP"
+.br
+.RI "\fIa \fBSprite\fP did some animation (\fIOptional\fP) \fP"
+.ti -1c
+.RI "struct \fBSpriteBreakEvent\fP"
+.br
+.RI "\fIa \fBSprite\fP joint is breaking because it was overstressed (\fIChipmunk Physics Only\fP) \fP"
+.ti -1c
+.RI "struct \fBSpriteCollideEvent\fP"
+.br
+.RI "\fIa \fBSprite\fP collided with something (\fIOptional\fP) \fP"
+.ti -1c
+.RI "class \fBSpriteLayer\fP"
+.br
+.RI "\fIcreates and tracks collections of sprites \fP"
+.ti -1c
+.RI "struct \fBSpriteLayerEvent\fP"
+.br
+.RI "\fIthe user clicked on (or touched) a \fBSprite\fP \fP"
+.ti -1c
+.RI "struct \fBSpriteTouchEvent\fP"
+.br
+.RI "\fIthe user clicked on (or touched) a \fBSprite\fP \fP"
+.ti -1c
+.RI "class \fBTileLayer\fP"
+.br
+.RI "\fIefficiently handles large tile datasets, useful for backgrounds, terrains, etc\&.\&.\&. \fP"
+.ti -1c
+.RI "struct \fBTimerEvent\fP"
+.br
+.RI "\fIa timer fire event \fP"
+.ti -1c
+.RI "class \fBTimerManager\fP"
+.br
+.RI "\fImanages timers that can fire at a particular time, or repeatedly at an interval \fP"
+.ti -1c
+.RI "class \fBVector\fP"
+.br
+.RI "\fIvector (magnitude and direction) within a 2D coordinate system\&. \fP"
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBcaptureConsole\fP ()"
+.br
+.ti -1c
+.RI "\fBcleanupSpriteLayer\fP (\fBSpriteLayer\fP layer)"
+.br
+.ti -1c
+.RI "\fBSpriteLayer\fP \fBcreateSpriteLayer\fP (\fBPort\fP port=null)"
+.br
+.ti -1c
+.RI "\fBTileLayer\fP \fBcreateTileLayer\fP (\fBPort\fP port=null)"
+.br
+.ti -1c
+.RI "\fBdebug\fP (string msg)"
+.br
+.ti -1c
+.RI "\fBerror\fP (string msg)"
+.br
+.ti -1c
+.RI "\fBfatal\fP (string msg)"
+.br
+.ti -1c
+.RI "\fBConfigManager\fP \fBgetConfigManager\fP ()"
+.br
+.RI "\fIget the singleton instance of the \fBConfigManager\fP used by the pdg framework \fP"
+.ti -1c
+.RI "\fBEventManager\fP \fBgetEventManager\fP ()"
+.br
+.RI "\fIget the singleton instance of the \fBEventManager\fP used by the pdg framework \fP"
+.ti -1c
+.RI "\fBFileManager\fP \fBgetFileManager\fP ()"
+.br
+.RI "\fIget the singleton instance of the \fBFileManager\fP used by the pdg framework \fP"
+.ti -1c
+.RI "\fBGraphicsManager\fP \fBgetGraphicsManager\fP ()"
+.br
+.RI "\fIget the singleton instance of the \fBGraphicsManager\fP used by the pdg framework \fP"
+.ti -1c
+.RI "\fBLogManager\fP \fBgetLogManager\fP ()"
+.br
+.RI "\fIget the singleton instance of the \fBLogManager\fP used by the pdg framework \fP"
+.ti -1c
+.RI "\fBResourceManager\fP \fBgetResourceManager\fP ()"
+.br
+.RI "\fIget the singleton instance of the \fBResourceManager\fP used by the pdg framework \fP"
+.ti -1c
+.RI "\fBSoundManager\fP \fBgetSoundManager\fP ()"
+.br
+.RI "\fIget the singleton instance of the \fBSoundManager\fP used by the pdg framework \fP"
+.ti -1c
+.RI "\fBTimerManager\fP \fBgetTimerManager\fP ()"
+.br
+.RI "\fIget the singleton instance of the \fBTimerManager\fP used by the pdg framework \fP"
+.ti -1c
+.RI "\fBidle\fP ()"
+.br
+.ti -1c
+.RI "\fBinfo\fP (string msg)"
+.br
+.ti -1c
+.RI "\fBlog\fP (string msg)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBon\fP (int eventType, function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonKeyDown\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonKeyPress\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonKeyUp\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonMouseDown\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonMouseMove\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonMouseUp\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonShutdown\fP (function func)"
+.br
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonTimer\fP (function func)"
+.br
+.ti -1c
+.RI "\fBopenCommandPort\fP (int port=5757)"
+.br
+.ti -1c
+.RI "\fBopenConsole\fP ()"
+.br
+.ti -1c
+.RI "\fBopenDebugger\fP ()"
+.br
+.ti -1c
+.RI "\fBquit\fP ()"
+.br
+.ti -1c
+.RI "number \fBrand\fP ()"
+.br
+.ti -1c
+.RI "\fBregisterEasingFunction\fP (function easingFunc)"
+.br
+.ti -1c
+.RI "\fBregisterSerializableClass\fP (function klass)"
+.br
+.ti -1c
+.RI "\fBrun\fP ()"
+.br
+.ti -1c
+.RI "\fBsetSerializationDebugMode\fP (bool debugMode)"
+.br
+.ti -1c
+.RI "\fBsrand\fP (uint seed)"
+.br
+.ti -1c
+.RI "\fBstartRepl\fP ()"
+.br
+.ti -1c
+.RI "\fBtrace\fP (string msg)"
+.br
+.ti -1c
+.RI "\fBwarn\fP (string msg)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "const \fBaction_AnimationComplete\fP = 47"
+.br
+.RI "\fIeventType_SpriteLayer action: all animations for every \fBSpriteLayer\fP have completed \fP"
+.ti -1c
+.RI "const \fBaction_AnimationEnd\fP = 9"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite animation has completed \fP"
+.ti -1c
+.RI "const \fBaction_AnimationLoop\fP = 8"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite animation has completed and is looping back to the start \fP"
+.ti -1c
+.RI "const \fBaction_AnimationStart\fP = 44"
+.br
+.RI "\fIeventType_SpriteLayer action: starting animations for all SpriteLayers \fP"
+.ti -1c
+.RI "const \fBaction_CollideSprite\fP = 0"
+.br
+.ti -1c
+.RI "const \fBaction_CollideWall\fP = 1"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite has hit the edge of the sprite layer \fP"
+.ti -1c
+.RI "const \fBaction_DrawPortComplete\fP = 43"
+.br
+.RI "\fIeventType_SpriteLayer action: all drawing for every \fBSpriteLayer\fP has completed \fP"
+.ti -1c
+.RI "const \fBaction_ErasePort\fP = 40"
+.br
+.RI "\fIeventType_SpriteLayer action: about to start drawing each \fBSpriteLayer\fP \fP"
+.ti -1c
+.RI "const \fBaction_ExitLayer\fP = 4"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite has moved outside the layer boundaries\&. \fP"
+.ti -1c
+.RI "const \fBaction_FadeComplete\fP = 10"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite fadeTo() has completed \fP"
+.ti -1c
+.RI "const \fBaction_FadeInComplete\fP = 11"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite fade-in has completed \fP"
+.ti -1c
+.RI "const \fBaction_FadeOutComplete\fP = 12"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite fade-out has completed \fP"
+.ti -1c
+.RI "const \fBaction_JointBreak\fP = 13"
+.br
+.ti -1c
+.RI "const \fBaction_LayerFadeInComplete\fP = 49"
+.br
+.RI "\fIeventType_SpriteLayer action: the fade-in of a layer has been completed \fP"
+.ti -1c
+.RI "const \fBaction_LayerFadeOutComplete\fP = 50"
+.br
+.RI "\fIeventType_SpriteLayer action: the fade-out of a layer has been completed \fP"
+.ti -1c
+.RI "const \fBaction_Offscreen\fP = 2"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite has gone completely offscreen (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "const \fBaction_Onscreen\fP = 3"
+.br
+.RI "\fIeventType_SpriteAnimate action: a sprite that was off screen has moved onscreen (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "const \fBaction_PostAnimateLayer\fP = 46"
+.br
+.RI "\fIeventType_SpriteLayer action: all animations for a particular \fBSpriteLayer\fP have completed \fP"
+.ti -1c
+.RI "const \fBaction_PostDrawLayer\fP = 42"
+.br
+.RI "\fIeventType_SpriteLayer action: completed rendering for a particular \fBSpriteLayer\fP \fP"
+.ti -1c
+.RI "const \fBaction_PreAnimateLayer\fP = 45"
+.br
+.RI "\fIeventType_SpriteLayer action: about to start animations for a particular \fBSpriteLayer\fP \fP"
+.ti -1c
+.RI "const \fBaction_PreDrawLayer\fP = 41"
+.br
+.RI "\fIeventType_SpriteLayer action: about to render a particular \fBSpriteLayer\fP \fP"
+.ti -1c
+.RI "const \fBaction_ZoomComplete\fP = 48"
+.br
+.RI "\fIeventType_SpriteLayer action: zooming a particular sprite layer is complete \fP"
+.ti -1c
+.RI "const \fBall_events\fP = 0"
+.br
+.RI "\fIa special catch-all for events that weren't handled by specific event handlers \fP"
+.ti -1c
+.RI "const \fBall_Frames\fP = 0"
+.br
+.ti -1c
+.RI "const \fBanimate_Bidirectional\fP = 2"
+.br
+.ti -1c
+.RI "const \fBanimate_EndToStart\fP = 1"
+.br
+.ti -1c
+.RI "const \fBanimate_Looping\fP = 4"
+.br
+.ti -1c
+.RI "const \fBanimate_NoLooping\fP = 0"
+.br
+.ti -1c
+.RI "const \fBanimate_StartToEnd\fP = 0"
+.br
+.ti -1c
+.RI "const \fBanimate_Unidirectional\fP = 0"
+.br
+.ti -1c
+.RI "string[] \fBargv\fP"
+.br
+.RI "\fIcontains the arguments passed on the command line \fP"
+.ti -1c
+.RI "\fBConfigManager\fP \fBcfg\fP"
+.br
+.ti -1c
+.RI "const \fBcollide_AlphaChannel\fP = 4"
+.br
+.ti -1c
+.RI "const \fBcollide_BoundingBox\fP = 2"
+.br
+.ti -1c
+.RI "const \fBcollide_CollisionRadius\fP = 3"
+.br
+.ti -1c
+.RI "const \fBcollide_Last\fP = 4"
+.br
+.ti -1c
+.RI "const \fBcollide_None\fP = 0"
+.br
+.ti -1c
+.RI "const \fBcollide_Point\fP = 1"
+.br
+.ti -1c
+.RI "const \fBduration_Constant\fP = -1"
+.br
+.ti -1c
+.RI "const \fBduration_Instantaneous\fP = 0"
+.br
+.ti -1c
+.RI "const \fBeaseInBack\fP = 25"
+.br
+.ti -1c
+.RI "const \fBeaseInBounce\fP = 22"
+.br
+.ti -1c
+.RI "const \fBeaseInCirc\fP = 19"
+.br
+.ti -1c
+.RI "const \fBeaseInCubic\fP = 4"
+.br
+.ti -1c
+.RI "const \fBeaseInExpo\fP = 16"
+.br
+.ti -1c
+.RI "const \fBeaseInOutBack\fP = 27"
+.br
+.ti -1c
+.RI "const \fBeaseInOutBounce\fP = 24"
+.br
+.ti -1c
+.RI "const \fBeaseInOutCirc\fP = 21"
+.br
+.ti -1c
+.RI "const \fBeaseInOutCubic\fP = 6"
+.br
+.ti -1c
+.RI "const \fBeaseInOutExpo\fP = 18"
+.br
+.ti -1c
+.RI "const \fBeaseInOutQuad\fP = 3"
+.br
+.ti -1c
+.RI "const \fBeaseInOutQuint\fP = 12"
+.br
+.ti -1c
+.RI "const \fBeaseInOutSine\fP = 15"
+.br
+.ti -1c
+.RI "const \fBeaseInQuad\fP = 1"
+.br
+.ti -1c
+.RI "const \fBeaseInQuart\fP = 7"
+.br
+.ti -1c
+.RI "const \fBeaseInQuint\fP = 10"
+.br
+.ti -1c
+.RI "const \fBeaseInSine\fP = 13"
+.br
+.ti -1c
+.RI "const \fBeaseOutBack\fP = 26"
+.br
+.ti -1c
+.RI "const \fBeaseOutBounce\fP = 23"
+.br
+.ti -1c
+.RI "const \fBeaseOutCirc\fP = 20"
+.br
+.ti -1c
+.RI "const \fBeaseOutCubic\fP = 5"
+.br
+.ti -1c
+.RI "const \fBeaseOutExpo\fP = 17"
+.br
+.ti -1c
+.RI "const \fBeaseOutQuad\fP = 2"
+.br
+.ti -1c
+.RI "const \fBeaseOutQuart\fP = 8"
+.br
+.ti -1c
+.RI "const \fBeaseOutQuint\fP = 11"
+.br
+.ti -1c
+.RI "const \fBeaseOutSine\fP = 14"
+.br
+.ti -1c
+.RI "const \fBeventType_KeyDown\fP = 4"
+.br
+.RI "\fIthe user pushed down on a key \fP"
+.ti -1c
+.RI "const \fBeventType_KeyPress\fP = 6"
+.br
+.RI "\fIthe user pressed and released a key \fP"
+.ti -1c
+.RI "const \fBeventType_KeyUp\fP = 5"
+.br
+.RI "\fIthe user released a key \fP"
+.ti -1c
+.RI "const \fBeventType_MouseDown\fP = 7"
+.br
+.RI "\fIthe user pressed a mouse button \fP"
+.ti -1c
+.RI "const \fBeventType_MouseEnter\fP = 22"
+.br
+.RI "\fIthe user moved the mouse into a tracking area (\fINOT IMPLEMENTED\fP) \fP"
+.ti -1c
+.RI "const \fBeventType_MouseLeave\fP = 23"
+.br
+.RI "\fIthe user moved the mouse out of a tracking area (\fINOT IMPLEMENTED\fP) \fP"
+.ti -1c
+.RI "const \fBeventType_MouseMove\fP = 9"
+.br
+.RI "\fIthe user moved the mouse \fP"
+.ti -1c
+.RI "const \fBeventType_MouseUp\fP = 8"
+.br
+.RI "\fIthe user release a mouse button \fP"
+.ti -1c
+.RI "const \fBeventType_PortDraw\fP = 24"
+.br
+.RI "\fIa port needs to be redrawn \fP"
+.ti -1c
+.RI "const \fBeventType_PortResized\fP = 15"
+.br
+.RI "\fIa port was resized \fP"
+.ti -1c
+.RI "const \fBeventType_ScrollWheel\fP = 16"
+.br
+.RI "\fIthe user moved the scroll wheel \fP"
+.ti -1c
+.RI "const \fBeventType_Shutdown\fP = 2"
+.br
+.RI "\fIone time application shutdown event \fP"
+.ti -1c
+.RI "const \fBeventType_SoundEvent\fP = 14"
+.br
+.RI "\fIa sound finished or looped \fP"
+.ti -1c
+.RI "const \fBeventType_SpriteAnimate\fP = 17"
+.br
+.RI "\fIa sprite finished an animation (\fIOptional\fP) \fP"
+.ti -1c
+.RI "const \fBeventType_SpriteBreak\fP = 21"
+.br
+.RI "\fIjoined sprites broke apart (\fIChipmunk Physics only\fP) \fP"
+.ti -1c
+.RI "const \fBeventType_SpriteCollide\fP = 20"
+.br
+.RI "\fIa collision between sprites \fP"
+.ti -1c
+.RI "const \fBeventType_SpriteLayer\fP = 18"
+.br
+.RI "\fIsomething happening to a sprite layer \fP"
+.ti -1c
+.RI "const \fBeventType_SpriteTouch\fP = 19"
+.br
+.RI "\fIsprite touched event (\fIOptional\fP) \fP"
+.ti -1c
+.RI "const \fBeventType_Timer\fP = 3"
+.br
+.RI "\fIa timer fire event \fP"
+.ti -1c
+.RI "\fBEventManager\fP \fBevt\fP"
+.br
+.ti -1c
+.RI "const \fBfacing_East\fP = 64"
+.br
+.ti -1c
+.RI "const \fBfacing_Ignore\fP = 256"
+.br
+.ti -1c
+.RI "const \fBfacing_North\fP = 0"
+.br
+.ti -1c
+.RI "const \fBfacing_South\fP = 128"
+.br
+.ti -1c
+.RI "const \fBfacing_West\fP = 192"
+.br
+.ti -1c
+.RI "const \fBfit_Fill\fP = 4"
+.br
+.ti -1c
+.RI "const \fBfit_FillKeepProportions\fP = 5"
+.br
+.ti -1c
+.RI "const \fBfit_Height\fP = 1"
+.br
+.ti -1c
+.RI "const \fBfit_Inside\fP = 3"
+.br
+.ti -1c
+.RI "const \fBfit_None\fP = 0"
+.br
+.ti -1c
+.RI "const \fBfit_Width\fP = 2"
+.br
+.ti -1c
+.RI "const \fBflipped_Both\fP = 192"
+.br
+.ti -1c
+.RI "const \fBflipped_Horizontal\fP = 64"
+.br
+.ti -1c
+.RI "const \fBflipped_Ignore\fP = 256"
+.br
+.ti -1c
+.RI "const \fBflipped_None\fP = 0"
+.br
+.ti -1c
+.RI "const \fBflipped_Vertical\fP = 128"
+.br
+.ti -1c
+.RI "\fBFileManager\fP \fBfs\fP"
+.br
+.ti -1c
+.RI "\fBGraphicsManager\fP \fBgfx\fP"
+.br
+.ti -1c
+.RI "boolean \fBhasGraphics\fP"
+.br
+.ti -1c
+.RI "boolean \fBhasNetwork\fP"
+.br
+.ti -1c
+.RI "boolean \fBhasSound\fP"
+.br
+.ti -1c
+.RI "const \fBinit_AppendToExisting\fP = 2"
+.br
+.ti -1c
+.RI "const \fBinit_CreateUniqueNewFile\fP = 0"
+.br
+.ti -1c
+.RI "const \fBinit_OverwriteExisting\fP = 1"
+.br
+.ti -1c
+.RI "const \fBinit_StdErr\fP = 4"
+.br
+.ti -1c
+.RI "const \fBinit_StdOut\fP = 3"
+.br
+.ti -1c
+.RI "const \fBkey_Backspace\fP = 8"
+.br
+.ti -1c
+.RI "const \fBkey_Break\fP = 1"
+.br
+.ti -1c
+.RI "const \fBkey_Clear\fP = 4"
+.br
+.ti -1c
+.RI "const \fBkey_Delete\fP = 127"
+.br
+.ti -1c
+.RI "const \fBkey_DownArrow\fP = 31"
+.br
+.ti -1c
+.RI "const \fBkey_End\fP = 3"
+.br
+.ti -1c
+.RI "const \fBkey_Enter\fP = 13"
+.br
+.ti -1c
+.RI "const \fBkey_Escape\fP = 27"
+.br
+.ti -1c
+.RI "const \fBkey_F1\fP = 14"
+.br
+.ti -1c
+.RI "const \fBkey_F10\fP = 23"
+.br
+.ti -1c
+.RI "const \fBkey_F11\fP = 24"
+.br
+.ti -1c
+.RI "const \fBkey_F12\fP = 25"
+.br
+.ti -1c
+.RI "const \fBkey_F2\fP = 15"
+.br
+.ti -1c
+.RI "const \fBkey_F3\fP = 16"
+.br
+.ti -1c
+.RI "const \fBkey_F4\fP = 17"
+.br
+.ti -1c
+.RI "const \fBkey_F5\fP = 18"
+.br
+.ti -1c
+.RI "const \fBkey_F6\fP = 19"
+.br
+.ti -1c
+.RI "const \fBkey_F7\fP = 20"
+.br
+.ti -1c
+.RI "const \fBkey_F8\fP = 21"
+.br
+.ti -1c
+.RI "const \fBkey_F9\fP = 22"
+.br
+.ti -1c
+.RI "const \fBkey_FirstF\fP = 14"
+.br
+.ti -1c
+.RI "const \fBkey_FirstPrintable\fP = 32"
+.br
+.ti -1c
+.RI "const \fBkey_Help\fP = 5"
+.br
+.ti -1c
+.RI "const \fBkey_Home\fP = 2"
+.br
+.ti -1c
+.RI "const \fBkey_Insert\fP = 26"
+.br
+.ti -1c
+.RI "const \fBkey_LastF\fP = 25"
+.br
+.ti -1c
+.RI "const \fBkey_LeftArrow\fP = 28"
+.br
+.ti -1c
+.RI "const \fBkey_Mute\fP = 7"
+.br
+.ti -1c
+.RI "const \fBkey_PageDown\fP = 12"
+.br
+.ti -1c
+.RI "const \fBkey_PageUp\fP = 11"
+.br
+.ti -1c
+.RI "const \fBkey_Pause\fP = 6"
+.br
+.ti -1c
+.RI "const \fBkey_Return\fP = 13"
+.br
+.ti -1c
+.RI "const \fBkey_RightArrow\fP = 29"
+.br
+.ti -1c
+.RI "const \fBkey_Tab\fP = 9"
+.br
+.ti -1c
+.RI "const \fBkey_UpArrow\fP = 30"
+.br
+.ti -1c
+.RI "const \fBlftBot\fP = 3"
+.br
+.ti -1c
+.RI "const \fBlftTop\fP = 0"
+.br
+.ti -1c
+.RI "const \fBlinearTween\fP = 0"
+.br
+.ti -1c
+.RI "\fBLogManager\fP \fBlm\fP"
+.br
+.ti -1c
+.RI "boolean \fBquitting\fP"
+.br
+.ti -1c
+.RI "\fBResourceManager\fP \fBres\fP"
+.br
+.ti -1c
+.RI "const \fBrgtBot\fP = 2"
+.br
+.ti -1c
+.RI "const \fBrgtTop\fP = 1"
+.br
+.ti -1c
+.RI "boolean \fBrunning\fP"
+.br
+.ti -1c
+.RI "const \fBscreenPos_FaceDown\fP = 5"
+.br
+.ti -1c
+.RI "const \fBscreenPos_FaceUp\fP = 4"
+.br
+.ti -1c
+.RI "const \fBscreenPos_Normal\fP = 0"
+.br
+.ti -1c
+.RI "const \fBscreenPos_Rotated180\fP = 1"
+.br
+.ti -1c
+.RI "const \fBscreenPos_Rotated90Clockwise\fP = 2"
+.br
+.ti -1c
+.RI "const \fBscreenPos_Rotated90CounterClockwise\fP = 3"
+.br
+.ti -1c
+.RI "const \fBser_Animations\fP = 8"
+.br
+.ti -1c
+.RI "const \fBser_Forces\fP = 32"
+.br
+.ti -1c
+.RI "const \fBser_Full\fP = 18303"
+.br
+.RI "\fIsprite layer serialization mode for recreating layer \fP"
+.ti -1c
+.RI "const \fBser_HelperObjs\fP = 8192"
+.br
+.ti -1c
+.RI "const \fBser_HelperRefs\fP = 1024"
+.br
+.ti -1c
+.RI "const \fBser_ImageRefs\fP = 256"
+.br
+.ti -1c
+.RI "const \fBser_InitialData\fP = 16384"
+.br
+.ti -1c
+.RI "const \fBser_LayerDraw\fP = 128"
+.br
+.ti -1c
+.RI "const \fBser_Micro\fP = 3"
+.br
+.RI "\fIsprite layer serialization mode for minimal size \fP"
+.ti -1c
+.RI "const \fBser_Motion\fP = 16"
+.br
+.ti -1c
+.RI "const \fBser_Physics\fP = 64"
+.br
+.ti -1c
+.RI "const \fBser_Positions\fP = 1"
+.br
+.ti -1c
+.RI "const \fBser_SCMLRefs\fP = 512"
+.br
+.ti -1c
+.RI "const \fBser_Sizes\fP = 4"
+.br
+.ti -1c
+.RI "const \fBser_Update\fP = 127"
+.br
+.RI "\fIsprite layer serialization mode for regular updates \fP"
+.ti -1c
+.RI "const \fBser_ZOrder\fP = 2"
+.br
+.ti -1c
+.RI "\fBSoundManager\fP \fBsnd\fP"
+.br
+.ti -1c
+.RI "const \fBsoundEvent_DonePlaying\fP = 0"
+.br
+.RI "\fIsound event type for completion of a sound \fP"
+.ti -1c
+.RI "const \fBsoundEvent_FailedToPlay\fP = 2"
+.br
+.RI "\fIsound event type for a sound error \fP"
+.ti -1c
+.RI "const \fBsoundEvent_Looping\fP = 1"
+.br
+.RI "\fIsound event type for a sound finishing and starting over \fP"
+.ti -1c
+.RI "const \fBstart_FromFirstFrame\fP = -1"
+.br
+.ti -1c
+.RI "const \fBstart_FromLastFrame\fP = -2"
+.br
+.ti -1c
+.RI "const \fBtextStyle_Bold\fP = 1"
+.br
+.ti -1c
+.RI "const \fBtextStyle_Centered\fP = 16"
+.br
+.ti -1c
+.RI "const \fBtextStyle_Italic\fP = 2"
+.br
+.ti -1c
+.RI "const \fBtextStyle_LeftJustified\fP = 0"
+.br
+.ti -1c
+.RI "const \fBtextStyle_Plain\fP = 0"
+.br
+.ti -1c
+.RI "const \fBtextStyle_RightJustified\fP = 32"
+.br
+.ti -1c
+.RI "const \fBtextStyle_Underline\fP = 4"
+.br
+.ti -1c
+.RI "const \fBtimer_Never\fP = -1"
+.br
+.ti -1c
+.RI "const \fBtimer_OneShot\fP = true"
+.br
+.ti -1c
+.RI "const \fBtimer_Repeating\fP = false"
+.br
+.ti -1c
+.RI "\fBTimerManager\fP \fBtm\fP"
+.br
+.ti -1c
+.RI "const \fBtouch_MouseClick\fP = 24"
+.br
+.ti -1c
+.RI "const \fBtouch_MouseDown\fP = 22"
+.br
+.ti -1c
+.RI "const \fBtouch_MouseEnter\fP = 20"
+.br
+.ti -1c
+.RI "const \fBtouch_MouseLeave\fP = 21"
+.br
+.ti -1c
+.RI "const \fBtouch_MouseUp\fP = 23"
+.br
+.in -1c
+.SH "Class Documentation"
+.PP 
+.SH "struct pdg::TimerEvent"
+.PP 
+a timer fire event 
+
+Generated by the \fBTimerManager\fP when a timer fires 
+.PP
+.nf
+{ 
+    emitter: {},            // the emitter that generated this event
+    eventType: 3,           // the event type (eventType_Timer)
+    id: 117440512,          // the timer id (auto-generated up by onTimeout())
+    millisec: 1025448321,   // the millisecond time when the timer fired
+    msElapsed: 18896        // the time elapsed since the timer was started or last fired
+} 
+
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBeventType_Timer\fP 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "pdg::captureConsole ()"
+
+.SS "pdg::cleanupSpriteLayer (SpriteLayerlayer)"
+
+.SS "\fBSpriteLayer\fP pdg::createSpriteLayer (Portport = \fCnull\fP)"
+
+.SS "\fBTileLayer\fP pdg::createTileLayer (Portport = \fCnull\fP)"
+
+.SS "pdg::debug (stringmsg)"
+
+.SS "pdg::error (stringmsg)"
+
+.SS "pdg::fatal (stringmsg)"
+
+.SS "getConfigManager ()"
+
+.PP
+get the singleton instance of the \fBConfigManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBConfigManager\fP singleton object 
+.RE
+.PP
+
+.SS "getEventManager ()"
+
+.PP
+get the singleton instance of the \fBEventManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBEventManager\fP singleton object 
+.RE
+.PP
+
+.SS "getFileManager ()"
+
+.PP
+get the singleton instance of the \fBFileManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBFileManager\fP singleton object 
+.RE
+.PP
+
+.SS "getGraphicsManager ()"
+
+.PP
+get the singleton instance of the \fBGraphicsManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBGraphicsManager\fP singleton object 
+.RE
+.PP
+
+.SS "getLogManager ()"
+
+.PP
+get the singleton instance of the \fBLogManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBLogManager\fP singleton object 
+.RE
+.PP
+
+.SS "getResourceManager ()"
+
+.PP
+get the singleton instance of the \fBResourceManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBResourceManager\fP singleton object 
+.RE
+.PP
+
+.SS "getSoundManager ()"
+
+.PP
+get the singleton instance of the \fBSoundManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBSoundManager\fP singleton object 
+.RE
+.PP
+
+.SS "getTimerManager ()"
+
+.PP
+get the singleton instance of the \fBTimerManager\fP used by the pdg framework \fBReturns:\fP
+.RS 4
+\fBTimerManager\fP singleton object 
+.RE
+.PP
+
+.SS "pdg::idle ()"
+
+.SS "pdg::info (stringmsg)"
+
+.SS "pdg::log (stringmsg)"
+
+.SS "\fBIEventHandler\fP pdg::on (inteventType, functionfunc)"
+
+.SS "\fBIEventHandler\fP pdg::onKeyDown (functionfunc)"
+
+.SS "\fBIEventHandler\fP pdg::onKeyPress (functionfunc)"
+
+.SS "\fBIEventHandler\fP pdg::onKeyUp (functionfunc)"
+
+.SS "\fBIEventHandler\fP pdg::onMouseDown (functionfunc)"
+
+.SS "\fBIEventHandler\fP pdg::onMouseMove (functionfunc)"
+
+.SS "\fBIEventHandler\fP pdg::onMouseUp (functionfunc)"
+
+.SS "\fBIEventHandler\fP pdg::onShutdown (functionfunc)"
+
+.SS "\fBIEventHandler\fP pdg::onTimer (functionfunc)"
+
+.SS "pdg::openCommandPort (intport = \fC5757\fP)"
+
+.SS "pdg::openConsole ()"
+
+.SS "pdg::openDebugger ()"
+
+.SS "pdg::quit ()"
+
+.SS "number pdg::rand ()"
+
+.SS "pdg::registerEasingFunction (functioneasingFunc)"
+
+.SS "pdg::registerSerializableClass (functionklass)"
+
+.SS "pdg::run ()"
+
+.SS "pdg::setSerializationDebugMode (booldebugMode)"
+
+.SS "pdg::srand (uintseed)"
+
+.SS "pdg::startRepl ()"
+
+.SS "pdg::trace (stringmsg)"
+
+.SS "pdg::warn (stringmsg)"
+
+.SH "Variable Documentation"
+.PP 
+.SS "const all_Frames = 0"
+
+.SS "const animate_Bidirectional = 2"
+
+.SS "const animate_EndToStart = 1"
+
+.SS "const animate_Looping = 4"
+
+.SS "const animate_NoLooping = 0"
+
+.SS "const animate_StartToEnd = 0"
+
+.SS "const animate_Unidirectional = 0"
+
+.SS "argv"
+
+.PP
+contains the arguments passed on the command line If this was launched by being double-clicked, or on the command line with no arguments, then it will contain: 
+.PP
+.nf
+[ "/path/to/pdg", "main.js" ]
+
+.fi
+.PP
+.PP
+\fBpdg\&.argv\fP[0] will always be the path to the pdg application\&. There will always be a \&.js file on the path, even if one wasn't specifically passed in main\&.js will be added\&. 
+.SS "\fBConfigManager\fP cfg\fC [related]\fP"
+
+.SS "const collide_AlphaChannel = 4"
+
+.SS "const collide_BoundingBox = 2"
+
+.SS "const collide_CollisionRadius = 3"
+
+.SS "const collide_Last = 4"
+
+.SS "const collide_None = 0"
+
+.SS "const collide_Point = 1"
+
+.SS "const duration_Constant = -1"
+
+.SS "const duration_Instantaneous = 0"
+
+.SS "const easeInBack = 25"
+
+.SS "const easeInBounce = 22"
+
+.SS "const easeInCirc = 19"
+
+.SS "const easeInCubic = 4"
+
+.SS "const easeInExpo = 16"
+
+.SS "const easeInOutBack = 27"
+
+.SS "const easeInOutBounce = 24"
+
+.SS "const easeInOutCirc = 21"
+
+.SS "const easeInOutCubic = 6"
+
+.SS "const easeInOutExpo = 18"
+
+.SS "const easeInOutQuad = 3"
+
+.SS "const easeInOutQuint = 12"
+
+.SS "const easeInOutSine = 15"
+
+.SS "const easeInQuad = 1"
+
+.SS "const easeInQuart = 7"
+
+.SS "const easeInQuint = 10"
+
+.SS "const easeInSine = 13"
+
+.SS "const easeOutBack = 26"
+
+.SS "const easeOutBounce = 23"
+
+.SS "const easeOutCirc = 20"
+
+.SS "const easeOutCubic = 5"
+
+.SS "const easeOutExpo = 17"
+
+.SS "const easeOutQuad = 2"
+
+.SS "const easeOutQuart = 8"
+
+.SS "const easeOutQuint = 11"
+
+.SS "const easeOutSine = 14"
+
+.SS "\fBEventManager\fP evt\fC [related]\fP"
+
+.SS "const facing_East = 64"
+
+.SS "const facing_Ignore = 256"
+
+.SS "const facing_North = 0"
+
+.SS "const facing_South = 128"
+
+.SS "const facing_West = 192"
+
+.SS "const fit_Fill = 4"
+
+.SS "const fit_FillKeepProportions = 5"
+
+.SS "const fit_Height = 1"
+
+.SS "const fit_Inside = 3"
+
+.SS "const fit_None = 0"
+
+.SS "const fit_Width = 2"
+
+.SS "const flipped_Both = 192"
+
+.SS "const flipped_Horizontal = 64"
+
+.SS "const flipped_Ignore = 256"
+
+.SS "const flipped_None = 0"
+
+.SS "const flipped_Vertical = 128"
+
+.SS "\fBFileManager\fP fs\fC [related]\fP"
+
+.SS "\fBGraphicsManager\fP gfx\fC [related]\fP"
+
+.SS "boolean hasGraphics"
+
+.SS "boolean hasNetwork"
+
+.SS "boolean hasSound"
+
+.SS "const init_AppendToExisting = 2"
+
+.SS "const init_CreateUniqueNewFile = 0"
+
+.SS "const init_OverwriteExisting = 1"
+
+.SS "const init_StdErr = 4"
+
+.SS "const init_StdOut = 3"
+
+.SS "const lftBot = 3"
+
+.SS "const lftTop = 0"
+
+.SS "const linearTween = 0"
+
+.SS "\fBLogManager\fP lm"
+
+.SS "boolean quitting"
+
+.SS "\fBResourceManager\fP res\fC [related]\fP"
+
+.SS "const rgtBot = 2"
+
+.SS "const rgtTop = 1"
+
+.SS "boolean running"
+
+.SS "const screenPos_FaceDown = 5"
+
+.SS "const screenPos_FaceUp = 4"
+
+.SS "const screenPos_Normal = 0"
+
+.SS "const screenPos_Rotated180 = 1"
+
+.SS "const screenPos_Rotated90Clockwise = 2"
+
+.SS "const screenPos_Rotated90CounterClockwise = 3"
+
+.SS "const ser_Animations = 8"
+
+.SS "const ser_Forces = 32"
+
+.SS "ser_Full = 18303"
+
+.PP
+sprite layer serialization mode for recreating layer Everything needed to completely recreate the sprite layer\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBser_Micro\fP 
+.PP
+\fBser_Update\fP 
+.PP
+\fBSpriteLayer\&.setSerializationFlags()\fP
+.RE
+.PP
+\fBWarning:\fP
+.RS 4
+Helpers are not recreated\&.
+.RE
+.PP
+
+.SS "const ser_HelperObjs = 8192"
+
+.SS "const ser_HelperRefs = 1024"
+
+.SS "const ser_ImageRefs = 256"
+
+.SS "const ser_InitialData = 16384"
+
+.SS "const ser_LayerDraw = 128"
+
+.SS "ser_Micro = 3"
+
+.PP
+sprite layer serialization mode for minimal size Only sends position and z-order updates\&. Ideal for sprite layers that do no animation of their own and are completely driven frame by frame from a master sprite layer, or perhaps for recording the paths of objects in a sprite layer for a rewind/replay\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBser_Update\fP 
+.PP
+\fBser_Full\fP 
+.PP
+\fBSpriteLayer\&.setSerializationFlags()\fP 
+.RE
+.PP
+
+.SS "const ser_Motion = 16"
+
+.SS "const ser_Physics = 64"
+
+.SS "const ser_Positions = 1"
+
+.SS "const ser_SCMLRefs = 512"
+
+.SS "const ser_Sizes = 4"
+
+.SS "ser_Update = 127"
+
+.PP
+sprite layer serialization mode for regular updates Used to update sprite layers that were created to be identical\&. Unlike the micro update, the updated info includes all the currently acting animations and forces, so it does not need to be updated every frame like the micro updates\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBser_Micro\fP 
+.PP
+\fBser_Full\fP 
+.PP
+\fBSpriteLayer\&.setSerializationFlags()\fP 
+.RE
+.PP
+
+.SS "const ser_ZOrder = 2"
+
+.SS "\fBSoundManager\fP snd\fC [related]\fP"
+
+.SS "const start_FromFirstFrame = -1"
+
+.SS "const start_FromLastFrame = -2"
+
+.SS "const textStyle_Bold = 1"
+
+.SS "const textStyle_Centered = 16"
+
+.SS "const textStyle_Italic = 2"
+
+.SS "const textStyle_LeftJustified = 0"
+
+.SS "const textStyle_Plain = 0"
+
+.SS "const textStyle_RightJustified = 32"
+
+.SS "const textStyle_Underline = 4"
+
+.SS "const timer_Never = -1"
+
+.SS "const timer_OneShot = true"
+
+.SS "const timer_Repeating = false"
+
+.SS "\fBTimerManager\fP tm\fC [related]\fP"
+
+.SS "const touch_MouseClick = 24"
+
+.SS "const touch_MouseDown = 22"
+
+.SS "const touch_MouseEnter = 20"
+
+.SS "const touch_MouseLeave = 21"
+
+.SS "const touch_MouseUp = 23"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

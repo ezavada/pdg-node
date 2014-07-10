@@ -1,0 +1,115 @@
+.TH "CpArbiter" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CpArbiter \- 
+.PP
+arbitrates collisions between sprites using Chipmunk Physics (\fIChipmunk Physics Only\fP)  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "number \fBgetCount\fP ()"
+.br
+.RI "\fInumber of contacts tracked by this arbiter \fP"
+.ti -1c
+.RI "number \fBgetDepth\fP (int i)"
+.br
+.RI "\fIget the depth of penetration for a particular contact point \fP"
+.ti -1c
+.RI "\fBVector\fP \fBgetNormal\fP (int i)"
+.br
+.RI "\fIget collision normal for a particular contact point \fP"
+.ti -1c
+.RI "\fBPoint\fP \fBgetPoint\fP (int i)"
+.br
+.RI "\fIget the location of a particular contact point \fP"
+.ti -1c
+.RI "boolean \fBisFirstContact\fP ()"
+.br
+.RI "\fIis this this first moment of contact in a collision? \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+arbitrates collisions between sprites using Chipmunk Physics (\fIChipmunk Physics Only\fP) 
+
+\fBSee Also:\fP
+.RS 4
+http://files.slembcke.net/chipmunk/release/ChipmunkLatest-Docs/#cpArbiter 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "getCount ()"
+
+.PP
+number of contacts tracked by this arbiter A collision can involve multiple contact points between objects\&. This tells you how many different contact points are involved in this collision\&.
+.PP
+\fBReturns:\fP
+.RS 4
+number of contact points 
+.RE
+.PP
+
+.SS "getDepth (inti)"
+
+.PP
+get the depth of penetration for a particular contact point \fBParameters:\fP
+.RS 4
+\fIi\fP index into contact points
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+how far the contact point is inside the other object 
+.RE
+.PP
+
+.SS "getNormal (inti)"
+
+.PP
+get collision normal for a particular contact point Get the normal vector (magnitude of 1\&.0) that expresses the relative x and y direction of the collision for this particular contact point\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIi\fP index into contact points
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the collision normal vector for that contact point 
+.RE
+.PP
+
+.SS "getPoint (inti)"
+
+.PP
+get the location of a particular contact point \fBParameters:\fP
+.RS 4
+\fIi\fP index into contact points
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the location of the contact 
+.RE
+.PP
+
+.SS "isFirstContact ()"
+
+.PP
+is this this first moment of contact in a collision? \fBReturns:\fP
+.RS 4
+true if this is the first moment of contact between the objects, false if part of an ongoing collison 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

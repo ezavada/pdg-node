@@ -1,0 +1,151 @@
+.TH "Managers" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Managers \- 
+.PP
+The main points of interface to the Pixel Dust Game Framework\&.  
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBConfigManager\fP"
+.br
+.RI "\fIused for loading and saving application configuration info \fP"
+.ti -1c
+.RI "class \fBEventManager\fP"
+.br
+.RI "\fIDistributes events to event handlers\&. \fP"
+.ti -1c
+.RI "class \fBFileManager\fP"
+.br
+.RI "\fIextras beyond what Node\&.js FileSystem provides \fP"
+.ti -1c
+.RI "class \fBGraphicsManager\fP"
+.br
+.RI "\fIUsed to create and track ports (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "class \fBLogManager\fP"
+.br
+.RI "\fIused for doing logging with variable debug levels \fP"
+.ti -1c
+.RI "class \fBResourceManager\fP"
+.br
+.RI "\fIused for loading resources \fP"
+.ti -1c
+.RI "class \fBSoundManager\fP"
+.br
+.RI "\fIused for application wide sound settings and options (\fIGUI Only\fP) \fP"
+.ti -1c
+.RI "class \fBTimerManager\fP"
+.br
+.RI "\fImanages timers that can fire at a particular time, or repeatedly at an interval \fP"
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBcfg\fP"
+.br
+.RI "\fIthe singleton instance of the \fBConfigManager\fP \fP"
+.ti -1c
+.RI "\fBevt\fP"
+.br
+.RI "\fIthe singleton instance of the \fBEventManager\fP \fP"
+.ti -1c
+.RI "\fBfs\fP"
+.br
+.RI "\fIthe singleton instance of the \fBFileManager\fP \fP"
+.ti -1c
+.RI "\fBgfx\fP"
+.br
+.RI "\fIthe singleton instance of the \fBGraphicsManager\fP \fP"
+.ti -1c
+.RI "\fBres\fP"
+.br
+.RI "\fIthe singleton instance of the \fBResourceManager\fP \fP"
+.ti -1c
+.RI "\fBsnd\fP"
+.br
+.RI "\fIthe singleton instance of the \fBSoundManager\fP \fP"
+.ti -1c
+.RI "\fBtm\fP"
+.br
+.RI "\fIthe singleton instance of the \fBTimerManager\fP \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+The main points of interface to the Pixel Dust Game Framework\&. 
+
+
+.SH "Function Documentation"
+.PP 
+.SS "cfg\fC [related]\fP"
+
+.PP
+the singleton instance of the \fBConfigManager\fP .PP
+.nf
+var username = pdg\&.cfg\&.getConfigString('username');
+.fi
+.PP
+ 
+.SS "evt\fC [related]\fP"
+
+.PP
+the singleton instance of the \fBEventManager\fP .PP
+.nf
+var aIsPressed = pdg\&.evt\&.isKeyDown('a');
+.fi
+.PP
+ 
+.SS "fs\fC [related]\fP"
+
+.PP
+the singleton instance of the \fBFileManager\fP .PP
+.nf
+var fileList = pdg\&.fs\&.findFiles('examples/*\&.scml');
+.fi
+.PP
+ 
+.SS "gfx\fC [related]\fP"
+
+.PP
+the singleton instance of the \fBGraphicsManager\fP .PP
+.nf
+var r = new Rect(1024, 768);
+var port = pdg\&.gfx\&.createWindowPort(r, 'PDG Test Window');
+.fi
+.PP
+ 
+.SS "res\fC [related]\fP"
+
+.PP
+the singleton instance of the \fBResourceManager\fP .PP
+.nf
+pdg\&.res\&.openResourceFile('\&./data');
+console\&.log( pdg\&.res\&.getResourcePaths() );
+.fi
+.PP
+ 
+.SS "snd\fC [related]\fP"
+
+.PP
+the singleton instance of the \fBSoundManager\fP .PP
+.nf
+pdg\&.snd\&.setVolume(0\&.5);
+.fi
+.PP
+ 
+.SS "tm\fC [related]\fP"
+
+.PP
+the singleton instance of the \fBTimerManager\fP .PP
+.nf
+pdg\&.tm\&.pause();
+.fi
+.PP
+ 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Pixel Dust Game Engine from the source code\&.

@@ -1,0 +1,15 @@
+
+
+
+Timelines represent a single object that is changing over time.
+
+Timelines can not currently be matched between separate animations.
+
+'spin' is based on what you are coming from (key1)
+
+Transforms are not composed of matrices.
+
+Transform hierarchy process:
+  Take the child position, scale it by the accumulated scale_x and scale_y, then rotate it about the origin by the accumulated angle, then translate it by the parent position. After that, you combine the transforms by adding the angles, multiplying the scales, and set the parent/accumulated position to the new child position.
+
+
