@@ -183,11 +183,15 @@ As you can see from the examples above, your Animation Helper function (or anima
 .PP 
 a \fBSprite\fP did some animation (\fIOptional\fP) 
 
-A \fBSprite\fP will generate one of these events when it completes an animation including fades (opacity animations)\&.
+A \fBSprite\fP will generate one of these events when it completes an animation including fades (opacity animations), and moving on/offscreen or outside of the layer\&.
 .PP
 For frame based animations -- that is, calls to \fBSprite\&.startFrameAnimation()\fP -- if it reaches the last frame and is not set to loop, action will be \fBaction_AnimationEnd\fP\&. For looping animations \fBaction_AnimationLoop\fP will be received each time the animation completes and starts over with the first frame\&.
 .PP
-For fades, one of three action types are possible: \fBaction_FadeComplete\fP for calls to \fBSprite\&.fadeTo()\fP, \fBaction_FadeInComplete\fP for calls to \fBSprite\&.fadeIn()\fP, and \fBaction_FadeOutComplete\fP for calls to \fBSprite\&.fadeOut()\fP\&. 
+For fades, one of three action types are possible: \fBaction_FadeComplete\fP for calls to \fBSprite\&.fadeTo()\fP, \fBaction_FadeInComplete\fP for calls to \fBSprite\&.fadeIn()\fP, and \fBaction_FadeOutComplete\fP for calls to \fBSprite\&.fadeOut()\fP\&.
+.PP
+When a \fBSprite\fP has setWantsOffscreenEvents(true), \fBaction_Offscreen\fP and \fBaction_Onscreen\fP events will be generated for that sprite whenever it enters or departs the visible area of the port the layer is being rendered into\&.
+.PP
+When a \fBSprite\fP has setWantsCollideWallEvents(true), \fBaction_ExitLayer\fP events will be generated for that sprite whenever it moves completely outside the boundaries of the layer\&. (It will also get a \fBSpriteCollideEvent\fP when hits the boundary)\&. 
 .PP
 .nf
 {
@@ -217,6 +221,10 @@ At this time other kinds of animations such as calls to \fBSprite\&.startAnimati
 \fBSprite\&.fadeIn()\fP 
 .PP
 \fBSprite\&.fadeOut()\fP 
+.PP
+\fBSprite\&.setWantsOffscreenEvents()\fP 
+.PP
+\fBSprite\&.setWantsCollideWallEvents()\fP 
 .RE
 .PP
 
@@ -324,6 +332,8 @@ eventType_SpriteAnimate action: a sprite fade-in has completed \fBSee Also:\fP
 \fBaction_FadeOutComplete\fP 
 .PP
 \fBeventType_SpriteAnimate\fP 
+.PP
+\fBSpriteAnimateEvent\fP 
 .RE
 .PP
 
@@ -339,6 +349,8 @@ eventType_SpriteAnimate action: a sprite fade-out has completed \fBSee Also:\fP
 \fBaction_FadeInComplete\fP 
 .PP
 \fBeventType_SpriteAnimate\fP 
+.PP
+\fBSpriteAnimateEvent\fP 
 .RE
 .PP
 

@@ -199,42 +199,59 @@ Inherited by \fBTileLayer\fP\&.
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonExitLayer\fP (function func)"
 .br
+.RI "\fIset event handler for sprite out of bounds event \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonFadeComplete\fP (function func)"
 .br
+.RI "\fIset event handler for sprite fade event \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonFadeInComplete\fP (function func)"
 .br
+.RI "\fIset event handler for sprite fade in event \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonFadeOutComplete\fP (function func)"
 .br
+.RI "\fIset event handler for sprite fade out event \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonLayerFadeInComplete\fP (function func)"
 .br
+.RI "\fIset event handler for layer fade in event \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonLayerFadeOutComplete\fP (function func)"
 .br
+.RI "\fIset event handler for layer fade out event \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonMouseClick\fP (function func)"
 .br
+.RI "\fIset event handler for tap or mouse click in a sprite \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonMouseDown\fP (function func)"
 .br
+.RI "\fIset event handler for finger down or mouse down in a sprite \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonMouseEnter\fP (function func)"
 .br
+.RI "\fIset event handler for mouse pointer over a sprite \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonMouseLeave\fP (function func)"
 .br
+.RI "\fIset event handler for mouse pointer leaving a sprite it was over \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonMouseUp\fP (function func)"
 .br
+.RI "\fIset event handler for finger up or mouse up in a sprite \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonOffscreen\fP (function func)"
 .br
+.RI "\fIset event handler for sprite offscreen event \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonOnscreen\fP (function func)"
 .br
+.RI "\fIset event handler for sprite onscreen event \fP"
+.ti -1c
+.RI "\fBIEventHandler\fP \fBonPostAnimateLayer\fP (function func)"
+.br
+.RI "\fIset event handler for layer animation finished events \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonPostDrawLayer\fP (function func)"
 .br
@@ -250,48 +267,63 @@ Inherited by \fBTileLayer\fP\&.
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonZoomComplete\fP (function func)"
 .br
+.RI "\fIset event handler for this layer finishing zoom animation \fP"
 .ti -1c
 .RI "\fBOffset\fP \fBportToLayerOffset\fP (\fBOffset\fP o)"
 .br
+.RI "\fIadjust the offset to account for layer transformations \fP"
 .ti -1c
 .RI "\fBPoint\fP \fBportToLayerPoint\fP (\fBPoint\fP p)"
 .br
+.RI "\fIadjust the point to account for layer transformations \fP"
 .ti -1c
 .RI "\fBQuad\fP \fBportToLayerQuad\fP (\fBQuad\fP q)"
 .br
+.RI "\fIadjust the quad to account for layer transformations \fP"
 .ti -1c
 .RI "\fBRect\fP \fBportToLayerRect\fP (\fBRect\fP r)"
 .br
+.RI "\fIadjust the rectangle to account for layer transformations \fP"
 .ti -1c
 .RI "\fBVector\fP \fBportToLayerVector\fP (\fBVector\fP v)"
 .br
+.RI "\fIadjust the vector to account for layer transformations \fP"
 .ti -1c
 .RI "\fBremoveAllSprites\fP ()"
 .br
+.RI "\fIremove all sprites in the layer \fP"
 .ti -1c
 .RI "\fBremoveSprite\fP (\fBSprite\fP oldSprite)"
 .br
+.RI "\fIremove a particular sprite from the layer \fP"
 .ti -1c
 .RI "\fBserialize\fP (\fBSerializer\fP serializer)"
 .br
+.RI "\fIserialize the sprite layer and all the sprites in it \fP"
 .ti -1c
 .RI "\fBsetAutoCenter\fP (boolean autoCenter=true)"
 .br
+.RI "\fIkeep the center of the layer at the center of the port \fP"
 .ti -1c
 .RI "\fBsetDamping\fP (number damping)"
 .br
+.RI "\fIset the overall resistance to motion over time (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBsetFixedMoveAxis\fP (boolean fixedAxis=true)"
 .br
+.RI "\fImake movement of the layer relative to the port axis \fP"
 .ti -1c
 .RI "\fBsetGravity\fP (number gravity, boolean keepItDownward=true)"
 .br
+.RI "\fIset the force of gravity pulling everything downward (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBsetKeepGravityDownward\fP (boolean keepItDownward=true)"
 .br
+.RI "\fIkeep gravity relative to the port when the layer is rotated (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBsetOrigin\fP (\fBPoint\fP origin)"
 .br
+.RI "\fIset the point in the layer that is drawn at 0,0 in the port \fP"
 .ti -1c
 .RI "\fBSpriteLayer\fP \fBsetSerializationFlags\fP (uint flags)"
 .br
@@ -299,30 +331,39 @@ Inherited by \fBTileLayer\fP\&.
 .ti -1c
 .RI "\fBsetSpritePort\fP (\fBPort\fP port)"
 .br
+.RI "\fIset the port this layer is rendered into \fP"
 .ti -1c
 .RI "\fBsetStaticLayer\fP (boolean isStatic=true)"
 .br
+.RI "\fImake objects in this layer not subject to physics forces (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBsetUseChipmunkPhysics\fP (boolean useIt=true)"
 .br
+.RI "\fIenable or disable use of Chipmunk Physics for a particular layer \fP"
 .ti -1c
 .RI "\fBsetZoom\fP (number zoomLevel)"
 .br
+.RI "\fIimmediately set the zoom level for this layer \fP"
 .ti -1c
 .RI "\fBshow\fP ()"
 .br
+.RI "\fIstart rendering this layer if it was previously hidden \fP"
 .ti -1c
 .RI "\fBstartAnimations\fP ()"
 .br
+.RI "\fIrestart doing animation calculations for this layer if they were stopped \fP"
 .ti -1c
 .RI "\fBstopAnimations\fP ()"
 .br
+.RI "\fIstop doing animation calculations for this layer \fP"
 .ti -1c
 .RI "\fBzoom\fP (number deltaZoomLevel, int msDuration, int easing=\fBeaseInOutQuad\fP, \fBRect\fP keepInRect=\fBRect\fP(0, 0), \fBPoint\fP centerOn=\fBPoint\fP(0, 0))"
 .br
+.RI "\fIanimated zoom by a particular factor over time \fP"
 .ti -1c
 .RI "\fBzoomTo\fP (number zoomLevel, int msDuration, int easing=\fBeaseInOutQuad\fP, \fBRect\fP keepInRect=\fBRect\fP(0, 0), \fBPoint\fP centerOn=\fBPoint\fP(0, 0))"
 .br
+.RI "\fIanimated zoom to a particular zoom level over time \fP"
 .in -1c
 .SS "Related Functions"
 (Note that these are not member functions\&.) 
@@ -351,7 +392,12 @@ creates and tracks collections of sprites
 .SS "addSprite (\fBSprite\fPnewSprite)"
 
 .PP
-add an existing sprite to the layer 
+add an existing sprite to the layer \fBWarning:\fP
+.RS 4
+if the sprite already belongs to another layer this call is ignored 
+.RE
+.PP
+
 .SS "createSprite ()"
 
 .PP
@@ -509,23 +555,83 @@ returns true if the given sprite will be drawn after the other sprite
 .SS "layerToPortOffset (\fBOffset\fPo)"
 
 .PP
-adjust the offset to account for layer transformations Since an offset is relative rather than fixed in coordinate space, this means only rotating it around 0,0 to match the layer rotation, and changing the offset length by the layer zoom\&. The layer origin is not factored in\&. 
+adjust the offset to account for layer transformations Since an offset is relative rather than fixed in coordinate space, this means only rotating it around 0,0 to match the layer rotation, and changing the offset length by the layer zoom\&. The layer origin is not factored in\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIo\fP \fBOffset\fP in layer coordinates
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBOffset\fP in port coordinates 
+.RE
+.PP
+
 .SS "layerToPortPoint (\fBPoint\fPp)"
 
 .PP
-translate the point to account for layer transformations Adjusts for layer rotation, zoom and scrolling (origin) to get drawing coordinates\&. 
+translate the point to account for layer transformations Adjusts for layer rotation, zoom and scrolling (origin) to get drawing coordinates\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIp\fP \fBPoint\fP in layer coordinates
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBPoint\fP in port coordinates 
+.RE
+.PP
+
 .SS "layerToPortQuad (\fBQuad\fPq)"
 
 .PP
-translate the \fBQuad\fP to account for layer transformations Adjusts for layer rotation, zoom and scrolling (origin) to get drawing coordinates\&. 
+translate the \fBQuad\fP to account for layer transformations Adjusts for layer rotation, zoom and scrolling (origin) to get drawing coordinates\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIq\fP \fBQuad\fP in layer coordinates
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBQuad\fP in port coordinates 
+.RE
+.PP
+
 .SS "layerToPortRect (\fBRect\fPr)"
 
 .PP
-translate the rectangle to account for layer transformations Adjusts for layer rotation, zoom and scrolling (origin) to get drawing coordinates\&. 
+translate the rectangle to account for layer transformations Adjusts for layer rotation, zoom and scrolling (origin) to get drawing coordinates\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIr\fP \fBRect\fP in layer coordinates
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBRect\fP in port coordinates 
+.RE
+.PP
+
 .SS "layerToPortVector (\fBVector\fPv)"
 
 .PP
-translate the point to account for layer transformations Adjusts for layer rotation, zoom to get drawing coordinates\&. As with offset, vectors are not fixed in space, so origin is not considered\&. 
+translate the point to account for layer transformations Adjusts for layer rotation, zoom to get drawing coordinates\&. As with offset, vectors are not fixed in space, so origin is not considered\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIv\fP \fBVector\fP in layer coordinates
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBVector\fP in port coordinates 
+.RE
+.PP
+
 .SS "moveBehind (\fBSpriteLayer\fPlayer)"
 
 .PP
@@ -659,31 +765,215 @@ set event handler for rendering starting events This happens each frame before a
 .RE
 .PP
 
-.SS "\fBIEventHandler\fP onExitLayer (functionfunc)"
+.SS "onExitLayer (functionfunc)"
 
-.SS "\fBIEventHandler\fP onFadeComplete (functionfunc)"
+.PP
+set event handler for sprite out of bounds event These happen when a sprite moves completely outside the boundaries of the layer, but only if setWantsCollideWallEvents(true) is called for that sprite\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.PP
+\fBSprite\&.setWantsCollideWallEvents()\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onFadeInComplete (functionfunc)"
+.SS "onFadeComplete (functionfunc)"
 
-.SS "\fBIEventHandler\fP onFadeOutComplete (functionfunc)"
+.PP
+set event handler for sprite fade event These happen when a sprite completes a fade over time done by fadeTo()
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.PP
+\fBSprite\&.fadeTo()\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onLayerFadeInComplete (functionfunc)"
+.SS "onFadeInComplete (functionfunc)"
 
-.SS "\fBIEventHandler\fP onLayerFadeOutComplete (functionfunc)"
+.PP
+set event handler for sprite fade in event These happen when a sprite completes a fade in over time done by \fBSprite\&.fadeIn()\fP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.PP
+\fBSprite\&.fadeIn()\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onMouseClick (functionfunc)"
+.SS "onFadeOutComplete (functionfunc)"
 
-.SS "\fBIEventHandler\fP onMouseDown (functionfunc)"
+.PP
+set event handler for sprite fade out event These happen when a sprite completes a fade out over time done by \fBSprite\&.fadeOut()\fP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.PP
+\fBSprite\&.fadeOut()\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onMouseEnter (functionfunc)"
+.SS "onLayerFadeInComplete (functionfunc)"
 
-.SS "\fBIEventHandler\fP onMouseLeave (functionfunc)"
+.PP
+set event handler for layer fade in event These happen when this layer completes a fade in over time done by \fBfadeIn()\fP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBfadeIn()\fP 
+.PP
+\fBSpriteLayerEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onMouseUp (functionfunc)"
+.SS "onLayerFadeOutComplete (functionfunc)"
 
-.SS "\fBIEventHandler\fP onOffscreen (functionfunc)"
+.PP
+set event handler for layer fade out event These happen when this layer completes a fade out over time done by \fBfadeOut()\fP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBfadeOut()\fP 
+.PP
+\fBSpriteLayerEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onOnscreen (functionfunc)"
+.SS "onMouseClick (functionfunc)"
+
+.PP
+set event handler for tap or mouse click in a sprite Only works for Sprites that have setWantsClickEvents(true)\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteTouchEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.PP
+\fBSprite\&.setWantsClickEvents()\fP 
+.RE
+.PP
+
+.SS "onMouseDown (functionfunc)"
+
+.PP
+set event handler for finger down or mouse down in a sprite Only works for Sprites that have setWantsClickEvents(true)\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteTouchEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.PP
+\fBSprite\&.setWantsClickEvents()\fP 
+.RE
+.PP
+
+.SS "onMouseEnter (functionfunc)"
+
+.PP
+set event handler for mouse pointer over a sprite Only works for Sprites that have setWantsMouseOverEvents(true)\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteTouchEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.PP
+\fBSprite\&.setWantsMouseOverEvents()\fP 
+.RE
+.PP
+
+.SS "onMouseLeave (functionfunc)"
+
+.PP
+set event handler for mouse pointer leaving a sprite it was over Only works for Sprites that have setWantsMouseOverEvents(true)\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteTouchEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.PP
+\fBSprite\&.setWantsMouseOverEvents()\fP 
+.RE
+.PP
+
+.SS "onMouseUp (functionfunc)"
+
+.PP
+set event handler for finger up or mouse up in a sprite Only works for Sprites that have setWantsClickEvents(true)\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteTouchEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.PP
+\fBSprite\&.setWantsClickEvents()\fP 
+.RE
+.PP
+
+.SS "onOffscreen (functionfunc)"
+
+.PP
+set event handler for sprite offscreen event These happen when a sprite moves completely outside the visible area of the port the layer is being rendered in, but only if setWantsOffscreenEvents(true) is called for that sprite\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.PP
+\fBSprite\&.setWantsOffscreenEvents()\fP 
+.RE
+.PP
+
+.SS "onOnscreen (functionfunc)"
+
+.PP
+set event handler for sprite onscreen event These happen when a sprite moves into the visible area of the port the layer is being rendered into, but only if Sprite\&.setWantsOffscreenEvents(true) is called for that sprite\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.PP
+\fBSprite\&.setWantsOffscreenEvents()\fP 
+.RE
+.PP
+
+.SS "onPostAnimateLayer (functionfunc)"
+
+.PP
+set event handler for layer animation finished events This happens each frame when this particular layer is has finished calculating the changes for the animation step\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBonPreAnimateLayer()\fP 
+.PP
+\fBSpriteLayerEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
 
 .SS "onPostDrawLayer (functionfunc)"
 
@@ -724,36 +1014,147 @@ set event handler for layer rendering start events This happens each frame befor
 .RE
 .PP
 
-.SS "\fBIEventHandler\fP onZoomComplete (functionfunc)"
+.SS "onZoomComplete (functionfunc)"
 
-.SS "\fBOffset\fP portToLayerOffset (\fBOffset\fPo)"
+.PP
+set event handler for this layer finishing zoom animation \fBSee Also:\fP
+.RS 4
+\fBzoom()\fP 
+.PP
+\fBzoomTo()\fP 
+.PP
+\fBSpriteLayerEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
 
-.SS "\fBPoint\fP portToLayerPoint (\fBPoint\fPp)"
+.SS "portToLayerOffset (\fBOffset\fPo)"
 
-.SS "\fBQuad\fP portToLayerQuad (\fBQuad\fPq)"
+.PP
+adjust the offset to account for layer transformations Since an offset is relative rather than fixed in coordinate space, this means only rotating it around 0,0 to match the layer rotation, and changing the offset length by the layer zoom\&. The layer origin is not factored in\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIo\fP \fBOffset\fP in port coordinates
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBOffset\fP in layer coordinates 
+.RE
+.PP
 
-.SS "\fBRect\fP portToLayerRect (\fBRect\fPr)"
+.SS "portToLayerPoint (\fBPoint\fPp)"
 
-.SS "\fBVector\fP portToLayerVector (\fBVector\fPv)"
+.PP
+adjust the point to account for layer transformations Adjusts for layer rotation, zoom and scrolling (origin) to get layer coordinates for a point on the screen\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIp\fP \fBPoint\fP in port coordinates
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBPoint\fP in layer coordinates 
+.RE
+.PP
+
+.SS "portToLayerQuad (\fBQuad\fPq)"
+
+.PP
+adjust the quad to account for layer transformations Adjusts for layer rotation, zoom and scrolling (origin) to get layer coordinates for the quad on the screen\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIq\fP \fBQuad\fP in port coordinates
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBQuad\fP in layer coordinates 
+.RE
+.PP
+
+.SS "portToLayerRect (\fBRect\fPr)"
+
+.PP
+adjust the rectangle to account for layer transformations Adjusts for layer rotation, zoom and scrolling (origin) to get layer coordinates for a rectangle on the screen\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIr\fP \fBRect\fP in port coordinates
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBRect\fP in layer coordinates 
+.RE
+.PP
+
+.SS "portToLayerVector (\fBVector\fPv)"
+
+.PP
+adjust the vector to account for layer transformations Since a vector is relative rather than fixed in coordinate space, this means only rotating it around 0,0 to match the layer rotation, and changing the vector length by the layer zoom\&. The layer origin is not factored in\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIo\fP \fBVector\fP in port coordinates
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+\fBVector\fP in layer coordinates 
+.RE
+.PP
 
 .SS "removeAllSprites ()"
 
+.PP
+remove all sprites in the layer 
 .SS "removeSprite (\fBSprite\fPoldSprite)"
 
+.PP
+remove a particular sprite from the layer 
 .SS "serialize (\fBSerializer\fPserializer)"
+
+.PP
+serialize the sprite layer and all the sprites in it \fBNote:\fP
+.RS 4
+uses setting from \fBsetSerializationFlags()\fP to determine how to optimize serialization for particular needs
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetSerializationFlags()\fP 
+.RE
+.PP
 
 .SS "setAutoCenter (booleanautoCenter = \fCtrue\fP)"
 
+.PP
+keep the center of the layer at the center of the port When autoCenter is on, it makes rotations always be around the visible center of the layer, rather than around its mathematical center based on the bounds\&. 
 .SS "setDamping (numberdamping)"
 
+.PP
+set the overall resistance to motion over time (\fIChipmunk Physics Only\fP) 
 .SS "setFixedMoveAxis (booleanfixedAxis = \fCtrue\fP)"
 
+.PP
+make movement of the layer relative to the port axis If setFixedMoveAxis is true, move(10, 0) will move the layer 10 pixels to the right in port coordinates\&. This gives move natural control over movement when the user can spin and move the layer\&. 
 .SS "setGravity (numbergravity, booleankeepItDownward = \fCtrue\fP)"
 
+.PP
+set the force of gravity pulling everything downward (\fIChipmunk Physics Only\fP) If keepItDownward is true (the default), then direction of gravity will be automatically be adjusted to point downward relative to the port if the layer is rotated\&. 
 .SS "setKeepGravityDownward (booleankeepItDownward = \fCtrue\fP)"
 
+.PP
+keep gravity relative to the port when the layer is rotated (\fIChipmunk Physics Only\fP) 
 .SS "setOrigin (\fBPoint\fPorigin)"
 
+.PP
+set the point in the layer that is drawn at 0,0 in the port 
 .SS "setSerializationFlags (uintflags)"
 
 .PP
@@ -769,21 +1170,74 @@ set the mode for sprite layer serialization \fBSee Also:\fP
 
 .SS "setSpritePort (\fBPort\fPport)"
 
+.PP
+set the port this layer is rendered into 
 .SS "setStaticLayer (booleanisStatic = \fCtrue\fP)"
+
+.PP
+make objects in this layer not subject to physics forces (\fIChipmunk Physics Only\fP) Other objects can still collide with static object, but they are treated as having infinite mass\&.
+.PP
+\fBWarning:\fP
+.RS 4
+This must be called before you start adding Sprites to the layer 
+.RE
+.PP
 
 .SS "setUseChipmunkPhysics (booleanuseIt = \fCtrue\fP)"
 
+.PP
+enable or disable use of Chipmunk Physics for a particular layer Layers that don't use Chipmunk Physics can still use the cruder physics system offered by the \fBAnimated\fP class\&. 
 .SS "setZoom (numberzoomLevel)"
 
+.PP
+immediately set the zoom level for this layer 
 .SS "show ()"
 
+.PP
+start rendering this layer if it was previously hidden 
 .SS "startAnimations ()"
 
+.PP
+restart doing animation calculations for this layer if they were stopped 
 .SS "stopAnimations ()"
 
-.SS "zoom (numberdeltaZoomLevel, intmsDuration, inteasing = \fC\fBeaseInOutQuad\fP\fP, \fBRect\fPkeepInRect = \fC\fBRect\fP(0, 0)\fP, \fBPoint\fPcenterOn = \fC\fBPoint\fP(0, 0)\fP)"
+.PP
+stop doing animation calculations for this layer \fBNote:\fP
+.RS 4
+this does not stop it from rendering, but all motion in the layer will cease
+.RE
+.PP
+\fBWarning:\fP
+.RS 4
+Chipmunk Physics based movement will continue if this is a layer using Chipmunk Physics 
+.RE
+.PP
 
-.SS "zoomTo (numberzoomLevel, intmsDuration, inteasing = \fC\fBeaseInOutQuad\fP\fP, \fBRect\fPkeepInRect = \fC\fBRect\fP(0, 0)\fP, \fBPoint\fPcenterOn = \fC\fBPoint\fP(0, 0)\fP)"
+.SS "zoom (numberdeltaZoomLevel, intmsDuration, inteasing = \fC\fBeaseInOutQuad\fP\fP, \fBRect\fPkeepInRect = \fC\fBRect\fP(0,0)\fP, \fBPoint\fPcenterOn = \fC\fBPoint\fP(0,0)\fP)"
+
+.PP
+animated zoom by a particular factor over time Generates \fBSpriteLayerEvent\fP with \fBaction_ZoomComplete\fP when done
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBzoomTo()\fP 
+.PP
+\fBSpriteLayerEvent\fP 
+.RE
+.PP
+
+.SS "zoomTo (numberzoomLevel, intmsDuration, inteasing = \fC\fBeaseInOutQuad\fP\fP, \fBRect\fPkeepInRect = \fC\fBRect\fP(0,0)\fP, \fBPoint\fPcenterOn = \fC\fBPoint\fP(0,0)\fP)"
+
+.PP
+animated zoom to a particular zoom level over time Generates \fBSpriteLayerEvent\fP with \fBaction_ZoomComplete\fP when done
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBzoom()\fP 
+.PP
+\fBSpriteLayerEvent\fP 
+.RE
+.PP
 
 .SH "Friends And Related Function Documentation"
 .PP 
