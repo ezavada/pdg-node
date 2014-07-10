@@ -39,6 +39,7 @@
 #include <vector>
 #include <cstdlib>
 #include <map>
+#include <fstream>
 
 #define SERIALIZER_MALLOC_BLOCK_SIZE 1024
 
