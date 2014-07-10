@@ -34,7 +34,7 @@ Design Goals
 
 PDG is focused on making a broad array of capabilities available to developers 
 regardless of the OS platform they are targeting. Currently it works on Mac OS X, 
-Windows, and iOS.
+Windows, and iOS. The server side Node.js plugin works on Linux and Mac OS X.
 
 The PDG API is designed to make simple things easy to do, without adding undue 
 complexity to more complicated problems.
