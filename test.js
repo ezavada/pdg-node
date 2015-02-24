@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------
 
-var pdg = require('pdg');
+var pdg = require('./lib/pdg');  // expected require('pdg') to work but it doesn't for "npm test"
 var assert = require('assert')
 
 // module
