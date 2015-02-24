@@ -50,7 +50,6 @@
   	"lib":"./lib"
   },
   "scripts": {
-    "install": "make build",
     "test": "node test.js"
   },
   "devDependencies": {
