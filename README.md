@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ezavada/pdg-node.svg?branch=master)](https://travis-ci.org/ezavada/pdg-node.svg?branch=master) - Linux
+[![Build Status](https://travis-ci.org/ezavada/pdg-node.svg?branch=master)](https://travis-ci.org/ezavada/pdg-node.svg?branch=master)
 
 Pixel Dust Game Engine Node Plugin
 ==================================
