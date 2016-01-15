@@ -40,8 +40,12 @@
 
 #include <v8.h>
 
+//TODO: might want v8::UniquePersistent instead, check lifecycle
+// rules here:
+// https://developers.google.com/v8/embed#handles-and-garbage-collection
+
 #define SCRIPT_OBJECT_REF   	v8::Persistent<v8::Object>
-#define SCRIPT_CLEANUP_PARAM	v8::Handle<v8::Object> obj
+#define SCRIPT_CLEANUP_PARAM	v8::Persistent<v8::Object> &obj
 #define INIT_SCRIPT_OBJECT(obj)
 
 namespace pdg {
@@ -69,7 +73,7 @@ void CleanupSerializerScriptObject(SCRIPT_CLEANUP_PARAM);
 void CleanupDeserializerScriptObject(SCRIPT_CLEANUP_PARAM);
 
 // initializes the bindings for the pdg module
-void initBindings(v8::Handle<v8::Object> target);
+void initBindings(v8::Local<v8::Object> target);
 
 } // end namespace pdg
 

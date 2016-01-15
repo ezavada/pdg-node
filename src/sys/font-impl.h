@@ -47,7 +47,7 @@ namespace pdg {
 	// these implementations are not OS dependent
 	// ==================================================================
 
-#define NUM_TEXT_STYLES				(Graphics::textStyle_Bold + Graphics::textStyle_Italic + Graphics::textStyle_Underline + 1)
+#define NUM_TEXT_STYLES				(textStyle_Bold + textStyle_Italic + textStyle_Underline + 1)
 #define TEXT_STYLES_MASK			7L
 #define TEXT_INFO_CACHE_SIZE		24
 	
@@ -65,10 +65,10 @@ namespace pdg {
 	public:
 		virtual const char* getFontName() const;
 		
-		virtual float    getFontHeight(int size, uint32 style = Graphics::textStyle_Plain);
-		virtual float    getFontLeading(int size, uint32 style = Graphics::textStyle_Plain);
-		virtual float    getFontAscent(int size, uint32 style = Graphics::textStyle_Plain);
-		virtual float    getFontDescent(int size, uint32 style = Graphics::textStyle_Plain);
+		virtual float    getFontHeight(int size, uint32 style = textStyle_Plain);
+		virtual float    getFontLeading(int size, uint32 style = textStyle_Plain);
+		virtual float    getFontAscent(int size, uint32 style = textStyle_Plain);
+		virtual float    getFontDescent(int size, uint32 style = textStyle_Plain);
 		
 		const FontMetricsInfo* fetchFontMetricsWithCaching(int size, uint32 style);
 

@@ -87,15 +87,15 @@ class TimerManager : public EventEmitter, public Singleton<TimerManager> {
 friend class Singleton<TimerManager>;
 public:
 	//! start new timer that will fire after delay ms
-    void startTimer(long id, uint32 delay, bool oneShot = true, UserData* userData = 0);
+    void startTimer(long id, ms_delta delay, bool oneShot = true, UserData* userData = 0);
     //! remove a timer
 	void cancelTimer(long id);
 	//! remove all timers
     void cancelAllTimers();
 	//! make sure a timer waits at least delay ms before next time it fires, regardless of current interval
-    void delayTimer(long id, uint32 delay);
+    void delayTimer(long id, ms_delta delay);
 	//! tell the timer not to fire until OS::getMilliseconds() => msTime
-    void delayTimerUntil(long id, uint32 msTime);
+    void delayTimerUntil(long id, ms_time msTime);
 	//! pause all timers (no effect on timers added after pause)
     void pause();
 	//! unpause all timers
@@ -109,13 +109,13 @@ public:
 	//! check to see if a particular timer is paused
 	bool isTimerPaused(long id);
 	//! return the time (OS::getMilliseconds()) when this timer will fire next, returns timer_Never if it won't fire
-    uint32 getWhenTimerFiresNext(long id);
+    ms_time getWhenTimerFiresNext(long id);
 
 	//! fire any timers that are ready to fire
     void checkTimers();
 
 	//! tells us how long it will be (in milliseconds) till the next timer fires
-    uint32 msTillNextFire();
+    ms_delta msTillNextFire();
 
 // lifecycle
 /// @cond C++
@@ -133,8 +133,8 @@ protected:
 
     struct Timer {
         long id; // id of the timer
-        uint32 fire; // when the timer will fire (or time remaining if paused)
-        uint32 interval; // how often this timer fires
+        ms_time  fire; // when the timer will fire (or time remaining if paused)
+        ms_delta interval; // how often this timer fires
         UserData* userData; // any data the user may have associated with this timer
         bool oneshot;   // true if this should be deleted after firing
         bool paused;    // true if this timer is paused
@@ -152,8 +152,8 @@ protected:
     long    nextid;     // id of the next timer to fire, only valid when firing.id != 0
     Timer*  next;       // this will be the next timer to fire, only valid when firing.id != 0
     bool deleted;     // did we cancel the timer that is firing from within its handler?
-    uint32 addDelay;  // addition delay added to timer that is firing from within its handler
-    uint32 delayUntil; // new time when current timer is supposed to fire
+    ms_delta addDelay;  // addition delay added to timer that is firing from within its handler
+    ms_time  delayUntil; // new time when current timer is supposed to fire
 	bool allTimersPaused;
 /// @endcond
 };

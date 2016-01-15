@@ -166,7 +166,7 @@ bool graphics_allowVerticalOrientation() {
 void
 Port::fillRectEx(const Quad& quad, uint32 pattern, uint8 patternShift, Color rgba) {
   #ifdef DEBUG
-    if ( pattern != Graphics::solidPat ) {
+    if ( pattern != solidPat ) {
         OS::_DOUT("fillRectEx: pattern NOT IMPLEMENTED");
     }
   #endif
@@ -176,7 +176,7 @@ Port::fillRectEx(const Quad& quad, uint32 pattern, uint8 patternShift, Color rgb
 void
 Port::frameRectEx(const Quad& quad, uint8 thickness, uint32 pattern, uint8 patternShift, Color rgba) {
   #ifdef DEBUG
-    if ( pattern != Graphics::solidPat ) {
+    if ( pattern != solidPat ) {
         OS::_DOUT("frameRectEx: pattern NOT IMPLEMENTED");
     }
   #endif
@@ -191,7 +191,7 @@ Port::frameRectEx(const Quad& quad, uint8 thickness, uint32 pattern, uint8 patte
 void
 Port::drawLineEx(const Point& from, const Point& to, uint8 thickness, uint32 pattern, uint8 patternShift, Color rgba) {
   #ifdef DEBUG
-    if ( pattern != Graphics::solidPat ) {
+    if ( pattern != solidPat ) {
         OS::_DOUT("drawLineEx: pattern NOT IMPLEMENTED");
     }
   #endif
@@ -644,7 +644,7 @@ Port::drawImage(Image* img, const Quad& quad) {
 }
 
 void     
-Port::drawImage(Image* img, const Rect& r, Image::FitType fitType, bool clipOverflow) {
+Port::drawImage(Image* img, const Rect& r, FitType fitType, bool clipOverflow) {
 	if (img->mPort != this) {
 		img->setPort(this);
 	}
@@ -668,7 +668,7 @@ Port::drawImage(ImageStrip* img, int frame, const Quad& quad) {
 }
 
 void     
-Port::drawImage(ImageStrip* img, int frame, const Rect& r, Image::FitType fitType, bool clipOverflow) {
+Port::drawImage(ImageStrip* img, int frame, const Rect& r, FitType fitType, bool clipOverflow) {
 	if (img->mPort != this) {
 		img->setPort(this);
 	}
@@ -711,14 +711,14 @@ Port::drawTexturedSphere(ImageStrip* img, int frame, const Point& loc, float rad
 void
 Port::drawText(const char* text, const Point& loc, int size, uint32 style, Color rgba) {
 	if (text == 0) return;
-	int len = std::strlen(text);
+	int len = (int)std::strlen(text);
 	if (len == 0) return;
 	// look for text entirely outside clip rect
 	PortImpl& port = static_cast<PortImpl&>(*this); // get us access to our private data
 	Rect drawable = port.drawableRect();
 	// cheapest checks, off to right and left
-	if (((style & (Graphics::textStyle_Centered | Graphics::textStyle_RightJustified)) == 0) && (loc.x >= drawable.right)) return; // exit early if completely clipped
-	if (((style & Graphics::textStyle_RightJustified) == Graphics::textStyle_RightJustified) && (loc.x <= drawable.left)) return; // exit early if completely clipped
+	if (((style & (textStyle_Centered | textStyle_RightJustified)) == 0) && (loc.x >= drawable.right)) return; // exit early if completely clipped
+	if (((style & textStyle_RightJustified) == textStyle_RightJustified) && (loc.x <= drawable.left)) return; // exit early if completely clipped
 	// further checks require font info
 	FontImpl* font = dynamic_cast<FontImpl*> ( getCurrentFont(style) );
 	if (!font) return;
@@ -731,9 +731,9 @@ Port::drawText(const char* text, const Point& loc, int size, uint32 style, Color
 
 	// adjust for text justification
 	int textwidth = getTextWidth(text, size, style, len);
-	if (style & Graphics::textStyle_Centered) {
+	if (style & textStyle_Centered) {
 		textRect.left -= (textwidth/2);     // centered means the point given is the centerpoint for the text
-	} else if (style & Graphics::textStyle_RightJustified) {
+	} else if (style & textStyle_RightJustified) {
 		textRect.left -= textwidth;         // otherwise the point given is the right-side end of the text
 	}
 	textRect.setWidth(textwidth);
@@ -751,7 +751,7 @@ Port::drawText(const char* text, const Point& loc, int size, uint32 style, Color
 void
 Port::drawText(const char* text, const Quad& quad, int size, uint32 style, Color rgba) {
 	if (text == 0) return;
-	int len = std::strlen(text);
+	int len = (int)std::strlen(text);
 	if (len == 0) return;
 	PortImpl& port = static_cast<PortImpl&>(*this); // get us access to our private data
 	if (quad.getBounds().intersection(port.drawableRect()).empty()) return; // exit early if completely clipped

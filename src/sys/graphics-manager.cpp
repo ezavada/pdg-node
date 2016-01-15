@@ -121,7 +121,7 @@ GraphicsManager::ScreenMode
 GraphicsManager::getCurrentScreenMode(int screenNum, pdg::Rect* maxWindowRect) 
 {
 	ScreenMode mode;
-	if (screenNum == GraphicsManager::screenNum_PrimaryScreen) {
+	if (screenNum == screenNum_PrimaryScreen) {
 		screenNum = platform_getPrimaryScreen();
 	}
     mode.bpp = platform_getCurrentScreenDepth(screenNum);
@@ -137,7 +137,7 @@ GraphicsManager::getCurrentScreenMode(int screenNum, pdg::Rect* maxWindowRect)
 // returns the number of screens modes a particular screen supports
 int   
 GraphicsManager::getNumSupportedScreenModes(int screenNum) {
-	if (screenNum == GraphicsManager::screenNum_PrimaryScreen) {
+	if (screenNum == screenNum_PrimaryScreen) {
 		screenNum = platform_getPrimaryScreen();
 	}
 	if ((screenNum < 0) || (screenNum >= kMaxScreens)) return 0;
@@ -151,7 +151,7 @@ GraphicsManager::getNthSupportedScreenMode(int n, int screenNum) {
 	mode.bpp = 0;
 	mode.height = 0;
 	mode.width = 0;
-	if (screenNum == GraphicsManager::screenNum_PrimaryScreen) {
+	if (screenNum == screenNum_PrimaryScreen) {
 		screenNum = platform_getPrimaryScreen();
 	}
 	if ((n >= 0) && (screenNum >= 0) && (screenNum < kMaxScreens) && (n < platform_getNumSupportedScreenModes(screenNum)) ) {
@@ -162,7 +162,7 @@ GraphicsManager::getNthSupportedScreenMode(int n, int screenNum) {
 
 void       
 GraphicsManager::setScreenMode(long width, long height, int screenNum, int bpp) {
-	if (screenNum == GraphicsManager::screenNum_PrimaryScreen) {
+	if (screenNum == screenNum_PrimaryScreen) {
 		screenNum = platform_getPrimaryScreen();
 	}
 	if ((screenNum < 0) || (screenNum >= kMaxScreens)) return;
@@ -208,7 +208,7 @@ GraphicsManager::createWindowPort(const Rect& rect, const char* windName, int bp
 Port*   
 GraphicsManager::createFullScreenPort(const Rect& rect, int screenNum, bool allowResChange, int bpp) {
     PortImpl* port = dynamic_cast<PortImpl*>(graphics_newPort(this));
-	if ((screenNum == GraphicsManager::screenNum_PrimaryScreen) 
+	if ((screenNum == screenNum_PrimaryScreen) 
       || (screenNum < pdg::screenNum_BestFitScreen)
 	  || (screenNum >= kMaxScreens)) {
 		screenNum = platform_getPrimaryScreen();
@@ -339,8 +339,8 @@ GraphicsManager::switchToWindowMode(Port* port, const char* windName) {
     }
 	bool prevFS = platform_isFullScreen(thePort->mPlatformWindowRef);
 	if (!prevFS) return true; // already in Window Mode
-	long height = thePort->getDrawingArea().height();
-	long width = thePort->getDrawingArea().width();
+//	long height = thePort->getDrawingArea().height();
+//	long width = thePort->getDrawingArea().width();
 	int screenNum = platform_getWindowScreen(thePort->mPlatformWindowRef);
 	if (screenNum < 0 || screenNum >= kMaxScreens) return false;
 	int bpp = platform_getCurrentScreenDepth(screenNum);

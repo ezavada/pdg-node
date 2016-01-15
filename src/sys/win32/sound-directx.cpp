@@ -165,7 +165,7 @@ SoundDirectX::~SoundDirectX()
 #endif
 }
 
-void SoundDirectX::play(float vol, int32 offsetX, float pitch, uint32 fromMs, int32 lenMs) {
+void SoundDirectX::play(float vol, int32 offsetX, float pitch, ms_time fromMs, ms_delta lenMs) {
 #ifndef NO_SOUND
 	SOUND_DEBUG_ONLY( OS::_DOUT("Sound::play [%p]", this); )
 	SoundDirectX* snd = new SoundDirectX(this);
@@ -292,7 +292,7 @@ Sound& SoundDirectX::setPitch(float pitchOffset)
 }
 
 // change the pitch level over time
-void SoundDirectX::changePitch(float targetOffset, int32 msDuration, EasingFunc easing)
+void SoundDirectX::changePitch(float targetOffset, ms_delta msDuration, EasingFunc easing)
 {
 }
 
@@ -322,13 +322,13 @@ Sound& SoundDirectX::setOffsetX(int32 offsetX)
 }
 
 // change the X offset from the center of the screen over time
-void SoundDirectX::changeOffsetX(int32 targetOffset, int32 msDuration, EasingFunc easing)
+void SoundDirectX::changeOffsetX(int32 targetOffset, ms_delta msDuration, EasingFunc easing)
 {
 }
 
 
  // Fade to zero volume and stop over the course of fadeMs milliseconds
-void SoundDirectX::fadeOut(uint32 fadeMs, EasingFunc easing) {
+void SoundDirectX::fadeOut(ms_delta fadeMs, EasingFunc easing) {
   	if (mPlaying || mPaused) {
 		changeVolume(0.0f, fadeMs, easing);
   	} else {
@@ -337,13 +337,13 @@ void SoundDirectX::fadeOut(uint32 fadeMs, EasingFunc easing) {
 }
 
 // Fade in to full volume over fadeMs milliseconds. If the sound was not already playing, start it.
-void SoundDirectX::fadeIn(uint32 fadeMs, EasingFunc easing) {
+void SoundDirectX::fadeIn(ms_delta fadeMs, EasingFunc easing) {
 	setVolume(0.0f);
 	changeVolume(1.0f, fadeMs, easing);
 }
 
 // Fade up or down to reach a new volume level over fadeMs milliseconds. If the sound was not already playing, start it.
-void SoundDirectX::changeVolume(float level, uint32 fadeMs, EasingFunc easing) {
+void SoundDirectX::changeVolume(float level, ms_delta fadeMs, EasingFunc easing) {
 	mTargetVolume = level;
 	mStartingVolume = mCurrentVolume;
 	mDeltaVolumePerMs = mCurrentVolume / (float)fadeMs;
@@ -354,34 +354,22 @@ void SoundDirectX::changeVolume(float level, uint32 fadeMs, EasingFunc easing) {
 }
 
 // skip forward (positive value) or backward (negative value) by skipMilliseconds
-Sound& SoundDirectX::skip(int32 skipMilleconds) {
+Sound& SoundDirectX::skip(ms_delta skipMilleconds) {
 	return *this;
 }
 
 // skip to a specific point in the sound
-Sound& SoundDirectX::skipTo(uint32 timeMs) {
+Sound& SoundDirectX::skipTo(ms_time timeMs) {
 	return *this;
 }
 	
-void SoundDirectX::createFromData(char* soundData, long soundDataLen)
+bool SoundDirectX::createFromData(char* soundData, long soundDataLen)
 {
+    bool mLoadedOk = false;
 #ifndef NO_SOUND
 	FILE* fp;
-//	char *tempFilename;
     SOUND_DEBUG_ONLY( OS::_DOUT("Sound::createFromData [%s]", mRealFilename.c_str()); )
 
-	/* Create a temporary filename for the current working directory: */
-/*
-  #ifdef COMPILER_MSVC
-	if( ( tempFilename = _tempnam( "c:\\", "catan" ) ) == NULL )
-  #else
-	if( ( tempFilename = std::tmpnam(0) ) == NULL )
-  #endif
-	{
-		DEBUG_ONLY( OS::_DOUT("SOUND Error: Cannot create unique filename."); )
-		return;
-	}
-*/
 	DWORD dwBufSize=4096;
 	char buffer[4096];
 	WinAPI::GetTempPathA(dwBufSize, buffer);
@@ -394,46 +382,32 @@ void SoundDirectX::createFromData(char* soundData, long soundDataLen)
 	if(!mTempFilename)
 	{
 		DEBUG_ONLY( OS::_DOUT("SOUND Error: Cannot allocate memory for unique filename."); )
-		return;
+		return false;
 	}
 
 	strncpy(mTempFilename, tempFilename, bufferSize);
     CHECK_PTR( &mTempFilename[strlen(tempFilename)], mTempFilename, bufferSize);
 	mTempFilename[strlen(tempFilename)] = 0;
 
-/*  #ifdef COMPILER_MSVC
-	if(tempFilename)
-	{
-		std::free(tempFilename); // Must free memory allocated by _tempnam
-	}
-  WRONG! If you don't use the unique filename given to you by _tempnam you can't be sure it's unique.
-	CHECK_PTR( &mTempFilename[strlen(mTempFilename)], mTempFilename, bufferSize);
-	strcat(mTempFilename, ".");
-	CHECK_PTR( &mTempFilename[strlen(mTempFilename)], mTempFilename, bufferSize);
-	strcat(mTempFilename, mExtension.c_str());
- 	CHECK_PTR( &mTempFilename[strlen(mTempFilename)], mTempFilename, bufferSize);
-
- #endif // COMPILER_MSVC
-*/
-//	mTempFilename[strlen(mTempFilename)] = 0;
-
 	if(!(fp = fopen(mTempFilename, "wb")))
 	{
 		DEBUG_ONLY( OS::_DOUT("SOUND Error: Could not write SOUND file: [%s]", mTempFilename); )
-		return;
+		return false;
 	}
 	DEBUG_ASSERT(soundData != 0, "Sound data is NULL!")
 	DEBUG_ASSERT(soundDataLen > 0, "Sound data length is 0!")
 	fwrite(soundData, soundDataLen, 1, fp);
-
 	fclose(fp);
 	SOUND_DEBUG_ONLY( OS::_DOUT("SOUND: Successfully wrote file: [%s]", mTempFilename); )
-	createFromFile(mTempFilename);
+
+	mLoadedOk = createFromFile(mTempFilename);
 #endif
+    return mLoadedOk;
 }
 
-void SoundDirectX::createFromFile(const char* filename)
+bool SoundDirectX::createFromFile(const char* filename)
 {
+    bool mLoadedOk = false;
 #ifndef NO_SOUND
 	SOUND_DEBUG_ONLY( OS::_DOUT("Sound::createFromFile [%p] file [%s]", this, filename); )
 	std::string realPath = os_makeCanonicalPath(filename);  // assumes relative to application if relative path
@@ -447,6 +421,7 @@ void SoundDirectX::createFromFile(const char* filename)
 		if (FAILED(hr))
 		{
 			DEBUG_ONLY( OS::_DOUT("SOUND Error: Can not render file [%s]. %s", filename, os_getPlatformErrorMessage(hr)); )
+			return false;
 		}
 
 		// Have the graph signal event via window callbacks
@@ -457,6 +432,7 @@ void SoundDirectX::createFromFile(const char* filename)
 		mLoadedOk = true;
 	}
 #endif
+    return mLoadedOk;
 }
 
 // set volume level for this sound only
@@ -629,7 +605,10 @@ Sound*
 Sound::createSoundFromData(const char* soundName, char* soundData, long soundDataLen) {
 	std::string extension = getfileext(soundName);
 	SoundDirectX* sndX = new SoundDirectX(SoundManager::getSingletonInstance(), soundName, extension.c_str());
-	sndX->createFromData(soundData, soundDataLen);
+	if (sndX && !sndX->createFromData(soundData, soundDataLen)) {
+	    delete sndX;
+	    sndX = 0;
+	}
 	return sndX;
 }
 
@@ -637,7 +616,10 @@ Sound*
 Sound::createSoundFromFile(const char* soundFileName) {
 	std::string extension = getfileext(soundFileName);
 	SoundDirectX* sndX = new SoundDirectX(SoundManager::getSingletonInstance(), soundFileName, extension.c_str());
-	sndX->createFromFile(soundFileName);
+	if (sndX && !sndX->createFromFile(soundFileName)) {
+	    delete sndX;
+	    sndX = 0;
+	}
 	return sndX;
 }
 

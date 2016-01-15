@@ -21,25 +21,25 @@
  
 #include <string.h>
 
-#include "chipmunk_private.h"
+#include "chipmunk/chipmunk_private.h"
 
 //MARK: Sleeping Functions
 
 void
 cpSpaceActivateBody(cpSpace *space, cpBody *body)
 {
-	cpAssertHard(!cpBodyIsRogue(body), "Internal error: Attempting to activate a rogue body.");
+	cpAssertHard(cpBodyGetType(body) == CP_BODY_TYPE_DYNAMIC, "Internal error: Attempting to activate a non-dynamic body.");
 		
 	if(space->locked){
 		// cpSpaceActivateBody() is called again once the space is unlocked
 		if(!cpArrayContains(space->rousedBodies, body)) cpArrayPush(space->rousedBodies, body);
 	} else {
-		cpAssertSoft(body->node.root == NULL && body->node.next == NULL, "Internal error: Activating body non-NULL node pointers.");
-		cpArrayPush(space->bodies, body);
+		cpAssertSoft(body->sleeping.root == NULL && body->sleeping.next == NULL, "Internal error: Activating body non-NULL node pointers.");
+		cpArrayPush(space->dynamicBodies, body);
 
 		CP_BODY_FOREACH_SHAPE(body, shape){
 			cpSpatialIndexRemove(space->staticShapes, shape, shape->hashid);
-			cpSpatialIndexInsert(space->activeShapes, shape, shape->hashid);
+			cpSpatialIndexInsert(space->dynamicShapes, shape, shape->hashid);
 		}
 		
 		CP_BODY_FOREACH_ARBITER(body, arb){
@@ -49,24 +49,23 @@ cpSpaceActivateBody(cpSpace *space, cpBody *body)
 			// You only want to restore the arbiter once, so bodyA is arbitrarily chosen to own the arbiter.
 			// The edge case is when static bodies are involved as the static bodies never actually sleep.
 			// If the static body is bodyB then all is good. If the static body is bodyA, that can easily be checked.
-			if(body == bodyA || cpBodyIsStatic(bodyA)){
-				int numContacts = arb->numContacts;
-				cpContact *contacts = arb->contacts;
+			if(body == bodyA || cpBodyGetType(bodyA) == CP_BODY_TYPE_STATIC){
+				int numContacts = arb->count;
+				struct cpContact *contacts = arb->contacts;
 				
 				// Restore contact values back to the space's contact buffer memory
 				arb->contacts = cpContactBufferGetArray(space);
-				memcpy(arb->contacts, contacts, numContacts*sizeof(cpContact));
+				memcpy(arb->contacts, contacts, numContacts*sizeof(struct cpContact));
 				cpSpacePushContacts(space, numContacts);
 				
 				// Reinsert the arbiter into the arbiter cache
-				cpShape *a = arb->a, *b = arb->b;
-				cpShape *shape_pair[] = {a, b};
+				const cpShape *a = arb->a, *b = arb->b;
+				const cpShape *shape_pair[] = {a, b};
 				cpHashValue arbHashID = CP_HASH_PAIR((cpHashValue)a, (cpHashValue)b);
-				cpHashSetInsert(space->cachedArbiters, arbHashID, shape_pair, arb, NULL);
+				cpHashSetInsert(space->cachedArbiters, arbHashID, shape_pair, NULL, arb);
 				
 				// Update the arbiter's state
 				arb->stamp = space->stamp;
-				arb->handler = cpSpaceLookupHandler(space, a->collision_type, b->collision_type);
 				cpArrayPush(space->arbiters, arb);
 				
 				cpfree(contacts);
@@ -75,7 +74,7 @@ cpSpaceActivateBody(cpSpace *space, cpBody *body)
 		
 		CP_BODY_FOREACH_CONSTRAINT(body, constraint){
 			cpBody *bodyA = constraint->a;
-			if(body == bodyA || cpBodyIsStatic(bodyA)) cpArrayPush(space->constraints, constraint);
+			if(body == bodyA || cpBodyGetType(bodyA) == CP_BODY_TYPE_STATIC) cpArrayPush(space->constraints, constraint);
 		}
 	}
 }
@@ -83,23 +82,23 @@ cpSpaceActivateBody(cpSpace *space, cpBody *body)
 static void
 cpSpaceDeactivateBody(cpSpace *space, cpBody *body)
 {
-	cpAssertHard(!cpBodyIsRogue(body), "Internal error: Attempting to deactivate a rouge body.");
+	cpAssertHard(cpBodyGetType(body) == CP_BODY_TYPE_DYNAMIC, "Internal error: Attempting to deactivate a non-dynamic body.");
 	
-	cpArrayDeleteObj(space->bodies, body);
+	cpArrayDeleteObj(space->dynamicBodies, body);
 	
 	CP_BODY_FOREACH_SHAPE(body, shape){
-		cpSpatialIndexRemove(space->activeShapes, shape, shape->hashid);
+		cpSpatialIndexRemove(space->dynamicShapes, shape, shape->hashid);
 		cpSpatialIndexInsert(space->staticShapes, shape, shape->hashid);
 	}
 	
 	CP_BODY_FOREACH_ARBITER(body, arb){
 		cpBody *bodyA = arb->body_a;
-		if(body == bodyA || cpBodyIsStatic(bodyA)){
+		if(body == bodyA || cpBodyGetType(bodyA) == CP_BODY_TYPE_STATIC){
 			cpSpaceUncacheArbiter(space, arb);
 			
 			// Save contact values to a new block of memory so they won't time out
-			size_t bytes = arb->numContacts*sizeof(cpContact);
-			cpContact *contacts = (cpContact *)cpcalloc(1, bytes);
+			size_t bytes = arb->count*sizeof(struct cpContact);
+			struct cpContact *contacts = (struct cpContact *)cpcalloc(1, bytes);
 			memcpy(contacts, arb->contacts, bytes);
 			arb->contacts = contacts;
 		}
@@ -107,58 +106,56 @@ cpSpaceDeactivateBody(cpSpace *space, cpBody *body)
 		
 	CP_BODY_FOREACH_CONSTRAINT(body, constraint){
 		cpBody *bodyA = constraint->a;
-		if(body == bodyA || cpBodyIsStatic(bodyA)) cpArrayDeleteObj(space->constraints, constraint);
+		if(body == bodyA || cpBodyGetType(bodyA) == CP_BODY_TYPE_STATIC) cpArrayDeleteObj(space->constraints, constraint);
 	}
 }
 
 static inline cpBody *
 ComponentRoot(cpBody *body)
 {
-	return (body ? body->node.root : NULL);
-}
-
-static inline void
-ComponentActivate(cpBody *root)
-{
-	if(!root || !cpBodyIsSleeping(root)) return;
-	cpAssertHard(!cpBodyIsRogue(root), "Internal Error: ComponentActivate() called on a rogue body.");
-	
-	cpSpace *space = root->space;
-	cpBody *body = root;
-	while(body){
-		cpBody *next = body->node.next;
-		
-		body->node.idleTime = 0.0f;
-		body->node.root = NULL;
-		body->node.next = NULL;
-		cpSpaceActivateBody(space, body);
-		
-		body = next;
-	}
-	
-	cpArrayDeleteObj(space->sleepingComponents, root);
+	return (body ? body->sleeping.root : NULL);
 }
 
 void
 cpBodyActivate(cpBody *body)
 {
-	if(!cpBodyIsRogue(body)){
-		body->node.idleTime = 0.0f;
-		ComponentActivate(ComponentRoot(body));
-	}
-	
-	CP_BODY_FOREACH_ARBITER(body, arb){
-		// Reset the idle timer of things the body is touching as well.
-		// That way things don't get left hanging in the air.
-		cpBody *other = (arb->body_a == body ? arb->body_b : arb->body_a);
-		if(!cpBodyIsStatic(other)) other->node.idleTime = 0.0f;
+	if(body != NULL && cpBodyGetType(body) == CP_BODY_TYPE_DYNAMIC){
+		body->sleeping.idleTime = 0.0f;
+		
+		cpBody *root = ComponentRoot(body);
+		if(root && cpBodyIsSleeping(root)){
+			// TODO should cpBodyIsSleeping(root) be an assertion?
+			cpAssertSoft(cpBodyGetType(root) == CP_BODY_TYPE_DYNAMIC, "Internal Error: Non-dynamic body component root detected.");
+			
+			cpSpace *space = root->space;
+			cpBody *body = root;
+			while(body){
+				cpBody *next = body->sleeping.next;
+				
+				body->sleeping.idleTime = 0.0f;
+				body->sleeping.root = NULL;
+				body->sleeping.next = NULL;
+				cpSpaceActivateBody(space, body);
+				
+				body = next;
+			}
+			
+			cpArrayDeleteObj(space->sleepingComponents, root);
+		}
+		
+		CP_BODY_FOREACH_ARBITER(body, arb){
+			// Reset the idle timer of things the body is touching as well.
+			// That way things don't get left hanging in the air.
+			cpBody *other = (arb->body_a == body ? arb->body_b : arb->body_a);
+			if(cpBodyGetType(other) != CP_BODY_TYPE_STATIC) other->sleeping.idleTime = 0.0f;
+		}
 	}
 }
 
 void
 cpBodyActivateStatic(cpBody *body, cpShape *filter)
 {
-	cpAssertHard(cpBodyIsStatic(body), "cpBodyActivateStatic() called on a non-static body.");
+	cpAssertHard(cpBodyGetType(body) == CP_BODY_TYPE_STATIC, "cpBodyActivateStatic() called on a non-static body.");
 	
 	CP_BODY_FOREACH_ARBITER(body, arb){
 		if(!filter || filter == arb->a || filter == arb->b){
@@ -166,7 +163,7 @@ cpBodyActivateStatic(cpBody *body, cpShape *filter)
 		}
 	}
 	
-	// TODO should also activate joints?
+	// TODO: should also activate joints?
 }
 
 static inline void
@@ -185,20 +182,20 @@ cpBodyPushArbiter(cpBody *body, cpArbiter *arb)
 
 static inline void
 ComponentAdd(cpBody *root, cpBody *body){
-	body->node.root = root;
+	body->sleeping.root = root;
 
 	if(body != root){
-		body->node.next = root->node.next;
-		root->node.next = body;
+		body->sleeping.next = root->sleeping.next;
+		root->sleeping.next = body;
 	}
 }
 
 static inline void
 FloodFillComponent(cpBody *root, cpBody *body)
 {
-	// Rogue bodies cannot be put to sleep and prevent bodies they are touching from sleepining anyway.
-	// Static bodies (which are a type of rogue body) are effectively sleeping all the time.
-	if(!cpBodyIsRogue(body)){
+	// Kinematic bodies cannot be put to sleep and prevent bodies they are touching from sleeping.
+	// Static bodies are effectively sleeping all the time.
+	if(cpBodyGetType(body) == CP_BODY_TYPE_DYNAMIC){
 		cpBody *other_root = ComponentRoot(body);
 		if(other_root == NULL){
 			ComponentAdd(root, body);
@@ -214,7 +211,7 @@ static inline cpBool
 ComponentActive(cpBody *root, cpFloat threshold)
 {
 	CP_BODY_FOREACH_COMPONENT(root, body){
-		if(body->node.idleTime < threshold) return cpTrue;
+		if(body->sleeping.idleTime < threshold) return cpTrue;
 	}
 	
 	return cpFalse;
@@ -224,14 +221,14 @@ void
 cpSpaceProcessComponents(cpSpace *space, cpFloat dt)
 {
 	cpBool sleep = (space->sleepTimeThreshold != INFINITY);
-	cpArray *bodies = space->bodies;
+	cpArray *bodies = space->dynamicBodies;
 	
 #ifndef NDEBUG
 	for(int i=0; i<bodies->num; i++){
 		cpBody *body = (cpBody*)bodies->arr[i];
 		
-		cpAssertSoft(body->node.next == NULL, "Internal Error: Dangling next pointer detected in contact graph.");
-		cpAssertSoft(body->node.root == NULL, "Internal Error: Dangling root pointer detected in contact graph.");
+		cpAssertSoft(body->sleeping.next == NULL, "Internal Error: Dangling next pointer detected in contact graph.");
+		cpAssertSoft(body->sleeping.root == NULL, "Internal Error: Dangling root pointer detected in contact graph.");
 	}
 #endif
 	
@@ -244,9 +241,12 @@ cpSpaceProcessComponents(cpSpace *space, cpFloat dt)
 		for(int i=0; i<bodies->num; i++){
 			cpBody *body = (cpBody*)bodies->arr[i];
 			
+			// TODO should make a separate array for kinematic bodies.
+			if(cpBodyGetType(body) != CP_BODY_TYPE_DYNAMIC) continue;
+			
 			// Need to deal with infinite mass objects
 			cpFloat keThreshold = (dvsq ? body->m*dvsq : 0.0f);
-			body->node.idleTime = (cpBodyKineticEnergy(body) > keThreshold ? 0.0f : body->node.idleTime + dt);
+			body->sleeping.idleTime = (cpBodyKineticEnergy(body) > keThreshold ? 0.0f : body->sleeping.idleTime + dt);
 		}
 	}
 	
@@ -257,8 +257,9 @@ cpSpaceProcessComponents(cpSpace *space, cpFloat dt)
 		cpBody *a = arb->body_a, *b = arb->body_b;
 		
 		if(sleep){
-			if((cpBodyIsRogue(b) && !cpBodyIsStatic(b)) || cpBodyIsSleeping(a)) cpBodyActivate(a);
-			if((cpBodyIsRogue(a) && !cpBodyIsStatic(a)) || cpBodyIsSleeping(b)) cpBodyActivate(b);
+			// TODO checking cpBodyIsSleepin() redundant?
+			if(cpBodyGetType(b) == CP_BODY_TYPE_KINEMATIC || cpBodyIsSleeping(a)) cpBodyActivate(a);
+			if(cpBodyGetType(a) == CP_BODY_TYPE_KINEMATIC || cpBodyIsSleeping(b)) cpBodyActivate(b);
 		}
 		
 		cpBodyPushArbiter(a, arb);
@@ -266,14 +267,14 @@ cpSpaceProcessComponents(cpSpace *space, cpFloat dt)
 	}
 	
 	if(sleep){
-		// Bodies should be held active if connected by a joint to a non-static rouge body.
+		// Bodies should be held active if connected by a joint to a kinematic.
 		cpArray *constraints = space->constraints;
 		for(int i=0; i<constraints->num; i++){
 			cpConstraint *constraint = (cpConstraint *)constraints->arr[i];
 			cpBody *a = constraint->a, *b = constraint->b;
 			
-			if(cpBodyIsRogue(b) && !cpBodyIsStatic(b)) cpBodyActivate(a);
-			if(cpBodyIsRogue(a) && !cpBodyIsStatic(a)) cpBodyActivate(b);
+			if(cpBodyGetType(b) == CP_BODY_TYPE_KINEMATIC) cpBodyActivate(a);
+			if(cpBodyGetType(a) == CP_BODY_TYPE_KINEMATIC) cpBodyActivate(b);
 		}
 		
 		// Generate components and deactivate sleeping ones
@@ -299,8 +300,8 @@ cpSpaceProcessComponents(cpSpace *space, cpFloat dt)
 			i++;
 			
 			// Only sleeping bodies retain their component node pointers.
-			body->node.root = NULL;
-			body->node.next = NULL;
+			body->sleeping.root = NULL;
+			body->sleeping.next = NULL;
 		}
 	}
 }
@@ -313,10 +314,11 @@ cpBodySleep(cpBody *body)
 
 void
 cpBodySleepWithGroup(cpBody *body, cpBody *group){
-	cpAssertHard(!cpBodyIsRogue(body), "Rogue (and static) bodies cannot be put to sleep.");
+	cpAssertHard(cpBodyGetType(body) == CP_BODY_TYPE_DYNAMIC, "Non-dynamic bodies cannot be put to sleep.");
 	
 	cpSpace *space = body->space;
-	cpAssertHard(!space->locked, "Bodies cannot be put to sleep during a query or a call to cpSpaceStep(). Put these calls into a post-step callback.");
+	cpAssertHard(!cpSpaceIsLocked(space), "Bodies cannot be put to sleep during a query or a call to cpSpaceStep(). Put these calls into a post-step callback.");
+	cpAssertHard(cpSpaceGetSleepTimeThreshold(space) < INFINITY, "Sleeping is not enabled on the space. You cannot sleep a body without setting a sleep time threshold on the space.");
 	cpAssertHard(group == NULL || cpBodyIsSleeping(group), "Cannot use a non-sleeping body as a group identifier.");
 	
 	if(cpBodyIsSleeping(body)){
@@ -324,34 +326,24 @@ cpBodySleepWithGroup(cpBody *body, cpBody *group){
 		return;
 	}
 	
-	CP_BODY_FOREACH_SHAPE(body, shape) cpShapeUpdate(shape, body->p, body->rot);
+	CP_BODY_FOREACH_SHAPE(body, shape) cpShapeCacheBB(shape);
 	cpSpaceDeactivateBody(space, body);
 	
 	if(group){
 		cpBody *root = ComponentRoot(group);
 		
-		cpComponentNode node = {root, root->node.next, 0.0f};
-		body->node = node;
+		body->sleeping.root = root;
+		body->sleeping.next = root->sleeping.next;
+		body->sleeping.idleTime = 0.0f;
 		
-		root->node.next = body;
+		root->sleeping.next = body;
 	} else {
-		cpComponentNode node = {body, NULL, 0.0f};
-		body->node = node;
+		body->sleeping.root = body;
+		body->sleeping.next = NULL;
+		body->sleeping.idleTime = 0.0f;
 		
 		cpArrayPush(space->sleepingComponents, body);
 	}
 	
-	cpArrayDeleteObj(space->bodies, body);
-}
-
-static void
-activateTouchingHelper(cpShape *shape, cpContactPointSet *points, cpShape *other){
-	cpBodyActivate(shape->body);
-}
-
-void
-cpSpaceActivateShapesTouchingShape(cpSpace *space, cpShape *shape){
-	if(space->sleepTimeThreshold != INFINITY){
-		cpSpaceShapeQuery(space, shape, (cpSpaceShapeQueryFunc)activateTouchingHelper, shape);
-	}
+	cpArrayDeleteObj(space->dynamicBodies, body);
 }

@@ -43,7 +43,7 @@
 #endif
 
 #ifdef PDG_USE_CHIPMUNK_PHYSICS
-#include "chipmunk.h"
+#include "chipmunk/chipmunk_private.h"
 #endif
 
 #ifdef PDG_SCML_SUPPORT
@@ -145,8 +145,8 @@ public:
     virtual void	hide();
     virtual void	show();
 	virtual bool	isHidden();
-	virtual void	fadeIn(int32 msDuration, EasingFunc easing = linearTween);  // fadeInComplete notification when done
-	virtual void	fadeOut(int32 msDuration, EasingFunc easing = linearTween);  // fadeOutComplete notification when done
+	virtual void	fadeIn(ms_delta msDuration, EasingFunc easing = linearTween);  // fadeInComplete notification when done
+	virtual void	fadeOut(ms_delta msDuration, EasingFunc easing = linearTween);  // fadeOutComplete notification when done
 	
 	// arrange layers
 	virtual void	moveBehind(SpriteLayer* layer);
@@ -179,9 +179,9 @@ public:
 	float           getZoom() const;
 
 	 // keeps centered, taking into account layer center offset
-	virtual void	zoomTo(float zoomLevel, int32 msDuration, EasingFunc easing = easeInOutQuad, 
+	virtual void	zoomTo(float zoomLevel, ms_delta msDuration, EasingFunc easing = easeInOutQuad, 
 							Rect keepInRect = Rect(0,0), const Point* centerOn = 0);
-	void			zoom(float deltaZoomLevel, int32 msDuration, EasingFunc easing = easeInOutQuad, 
+	void			zoom(float deltaZoomLevel, ms_delta msDuration, EasingFunc easing = easeInOutQuad, 
 							Rect keepInRect = Rect(0,0), const Point* centerOn = 0);
   #endif // ! PDG_NO_GUI
 
@@ -286,10 +286,10 @@ protected:
 	virtual void drawLayer();
   #endif // ! PDG_NO_GUI
 
-	virtual void animateLayer(long msElapsed);
+	virtual void animateLayer(ms_delta msElapsed);
 
     // do collision between layers
-	virtual void    collide(long msElapsed, SpriteLayer* withLayer, bool deferEvents = false);
+	virtual void    collide(ms_delta msElapsed, SpriteLayer* withLayer, bool deferEvents = false);
 
 	// sprite action notifications
 	// normally these notifications will be enqueued to be handled at the end of the event loop,
@@ -317,8 +317,8 @@ protected:
 	bool mDoCollisions;
 	bool mWantsMouseOver;
 	bool mWantsClicks;
-	uint32 mDoneFadingInAt;
-	uint32 mDoneFadingOutAt;
+	ms_time mDoneFadingInAt;
+	ms_time mDoneFadingOutAt;
 
   #ifndef PDG_NO_GUI
 	float mZoom;
@@ -411,7 +411,7 @@ SpriteLayer::getZoom() const {
 }
 
 inline void	
-SpriteLayer::zoom(float deltaZoom, int32 msDuration, EasingFunc easing, 
+SpriteLayer::zoom(float deltaZoom, ms_delta msDuration, EasingFunc easing, 
 				Rect keepInRect, const Point* centerOn) {
 	zoomTo(mZoom * deltaZoom, msDuration, easing, keepInRect, centerOn);
 }

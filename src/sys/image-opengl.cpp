@@ -324,7 +324,7 @@ namespace pdg {
             mSuperImage->setOpacity(opac);
 		} else {
             // decide how many slices to draw (very crude LOD)
-            long slices = log2f(radius) * 4;
+            GLint slices = log2f(radius) * 4;
             if (slices < 5) slices = 5;
 
 			bindTexture();
@@ -534,7 +534,7 @@ namespace pdg {
 	}
 
 	void    
-	ImageOpenGL::bindTexture(uint32 mipMode) {
+	ImageOpenGL::bindTexture(GLint mipMode) {
 		if (mSuperImage) return;  // don't do for subimage
 		if (mTexture == 0 && data) {
 			glGenTextures(1, &mTexture);
@@ -565,7 +565,7 @@ namespace pdg {
 			} else {
 				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 			}
-			glTexImage2D(GL_TEXTURE_2D, 0, mTextureFormat, mBufferWidth, mBufferHeight, 0, 
+			glTexImage2D(GL_TEXTURE_2D, 0, mTextureFormat, (GLsizei)mBufferWidth, (GLsizei)mBufferHeight, 0,
 						 mTextureFormat, GL_UNSIGNED_BYTE, data);
 			if (!mRetainData && !mRetainAlpha) {
 				std::free(data);

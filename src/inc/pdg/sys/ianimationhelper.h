@@ -82,7 +82,7 @@ public:
 	// msElapsed is time (milliseconds) since last call to animate
 	// return true if this helper should continue to be used, false
 	// if it should be removed from the helper list
-    virtual bool animate(Animated* what, uint32 msElapsed) = 0;
+    virtual bool animate(Animated* what, ms_delta msElapsed) = 0;
     
     // returning true means Animated should delete the helper when it removes it
     // from the helper list

@@ -1,5 +1,3 @@
-[![Build Status](https://api.travis-ci.org/ezavada/pdg-node.svg)](https://travis-ci.org/ezavada/pdg-node/)
-
 Pixel Dust Game Engine Node Plugin
 ==================================
 

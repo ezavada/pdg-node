@@ -1,4 +1,4 @@
-.TH "NetServer" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.TH "NetServer" 3 "Mon Oct 26 2015" "Version v0.9.5" "Pixel Dust Game Engine" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -36,10 +36,6 @@ a network endpoint that can accept incoming connections
 .RI "\fBshutdown\fP (boolean closeExisting=true, boolean kill=false)"
 .br
 .RI "\fIstop listening for new connections \fP"
-.ti -1c
-.RI "string \fBtoString\fP ()"
-.br
-.RI "\fIreturns '[object NetServer]' \fP"
 .in -1c
 .SS "Public Attributes"
 
@@ -271,28 +267,6 @@ This will also do a clean shutdown of all existing connections made through it, 
 .RE
 .PP
 
-.SS "toString ()"
-
-.PP
-returns '[object NetServer]' (\fIWaves hand\fP) This is not the method you are looking for\&.
-.PP
-You probably want this:
-.PP
-.PP
-.nf
-function getServerString(ns) {
-    return 'NetServer@' + ns\&.serverAddr + ':' + ns\&.serverPort;
-}
-.fi
-.PP
-.PP
-Which gives something like this: 
-.PP
-.nf
-NetServer@127.0.0.1:5000
-.fi
-.PP
- 
 .SH "Member Data Documentation"
 .PP 
 .SS "allowDatagram"

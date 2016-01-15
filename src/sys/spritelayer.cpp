@@ -30,6 +30,7 @@
 
 #include "pdg_project.h"
 
+#include "pdg/sys/global_types.h"
 #include "pdg/sys/os.h"
 #include "pdg/sys/sprite.h"
 #include "pdg/sys/spritelayer.h"
@@ -138,34 +139,37 @@ void SpriteLayer::setSerializationFlags(uint32 flags) {
 }
 
 uint32 SpriteLayer::getSerializedSize(ISerializer* serializer) const {
+	if ( (mSerFlags == ser_Micro) || (mSerFlags == ser_Positions) ) {
+        serializer->setSendTags(false);  // we don't want to send any unnecessary data
+    }
 	uint32 totalSize = 0;
 	Sprite* sprite = 0;
 	uint32 count = 0;
 	totalSize += 1;  // size of PDG_SPRITE_LAYER_STREAM_VERSION
-	totalSize += serializer->serializedSize(mSerFlags); // size of serializable flags
+	totalSize += serializer->sizeof_uint(mSerFlags); // size of serializable flags
 	if ( (mSerFlags == ser_Micro) || (mSerFlags == ser_Positions) ) {
 		// special case, smallest possible update, basically just the sprites
 		sprite = mFirstSprite;
 		while (sprite) {
 			count++;
 			if (mSerFlags & ser_ZOrder) {
-				totalSize += serializer->serializedSize(sprite->iid);
+				totalSize += serializer->sizeof_uint(sprite->iid);
 			}
-			// normally we would call serializer->serializedSize(sprite), but
+			// normally we would call serializer->sizeof_obj(sprite), but
 			// that adds a bunch of overhead for object tags and such that we don't want
 			// this only gives us the size of the data
 			totalSize += sprite->getSerializedSize(serializer);
 			sprite = sprite->mNextSprite;
 		}
-		totalSize += serializer->serializedSize(count);
+		totalSize += serializer->sizeof_uint(count);
 	} else {
 	  #ifdef PDG_TAG_SERIALIZED_DATA
 		totalSize += 4;  // size of request magic number
 	  #endif
 		totalSize += 2; // size layerFlags
 		if (mSerFlags & ser_InitialData) {
-			totalSize += serializer->serializedSize(iid);
-			totalSize += serializer->serializedSize((uint32)layerId);
+			totalSize += serializer->sizeof_uint(iid);
+			totalSize += serializer->sizeof_uint(layerId);
 		}
 		SIZE_FLOAT_LIST_START(2, 15);
 		if (mSerFlags & ser_Positions) {
@@ -216,16 +220,16 @@ uint32 SpriteLayer::getSerializedSize(ISerializer* serializer) const {
 		while (sprite) {
 			count++;
 			if (mSerFlags & ser_ZOrder) {
-				totalSize += serializer->serializedSize(sprite->iid);
+				totalSize += serializer->sizeof_uint(sprite->iid);
 			}
 		  	if (mSerFlags & ser_InitialData) {
-				totalSize += serializer->serializedSize(sprite);
+				totalSize += serializer->sizeof_obj(sprite);
 			} else {
 				totalSize += sprite->getSerializedSize(serializer);
 			}
 			sprite = sprite->mNextSprite;
 		}
-		totalSize += serializer->serializedSize(count); // for count
+		totalSize += serializer->sizeof_uint(count); // for count
 
 	}
 	return totalSize;
@@ -233,6 +237,9 @@ uint32 SpriteLayer::getSerializedSize(ISerializer* serializer) const {
 
 
 void SpriteLayer::serialize(ISerializer* serializer) const {
+	if ( (mSerFlags == ser_Micro) || (mSerFlags == ser_Positions) ) {
+        serializer->setSendTags(false);  // we don't want to send any unnecessary data
+    }
 	Sprite* sprite = 0;
 	uint32 count = 0;
 	serializer->serialize_1u(PDG_SPRITE_LAYER_STREAM_VERSION);
@@ -515,7 +522,7 @@ bool	SpriteLayer::isHidden() {
 	return mHidden;
 }
 
-void	SpriteLayer::fadeIn(int32 msDuration, EasingFunc easing) {
+void	SpriteLayer::fadeIn(ms_delta msDuration, EasingFunc easing) {
 	mDoneFadingInAt = OS::getMilliseconds() + msDuration;
 	Sprite* sprite = mFirstSprite;
 	while (sprite) {
@@ -524,7 +531,7 @@ void	SpriteLayer::fadeIn(int32 msDuration, EasingFunc easing) {
 	}
 }
 
-void	SpriteLayer::fadeOut(int32 msDuration, EasingFunc easing) {
+void	SpriteLayer::fadeOut(ms_delta msDuration, EasingFunc easing) {
 	mDoneFadingOutAt = OS::getMilliseconds() + msDuration;
 	Sprite* sprite = mFirstSprite;
 	while (sprite) {
@@ -849,10 +856,10 @@ SpriteLayer::setZoom(float zoomLevel) {
 }
 
 void
-SpriteLayer::zoomTo(float zoomLevel, int32 msDuration, EasingFunc easing, 
+SpriteLayer::zoomTo(float zoomLevel, ms_delta msDuration, EasingFunc easing, 
 					Rect keepInRect, const Point* centerOn) 
 {
-    int32 saveDelay = mDelayMs;
+    ms_delta saveDelay = mDelayMs;
     if (centerOn != 0) {
         moveTo(*centerOn, msDuration, (zoomLevel < mZoom) ? easeOutExpo : easeInOutQuad);
     }
@@ -974,7 +981,7 @@ void	SpriteLayer::disableCollisions() {
 }
 
 
-void    SpriteLayer::collide(long msElapsed, SpriteLayer* withLayer, bool deferEvents)  {
+void    SpriteLayer::collide(ms_delta msElapsed, SpriteLayer* withLayer, bool deferEvents)  {
   #ifdef PDG_USE_CHIPMUNK_PHYSICS
   if (!mUseChipmunkPhysics) { // if we are compiled with chipmunk support, make sure we want it for this layer
   #endif
@@ -1049,14 +1056,14 @@ void	SpriteLayer::drawLayer() {
 #endif // ! PDG_NO_GUI
 
 void
-SpriteLayer::animateLayer(long msElapsed) {
+SpriteLayer::animateLayer(ms_delta msElapsed) {
 	Animated::animate(msElapsed);
 
 	mFacingCos = cos(mFacing); // cache these frequently used values
 	mFacingSin = sin(mFacing);
 	
 	SpriteLayerInfo evntInfo;
-	uint32 currMs = OS::getMilliseconds();
+	ms_time currMs = OS::getMilliseconds();
 	SPRITELAYER_DEBUG_ONLY( DEBUG_PRINT("Animating layer [%p] @ %ld", this, msElapsed); )
 
 	if (mDoneFadingInAt && (currMs > mDoneFadingInAt)) {

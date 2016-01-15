@@ -1,4 +1,4 @@
-.TH "CpArbiter" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.TH "CpArbiter" 3 "Mon Oct 26 2015" "Version v0.9.5" "Pixel Dust Game Engine" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -21,11 +21,15 @@ arbitrates collisions between sprites using Chipmunk Physics (\fIChipmunk Physic
 .br
 .RI "\fIget the depth of penetration for a particular contact point \fP"
 .ti -1c
-.RI "\fBVector\fP \fBgetNormal\fP (int i)"
+.RI "\fBVector\fP \fBgetNormal\fP ()"
 .br
-.RI "\fIget collision normal for a particular contact point \fP"
+.RI "\fIget collision normal \fP"
 .ti -1c
-.RI "\fBPoint\fP \fBgetPoint\fP (int i)"
+.RI "\fBPoint\fP \fBgetPointA\fP (int i)"
+.br
+.RI "\fIget the location of a particular contact point \fP"
+.ti -1c
+.RI "\fBPoint\fP \fBgetPointB\fP (int i)"
 .br
 .RI "\fIget the location of a particular contact point \fP"
 .ti -1c
@@ -75,23 +79,32 @@ how far the contact point is inside the other object
 .RE
 .PP
 
-.SS "getNormal (inti)"
+.SS "getNormal ()"
 
 .PP
-get collision normal for a particular contact point Get the normal vector (magnitude of 1\&.0) that expresses the relative x and y direction of the collision for this particular contact point\&.
+get collision normal Get the normal vector (magnitude of 1\&.0) that expresses the relative x and y direction of the collision\&.
 .PP
-\fBParameters:\fP
+\fBReturns:\fP
+.RS 4
+the collision normal vector for the collision 
+.RE
+.PP
+
+.SS "getPointA (inti)"
+
+.PP
+get the location of a particular contact point \fBParameters:\fP
 .RS 4
 \fIi\fP index into contact points
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-the collision normal vector for that contact point 
+the location of the contact 
 .RE
 .PP
 
-.SS "getPoint (inti)"
+.SS "getPointB (inti)"
 
 .PP
 get the location of a particular contact point \fBParameters:\fP

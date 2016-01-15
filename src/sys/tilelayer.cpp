@@ -119,8 +119,8 @@ TileLayer::defineTileSet(int tileWidth, int tileHeight, Image* tiles, bool hasTr
   #endif // ! PDG_NO_GUI
 	
 	// calc and save number of tiles based on how many fit in image
-	mSrcTileCountX = tiles->getWidth() / mSrcTileWidth;
-	mSrcTileCountY = tiles->getHeight() / mSrcTileHeight;
+	mSrcTileCountX = (int)(tiles->getWidth() / mSrcTileWidth);
+	mSrcTileCountY = (int)(tiles->getHeight() / mSrcTileHeight);
 	
 	mUseFacing = !flipTiles && ((mSrcTileCountX * mSrcTileCountY) <= 64);
 	
@@ -691,7 +691,7 @@ TileLayer::drawLayer() {
 #endif // ! PDG_NO_GUI
 
 void 
-TileLayer::animateLayer(long msElapsed) {
+TileLayer::animateLayer(ms_delta msElapsed) {
 	SpriteLayer::animateLayer(msElapsed);
 }
 	

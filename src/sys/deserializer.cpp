@@ -40,25 +40,9 @@
 #include <map>
 #include <cstdlib>
 
-#ifndef PDG_NO_SERIALIZER_SANITY_CHECKS
-#define SERIALIZER_SANITY_CHECKS
-#endif
-
 #ifdef PDG_COMPILING_FOR_SCRIPT_BINDINGS
   #include "pdg_script_bindings.h"
   #include "pdg_script_interface.h"
-#endif
-
-#ifdef PDG_DESERIALIZER_NO_THROW
-	// we can't throw, so we report errors but don't exit
-	#define STREAM_SAFETY_CHECK(_cond, _msg, _except) if (!(_cond)) { char buf[1024]; buf[0] = 0;\
-		std::sprintf(buf, "%s: %s at %s (%s:%d)\nOffset: %ld End: %ld", #_except, _msg, __FUNCTION__, __FILE__, __LINE__, p - mDataPtr, mDataEnd - mDataPtr); \
-		DEBUG_PRINT(buf); }
-#else
-	// we throw exceptions on errors
-	#define STREAM_SAFETY_CHECK(_cond, _msg, _except) if (!(_cond)) { char buf[1024]; buf[0] = 0;\
-		std::sprintf(buf, "%s: %s at %s (%s:%d)\nOffset: %ld End: %ld", #_except, _msg, __FUNCTION__, __FILE__, __LINE__, p - mDataPtr, mDataEnd - mDataPtr); \
-		throw _except(buf); }
 #endif
 
 namespace pdg {
@@ -69,16 +53,19 @@ int IDeserializer::s_TraceDepth = 0;
 typedef std::map<uint32, IDeserializer::CreateSerializableFunc> SerializableRegistryT;
 SerializableRegistryT gSerializableRegistry;
 
-#ifdef PDG_COMPILING_FOR_JAVASCRIPT
-  typedef std::map< uint32, SAVED_FUNCTION > JavascriptRegistryT;
-  JavascriptRegistryT gJavascriptRegistry;
-#endif // PDG_COMPILING_FOR_JAVASCRIPT
+// maps object unique ids to the object pointers
+ObjectRegistryT gObjectRegistry;
+
+#ifdef PDG_COMPILING_FOR_SCRIPT_BINDINGS
+  typedef std::map< uint32, SAVED_FUNCTION > ScriptRegistryT;
+  ScriptRegistryT gScriptRegistry;
+#endif // PDG_COMPILING_FOR_SCRIPT_BINDINGS
 
 #ifndef PDG_NO_64BIT
 //! Deserialize an 8 byte (64 bit) value
 uint64 Deserializer::deserialize_8u() {
 	DESERIALIZE_IN("8u  ", 8);
-	STREAM_SAFETY_CHECK(p + 8 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data);
+	STREAM_SAFETY_CHECK(p + 8 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data, DESERIALIZE_OUT);
 	if (p + 8 > mDataEnd) return 0;
 	uint64 val = 0;
 	val |= ((uint64)*p++ << 56);
@@ -97,7 +84,7 @@ uint64 Deserializer::deserialize_8u() {
 //! Deserialize a 4 byte (32 bit) value
 uint32 Deserializer::deserialize_4u() {
 	DESERIALIZE_IN("4u  ", 4)
-	STREAM_SAFETY_CHECK(p + 4 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data);
+	STREAM_SAFETY_CHECK(p + 4 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data, DESERIALIZE_OUT);
 	if (p + 4 > mDataEnd) return 0;
 	uint32 val = 0;
 	val |= (*p++ << 24);
@@ -111,7 +98,7 @@ uint32 Deserializer::deserialize_4u() {
 //! Deserialize a 3 byte (24 bit) value
 uint32 Deserializer::deserialize_3u() {
 	DESERIALIZE_IN("3u  ", 3)
-	STREAM_SAFETY_CHECK(p + 3 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data);
+	STREAM_SAFETY_CHECK(p + 3 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data, DESERIALIZE_OUT);
 	if (p + 3 > mDataEnd) return 0;
 	uint32 val = 0;
 	val |= (*p++ << 16);
@@ -124,7 +111,7 @@ uint32 Deserializer::deserialize_3u() {
 //! Deserialize a 2 byte (16 bit) value
 uint16 Deserializer::deserialize_2u() {
 	DESERIALIZE_IN("2u  ", 2)
-	STREAM_SAFETY_CHECK(p + 2 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data);
+	STREAM_SAFETY_CHECK(p + 2 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data, DESERIALIZE_OUT);
 	if (p + 2 > mDataEnd) return 0;
 	uint16 val = 0;
 	val |= (*p++ << 8);
@@ -136,7 +123,7 @@ uint16 Deserializer::deserialize_2u() {
 //! Deserialize an 1 byte (8 bit) value
 uint8 Deserializer::deserialize_1u() {
 	DESERIALIZE_IN("1u  ", 1)
-	STREAM_SAFETY_CHECK(p + 1 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data);
+	STREAM_SAFETY_CHECK(p + 1 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data, DESERIALIZE_OUT);
 	DESERIALIZE_OUT;
 	if (p + 1 > mDataEnd) return 0;
 	return *p++;
@@ -145,7 +132,7 @@ uint8 Deserializer::deserialize_1u() {
 bool Deserializer::deserialize_bool() {
 	DESERIALIZE_IN("bool", mBoolBitOffset ? 0 : 1);
 	if (mBoolBitOffset == 0) {
-		STREAM_SAFETY_CHECK(p + 1 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data);
+		STREAM_SAFETY_CHECK(p + 1 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data, DESERIALIZE_OUT);
 		mLastBoolByte = *p++;
 	}
 	bool val = ((mLastBoolByte & (1 << mBoolBitOffset)) != 0);
@@ -162,7 +149,7 @@ bool Deserializer::deserialize_bool() {
 //! Deserialize an unsigned int value 
 uint32 Deserializer::deserialize_uint() {
 	DESERIALIZE_IN("uint", 0)
-	STREAM_SAFETY_CHECK(p + 1 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data);
+	STREAM_SAFETY_CHECK(p + 1 <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data, DESERIALIZE_OUT);
 	if (p + 1 > mDataEnd) return 0;
 	uint32 val = *p++;
 	if (val == tag_longLen) {
@@ -238,16 +225,16 @@ Quad Deserializer::deserialize_quad() {
 }
 
 uint32
-Deserializer::deserialize_str(char* outStr, uint32 strMaxLen) {
+Deserializer::deserialize_str(char* outStr, size_t strMaxLen) {
 	DESERIALIZE_IN("str ", 0)
-#ifdef SERIALIZER_SANITY_CHECKS
-	uint32 tag = deserialize_3u();
-	STREAM_SAFETY_CHECK(tag_string == tag, "OUT OF SYNC: expected String", bad_tag);
-#endif
+    if (mUsingTags) {
+        uint32 tag = deserialize_3u();
+        STREAM_SAFETY_CHECK(tag_string == tag, "OUT OF SYNC: expected String", bad_tag, DESERIALIZE_OUT);
+    }
 	uint32 strLen = deserialize_uint();
 	if (!strLen) return 0;  // nothing in buffer, nothing to copy
-	uint32 copyLen = (strLen < (strMaxLen - 1)) ? strLen : strMaxLen - 1;  // strMaxLen includes NUL terminator space
-	STREAM_SAFETY_CHECK(p + copyLen <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data);
+	size_t copyLen = (strLen < (strMaxLen - 1)) ? strLen : strMaxLen - 1;  // strMaxLen includes NUL terminator space
+	STREAM_SAFETY_CHECK(p + copyLen <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data, DESERIALIZE_OUT);
 	if (p + copyLen > mDataEnd) {  // copyLen always <= strLen
 		p = mDataEnd;
 		copyLen = 0;
@@ -256,16 +243,16 @@ Deserializer::deserialize_str(char* outStr, uint32 strMaxLen) {
 		p += strLen;  // always advance to end of entire string in buffer, not just by amount we copied
 	}
 	DESERIALIZE_OUT;
-	return copyLen;
+	return (uint32)copyLen;
 }
 
 uint32 
 Deserializer::deserialize_strGetLen() { 
 	uint8* ps = p;	
-#ifdef SERIALIZER_SANITY_CHECKS
-	uint32 tag = deserialize_3u();
-	STREAM_SAFETY_CHECK(tag_string == tag, "OUT OF SYNC: expected String", bad_tag);
-#endif
+    if (mUsingTags) {
+    	uint32 tag = deserialize_3u();
+	    STREAM_SAFETY_CHECK(tag_string == tag, "OUT OF SYNC: expected String", bad_tag, );
+    }
 	uint32 len = deserialize_uint(); 
 	p = ps;
 	return len + 1; // add one for the NUL terminator
@@ -274,14 +261,14 @@ Deserializer::deserialize_strGetLen() {
 uint32
 Deserializer::deserialize_mem(void* outMem, uint32 memMaxLen) {
 	DESERIALIZE_IN("str ", 0)
-#ifdef SERIALIZER_SANITY_CHECKS
-	uint32 tag = deserialize_3u();
-	STREAM_SAFETY_CHECK(tag_mem == tag, "OUT OF SYNC: expected Memory", bad_tag);
-#endif
+    if (mUsingTags) {
+    	uint32 tag = deserialize_3u();
+    	STREAM_SAFETY_CHECK(tag_mem == tag, "OUT OF SYNC: expected Memory", bad_tag, DESERIALIZE_OUT);
+    }
 	uint32 memLen = deserialize_uint();
 	if (!memLen) return 0;  // nothing in buffer, nothing to copy
 	uint32 copyLen = (memLen < memMaxLen) ? memLen : memMaxLen;
-	STREAM_SAFETY_CHECK(p + copyLen <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data);
+	STREAM_SAFETY_CHECK(p + copyLen <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data, DESERIALIZE_OUT);
 	if (p + copyLen > mDataEnd) {  // copyLen always <= memLen
 		p = mDataEnd;
 		copyLen = 0;
@@ -297,10 +284,10 @@ Deserializer::deserialize_mem(void* outMem, uint32 memMaxLen) {
 uint32
 Deserializer::deserialize_memGetLen() {
 	uint8* ps = p;	
-#ifdef SERIALIZER_SANITY_CHECKS
-	uint32 tag = deserialize_3u();
-	STREAM_SAFETY_CHECK(tag_mem == tag, "OUT OF SYNC: expected Memory", bad_tag);
-#endif
+    if (mUsingTags) {
+    	uint32 tag = deserialize_3u();
+    	STREAM_SAFETY_CHECK(tag_mem == tag, "OUT OF SYNC: expected Memory", bad_tag, );
+    }
 	uint32 memLen = deserialize_uint();
 	p = ps;
 	return memLen;
@@ -314,19 +301,22 @@ Deserializer::deserialize_obj() {
 	uint32 serializationType = deserialize_3u();
 	if (serializationType == tag_objectNil) {
 		DESERIALIZE_OUT;
-		return 0;
 	} else if (serializationType == tag_objectRef) {
 		uint32 index = deserialize_uint();
 		obj = mDeserializedInstances[index];
-		STREAM_SAFETY_CHECK(obj, "Invalid Instance Ref!! Obsolete stream?", sync_error);
+		STREAM_SAFETY_CHECK(obj, "Invalid Instance Ref!! Obsolete stream?", sync_error, DESERIALIZE_OUT);
 		obj->addRef();
 		DESERIALIZE_OUT;
 	} else if (serializationType == tag_object) {
 		uint32 classTag = deserialize_4();
-      #ifdef PDG_COMPILING_FOR_JAVASCRIPT
+      #ifdef PDG_COMPILING_FOR_SCRIPT_BINDINGS
        #ifdef PDG_USING_V8
+		 std::cerr << "fatal error: JS object streaming not implemented with V8 4.x yet!\n";
+		 exit(1);
+#warning TODO: implement JS object streaming with V8 v4.x
+/*
       	// first we try to find a javascript constructor function in our class registry
-        v8::Handle<v8::Function> constructor_ = gJavascriptRegistry[classTag];
+        v8::Handle<v8::Function> constructor_ = gScriptRegistry[classTag];
         if (!constructor_.IsEmpty()) {
         	// we found one, so call it with no params to create a new JS Object
         	v8::Handle<v8::Value> resVal_ = constructor_->CallAsConstructor(0, 0);
@@ -361,49 +351,81 @@ Deserializer::deserialize_obj() {
 				}
 			}
         }
+*/
        #endif // PDG_USING_V8
        #ifdef PDG_USING_JAVASCRIPT_CORE
          // TODO: implement serialization with JavaScriptCore
-		 std::cerr << "fatal error: JS object streaming not implemented with JavaScriptCore yet!";
+		 std::cerr << "fatal error: JS object streaming not implemented with JavaScriptCore yet!\n";
 		 exit(1);
+#warning TODO: implement JS object streaming with JavaScriptCore
        #endif // PDG_USING_JAVASCRIPT_CORE
-      #endif
-		DESERIALIZE_OUT;  // we stop here so that when the object deserializes we can see the bits of of it
+      #endif // PDG_COMPILING_FOR_SCRIPT_BINDINGS
         if (!obj) {
+            // if we didn't find the object in the Javascript registry, then
+            // check for it in the native C++ registry
 			IDeserializer::CreateSerializableFunc create_func = gSerializableRegistry[classTag];
 			if (create_func) { 
 				obj = create_func();
 			}
 		}
-		STREAM_SAFETY_CHECK(obj, "Unregistered Class!!", unknown_object);
+		if (!obj) {
+		    // still couldn't instantiate our object
+            // this is pretty important to know about, so we are going to write it to stderr
+            std::fprintf(stderr, "UKNOWN OBJECT: Deserializer got unregistered class tag [%X] @%05lu/%05lu\n",
+                (unsigned int)classTag, (unsigned long)(p - mDataPtr), (unsigned long)(mDataEnd - mDataPtr));
+		}
+		STREAM_SAFETY_CHECK(obj, "Unregistered Class!!", unknown_object, DESERIALIZE_OUT);
 		if (obj) {
 			obj->addRef();
 		}
 		mDeserializedInstances.push_back(obj);
-	  #ifdef SERIALIZER_SANITY_CHECKS
-		uint16 numSerializedClasses = deserialize_2();
-		STREAM_SAFETY_CHECK(numSerializedClasses == mDeserializedInstances.size(), "Serialized Class Count Incorrect", sync_error);
-	  #endif
-		uint32 objLen = deserialize_uint();
-	    STREAM_SAFETY_CHECK(p + objLen <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data);
-		if (p + objLen > mDataEnd) return 0;
+		uint32 objLen = 0;
+        if (mUsingTags) {
+    		uint16 numSerializedClasses = deserialize_2();
+		    STREAM_SAFETY_CHECK(numSerializedClasses == mDeserializedInstances.size(), "Serialized Class Count Incorrect", sync_error, DESERIALIZE_OUT);
+    		objLen = deserialize_uint();
+            STREAM_SAFETY_CHECK(p + objLen <= mDataEnd, "OUT OF SYNC: insufficient data remaining in buffer", out_of_data, DESERIALIZE_OUT);
+            if (p + objLen > mDataEnd) {
+                DESERIALIZE_OUT;  // we stop here so that when the object deserializes we can see the bits of of it
+                return 0;
+            }
+	    }
+        DESERIALIZE_OUT;  // we stop here so that when the object deserializes we can see the bits of of it
 		if (obj) {
 			obj->deserialize(this);
-		} else {
+		} else if (mUsingTags) {
 			p += objLen; // skip the object we couldn't deserialize
 		}
 	} else {
-		STREAM_SAFETY_CHECK(false, "OUT OF SYNC: expected Object or Object Ref", bad_tag);
+		STREAM_SAFETY_CHECK(false, "OUT OF SYNC: expected Object or Object Ref", bad_tag, );
 	}
 	return obj;
+}
+
+void* Deserializer::deserialize_ptr() {
+	DESERIALIZE_IN("ptr ", 0)
+    if (mUsingTags) {
+        uint32 tag = deserialize_3u();
+        STREAM_SAFETY_CHECK(tag_pointerRef == tag, "OUT OF SYNC: expected Pointer Ref", bad_tag, DESERIALIZE_OUT);
+    }
+	uint32 uniqueObjectId = deserialize_uint();
+    void* ptr = gObjectRegistry[uniqueObjectId];
+	DESERIALIZE_OUT;
+	return ptr;
 }
 
 void Deserializer::setDataPtr(void* ptr, uint32 ptrSize) {
 	mDataPtr = (uint8*)ptr; 
 	mDataSize = ptrSize;
 	mDataEnd = (uint8*)ptr + ptrSize; 
-	DEBUG_PRINT("Deserializer Initialized with Ptr [%p] size [%ld] bytes", mDataPtr, mDataEnd - mDataPtr);
+//	DEBUG_PRINT("Deserializer Initialized with Ptr [%p] size [%ld] bytes", mDataPtr, mDataEnd - mDataPtr);
 	p = (uint8*)ptr;
+	uint32 tag = deserialize_3u();
+	if (tag_pdgTaggedStream == tag) {
+	    mUsingTags = true;
+	} else {
+	    p = (uint8*)ptr;  // reset to start of stream
+	}
 }
 	
 Deserializer::Deserializer()
@@ -427,6 +449,7 @@ Deserializer::Deserializer(void* ptr, uint32 ptrSize)
 	mDataSize(0),
 	mLastBoolByte(0),
 	mBoolBitOffset(0),
+	mUsingTags(false),
 	mDeserializedInstances()
 {
 #ifdef PDG_COMPILING_FOR_SCRIPT_BINDINGS
@@ -449,13 +472,18 @@ char* Deserializer::statusDump(int hiliteBytes) {
 	static char buf[1024];
 	char* targBuf = buf + 22;
 	long blockNum = (p - mDataPtr)/16;
-	long blockStart = 16 * blockNum;
-	long blockLen = 20;
-	if ((mDataPtr + blockStart + blockLen) > mDataEnd) blockLen = (long)(mDataEnd - (mDataPtr + blockStart));
+	size_t blockStart = 16 * blockNum;
+	size_t blockLen = 20;
+	if ((mDataPtr + blockStart + blockLen) > mDataEnd) blockLen = mDataEnd - (mDataPtr + blockStart);
 	long hiliteStart = (p - mDataPtr) - blockStart;
-	std::sprintf(buf, "@%05lu/%05lu:  %04lX | ", p - mDataPtr, mDataEnd - mDataPtr, blockStart);
-	OS::binaryDump(targBuf, 1000, (char*)(mDataPtr + blockStart), blockLen, 20, hiliteStart, hiliteBytes);
+	std::sprintf(buf, "@%05lu/%05lu:  %04lX | ", (unsigned long)(p - mDataPtr), (unsigned long)(mDataEnd - mDataPtr), (unsigned long)(blockStart));
+	OS::binaryDump(targBuf, 1000, (char*)(mDataPtr + blockStart), blockLen, 20, (int)hiliteStart, hiliteBytes);
 	return buf;
+}
+
+void
+IDeserializer::registerObject(void* obj, uint32 uniqueId) {
+	gObjectRegistry[uniqueId] = obj;
 }
 
 void
@@ -463,17 +491,20 @@ IDeserializer::registerClass(uint32 classTag, CreateSerializableFunc classNewFun
 	gSerializableRegistry[classTag] = classNewFunc;
 }
 
-#ifdef PDG_COMPILING_FOR_JAVASCRIPT
+#ifdef PDG_COMPILING_FOR_SCRIPT_BINDINGS
 void 
 Deserializer::registerScriptClass(uint32 classTag, FUNCTION_REF constructorFunc) {
   #ifdef PDG_USING_V8
-	gJavascriptRegistry[classTag] = v8::Persistent<v8::Function>::New(constructorFunc);
+// BROKEN!!!
+//     v8::Isolate* isolate = v8::Isolate::GetCurrent();
+// 	v8::Persistent<v8::Function>* pf = gScriptRegistry[classTag];
+// 	pf->Reset(isolate, constructorFunc);
   #endif
   #ifdef PDG_USING_JAVASCRIPT_CORE
-  	gJavascriptRegistry[classTag] = constructorFunc;
+  	gScriptRegistry[classTag] = constructorFunc;
   	JSValueProtect(gMainContext, constructorFunc);
   #endif
 }
-#endif //PDG_COMPILING_FOR_JAVASCRIPT
+#endif //PDG_COMPILING_FOR_SCRIPT_BINDINGS
 
 } // end namespace pdg

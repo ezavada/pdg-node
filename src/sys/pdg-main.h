@@ -49,11 +49,11 @@ enum {
 	numMouseEventTypes
 };
 
-enum {
-	screenNum_PrimaryScreen = -1,
-    screenNum_BestFitScreen = -2
-};
-
+//enum {
+//	screenNum_PrimaryScreen = -1,
+//    screenNum_BestFitScreen = -2
+//};
+//
 bool main_getRawKeyState(int keyCode);
 bool main_getKeyState(utf16char keyChar);
 bool main_getButtonState(int buttonNumber);

@@ -59,21 +59,17 @@ class Image;
 //! \ingroup Graphics
 // -----------------------------------------------------------------------------------
 
-namespace Graphics {
+//extended drawing, with bit patterns, line thickness, and opacity
+//thickness: width of line (0 - 255), 0 means no line
+//pattern: a bit mask for which pixels are drawn and which are skipped. 0xff is solid, 0xf0 is dashed, 0x11 is dotted, etc..
+//patternShift: how much to shift the pattern for each successive line. pattern = 0x66 and shift = 1 gives 50% grey pattern
 
-	//extended drawing, with bit patterns, line thickness, and opacity
-	//thickness: width of line (0 - 255), 0 means no line
-	//pattern: a bit mask for which pixels are drawn and which are skipped. 0xff is solid, 0xf0 is dashed, 0x11 is dotted, etc..
-	//patternShift: how much to shift the pattern for each successive line. pattern = 0x66 and shift = 1 gives 50% grey pattern
-
-	enum {
-		solidPat = 0xffffffff,
-		greyPat  = 0x66666666,
-		emptyPat = 0x00000000,
-		dashPat  = 0xff00ff00,
-		dotPat   = 0x10101010
-	};
-
+enum {
+    solidPat = 0xffffffff,
+    greyPat  = 0x66666666,
+    emptyPat = 0x00000000,
+    dashPat  = 0xff00ff00,
+    dotPat   = 0x10101010
 };
 
 
@@ -145,7 +141,7 @@ public:
     //! draws image into a given rectangle, scaling as needed
 	void     drawImage(Image* img, const Rect& r);
     //! draws image into a given rectangle, scaling as specified to fit, with optional clipping
-	void     drawImage(Image* img, const Rect& r, Image::FitType fitType, bool clipOverflow = false);
+	void     drawImage(Image* img, const Rect& r, FitType fitType, bool clipOverflow = false);
     //! draws image at given location, scaling if necessary to fit
 	void     drawImage(Image* img, const RotatedRect& rr);
     //! draws image into a given quad-polygon, mapping each of the corners to the corresponding points
@@ -156,7 +152,7 @@ public:
     //! draws single frame of multiframe image into a given rectangle, scaling as needed
 	void     drawImage(ImageStrip* img, int frame, const Rect& r);
     //! draws single frame of multiframe image into a given rectangle, scaling as specified to fit, with optional clipping
-	void     drawImage(ImageStrip* img, int frame, const Rect& r, Image::FitType fitType, bool clipOverflow = false);
+	void     drawImage(ImageStrip* img, int frame, const Rect& r, FitType fitType, bool clipOverflow = false);
     //! draws single frame of multiframe image at given location, scaling if necessary to fit
 	void     drawImage(ImageStrip* img, int frame, const RotatedRect& rr);
     //! draws single frame of multiframe image into a given quad-polygon, mapping each of the corners to the corresponding points
@@ -176,25 +172,25 @@ public:
     // text drawing and measurement
 
     void     drawText(const char* text, const Point& loc, int size,
-                            uint32 style = Graphics::textStyle_Plain,
+                            uint32 style = textStyle_Plain,
                             Color rgba = PDG_BLACK_COLOR);
 
 	void	 drawText(const char* text, const Rect& r, int size,
-							uint32 style = Graphics::textStyle_Plain,
+							uint32 style = textStyle_Plain,
 							Color rgba = PDG_BLACK_COLOR);
 	void	 drawText(const char* text, const RotatedRect& rr, int size,
-                            uint32 style = Graphics::textStyle_Plain,
+                            uint32 style = textStyle_Plain,
                             Color rgba = PDG_BLACK_COLOR);
 	void	 drawText(const char* text, const Quad& quad, int size,
-							uint32 style = Graphics::textStyle_Plain,
+							uint32 style = textStyle_Plain,
 							Color rgba = PDG_BLACK_COLOR);
 
     int      getTextWidth(const char* text, int size,
-                            uint32 style = Graphics::textStyle_Plain,
+                            uint32 style = textStyle_Plain,
                             int len = -1);
 
 	// returns the current font used to draw
-	Font*    getCurrentFont(uint32 style = Graphics::textStyle_Plain);
+	Font*    getCurrentFont(uint32 style = textStyle_Plain);
 
     // set the font used for this port
 	// with no params it sets the font to the default font for the port, which is Arial

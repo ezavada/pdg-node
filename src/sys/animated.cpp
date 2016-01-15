@@ -27,7 +27,7 @@
 //
 // -----------------------------------------------
 
-
+ 
 #include "pdg_project.h"
 
 #include "pdg/sys/animated.h"
@@ -76,7 +76,7 @@ void Animated::deserialize(pdg::IDeserializer* deserializer) {
 
 // animate moving to new location
 void
-Animated::moveTo(const Point& loc, int32 msDuration, EasingFunc easing) {
+Animated::moveTo(const Point& loc, ms_delta msDuration, EasingFunc easing) {
     if (loc.x != mLocation.x) {
         Animation a(&mLocation.x, loc.x, easing, mDelayMs, msDuration);
         mAnimations.push_back(a);
@@ -106,7 +106,7 @@ Animated::getVelocity() {
 
 // animate changing speed over time
 void
-Animated::accelerateTo(float speed, int32 msDuration, EasingFunc easing) {
+Animated::accelerateTo(float speed, ms_delta msDuration, EasingFunc easing) {
 	float targetDeltaXPerMs = speed * cos(mFacing) / 1000.0f;
 	float targetDeltaYPerMs = speed * sin(mFacing) / 1000.0f;
 	Animation a(&mDeltaXPerMs, targetDeltaXPerMs, easing, mDelayMs, msDuration);
@@ -119,7 +119,7 @@ Animated::accelerateTo(float speed, int32 msDuration, EasingFunc easing) {
 
 // animate change in size over time, to specific size relative to original size
 void
-Animated::resizeTo(float width, float height, int32 msDuration, EasingFunc easing) {
+Animated::resizeTo(float width, float height, ms_delta msDuration, EasingFunc easing) {
     if (width != mWidth) {
         Animation a(&mWidth, width, easing, mDelayMs, msDuration);
         mAnimations.push_back(a);
@@ -159,7 +159,7 @@ Animated::getSpin() {
 
 // animate changing direction over time
 void
-Animated::rotateTo(float radians, int32 msDuration, EasingFunc easing) {
+Animated::rotateTo(float radians, ms_delta msDuration, EasingFunc easing) {
 	Animation a(&mFacing, radians, easing, mDelayMs, msDuration);
 	mAnimations.push_back(a);
     mDelayMs = 0;
@@ -167,7 +167,7 @@ Animated::rotateTo(float radians, int32 msDuration, EasingFunc easing) {
 
 
 void
-Animated::changeCenterTo(const Offset& offset, int32 msDuration, EasingFunc easing) {
+Animated::changeCenterTo(const Offset& offset, ms_delta msDuration, EasingFunc easing) {
     if (offset.x != mCenterOffset.x) {
         Animation a(&mCenterOffset.x, offset.x, easing, mDelayMs, msDuration);
         mAnimations.push_back(a);
@@ -182,7 +182,7 @@ Animated::changeCenterTo(const Offset& offset, int32 msDuration, EasingFunc easi
 
 // multiple forces can be applied simultaneously
 void
-Animated::applyForce(const Vector& force, int32 msDuration) {
+Animated::applyForce(const Vector& force, ms_delta msDuration) {
 	if (msDuration == duration_Instantaneous && mDelayMs == 0) {			// apply the full force once
 		mDeltaXPerMs += (force.x*0.001f) / mMass;
 		mDeltaYPerMs += (force.y*0.001f) / mMass;
@@ -201,7 +201,7 @@ Animated::applyForce(const Vector& force, int32 msDuration) {
 
 
 void
-Animated::applyTorque(float forceSpin, int32 msDuration) {
+Animated::applyTorque(float forceSpin, ms_delta msDuration) {
 	if (msDuration == duration_Instantaneous && mDelayMs == 0) {			// apply the full force once
 		mDeltaFacingPerMs += (forceSpin*0.001f) / mMass;
 	}
@@ -262,7 +262,7 @@ Animated::clearAnimationHelpers() {
 // called by subclasses to do the actual work of animating
 // returns true if anything changed
 bool
-Animated::animate(int32 msElapsed) {
+Animated::animate(ms_delta msElapsed) {
 
 	// inside the animate call
 	mAnimating = true;	
@@ -370,7 +370,7 @@ Animated::animate(int32 msElapsed) {
         }
         if (animation.delayMs <= 0) {
             bool erase = false;
-            int32 elapsedMs = (msElapsed - animation.delayMs);
+            ms_delta elapsedMs = (msElapsed - animation.delayMs);
             animation.delayMs = 0;
             if (elapsedMs < 0) {
                 elapsedMs = 0;
@@ -508,7 +508,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 // simple linear tweening - no easing
 // t: current time, b: beginning value, c: change in value, d: duration
-float linearTween(uint32 ut, float b, float c, uint32 ud) {
+float linearTween(ms_delta ut, float b, float c, ms_delta ud) {
 	float t = (float)ut;
 	float d = (float)ud;
 	return c*t/d + b;
@@ -520,26 +520,26 @@ float linearTween(uint32 ut, float b, float c, uint32 ud) {
 // quadratic easing in - accelerating from zero velocity
 // t: current time, b: beginning value, c: change in value, d: duration
 // t and d can be in frames or seconds/milliseconds
-float easeInQuad(uint32 ut, float b, float c, uint32 ud) {
+float easeInQuad(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / d;
 	return c*t*t + b;
 };
 
 // quadratic easing out - decelerating to zero velocity
-float easeOutQuad(uint32 ut, float b, float c, uint32 ud) {
+float easeOutQuad(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / d;
 	return -c *t*(t-2) + b;
 };
 
 // quadratic easing in/out - acceleration until halfway, then deceleration
-float easeInOutQuad(uint32 ut, float b, float c, uint32 ud) {
-	float d = (float)ud;
-	float t = (float)ut / d;
-	if ((t/2.0f) < 1) return c/2.0f*t*t + b;
-	t--;
-	return -c/2.0f * (t*(t-2.0f) - 1.0f) + b;
+float easeInOutQuad(ms_delta ut, float b, float c, ms_delta ud) {
+    float d = (float)ud;
+	float t = (float)ut / (d/2.0f);
+    if (t < 1) return c/2.0f*t*t + b;
+    t--;
+    return -c/2.0f * (t*(t-2.0f) - 1.0f) + b;
 };
 
 
@@ -548,21 +548,21 @@ float easeInOutQuad(uint32 ut, float b, float c, uint32 ud) {
 // cubic easing in - accelerating from zero velocity
 // t: current time, b: beginning value, c: change in value, d: duration
 // t and d can be frames or seconds/milliseconds
-float easeInCubic(uint32 ut, float b, float c, uint32 ud) {
+float easeInCubic(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / d;
 	return c*t*t*t + b;
 };
 
 // cubic easing out - decelerating to zero velocity
-float easeOutCubic(uint32 ut, float b, float c, uint32 ud) {
-	float d = (float)ud;
-	float t = (float)ut / (d - 1.0f);
+float easeOutCubic(ms_delta ut, float b, float c, ms_delta ud) {
+    float d = (float)ud;
+	float t = ((float)ut / d) - 1.0f;
 	return c*(t*t*t + 1.0f) + b;
 };
 
 // cubic easing in/out - acceleration until halfway, then deceleration
-float easeInOutCubic(uint32 ut, float b, float c, uint32 ud) {
+float easeInOutCubic(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / (d/2.0f);
 	if (t < 1.0f) return c/2.0f*t*t*t + b;
@@ -576,21 +576,21 @@ float easeInOutCubic(uint32 ut, float b, float c, uint32 ud) {
 // quartic easing in - accelerating from zero velocity
 // t: current time, b: beginning value, c: change in value, d: duration
 // t and d can be frames or seconds/milliseconds
-float easeInQuart(uint32 ut, float b, float c, uint32 ud) {
+float easeInQuart(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / d;
 	return c*t*t*t*t + b;
 };
 
 // quartic easing out - decelerating to zero velocity
-float easeOutQuart(uint32 ut, float b, float c, uint32 ud) {
+float easeOutQuart(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
-	float t = (float)ut / (d-1.0f);
+	float t = ((float)ut / d) - 1.0f;
 	return -c * (t*t*t*t - 1.0f) + b;
 };
 
 // quartic easing in/out - acceleration until halfway, then deceleration
-float easeInOutQuart(uint32 ut, float b, float c, uint32 ud) {
+float easeInOutQuart(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / (d/2.0f);
 	if (t < 1.0f) return c/2.0f*t*t*t*t + b;
@@ -604,21 +604,21 @@ float easeInOutQuart(uint32 ut, float b, float c, uint32 ud) {
 // quintic easing in - accelerating from zero velocity
 // t: current time, b: beginning value, c: change in value, d: duration
 // t and d can be frames or seconds/milliseconds
-float easeInQuint(uint32 ut, float b, float c, uint32 ud) {
+float easeInQuint(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / d;
 	return c*t*t*t*t*t + b;
 };
 
 // quintic easing out - decelerating to zero velocity
-float easeOutQuint(uint32 ut, float b, float c, uint32 ud) {
+float easeOutQuint(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
-	float t = (float)ut / (d-1.0f);
+	float t = ((float)ut / d) - 1.0f;
 	return c*(t*t*t*t*t + 1.0f) + b;
 };
 
 // quintic easing in/out - acceleration until halfway, then deceleration
-float easeInOutQuint(uint32 ut, float b, float c, uint32 ud) {
+float easeInOutQuint(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / (d/2.0f);
 	if (t < 1.0f) return c/2.0f*t*t*t*t*t + b;
@@ -632,21 +632,21 @@ float easeInOutQuint(uint32 ut, float b, float c, uint32 ud) {
 
 // sinusoidal easing in - accelerating from zero velocity
 // t: current time, b: beginning value, c: change in position, d: duration
-float easeInSine(uint32 ut, float b, float c, uint32 ud) {
+float easeInSine(ms_delta ut, float b, float c, ms_delta ud) {
 	float t = (float)ut;
 	float d = (float)ud;
 	return -c * cos(t/d * PI_DIV2) + c + b;
 };
 
 // sinusoidal easing out - decelerating to zero velocity
-float easeOutSine(uint32 ut, float b, float c, uint32 ud) {
+float easeOutSine(ms_delta ut, float b, float c, ms_delta ud) {
 	float t = (float)ut;
 	float d = (float)ud;
 	return c * sin(t/d * PI_DIV2) + b;
 };
 
 // sinusoidal easing in/out - accelerating until halfway, then decelerating
-float easeInOutSine(uint32 ut, float b, float c, uint32 ud) {
+float easeInOutSine(ms_delta ut, float b, float c, ms_delta ud) {
 	float t = (float)ut;
 	float d = (float)ud;
 	return -c/2.0f * (cos(PI*t/d) - 1) + b;
@@ -657,21 +657,21 @@ float easeInOutSine(uint32 ut, float b, float c, uint32 ud) {
 
 // exponential easing in - accelerating from zero velocity
 // t: current time, b: beginning value, c: change in position, d: duration
-float easeInExpo(uint32 ut, float b, float c, uint32 ud) {
+float easeInExpo(ms_delta ut, float b, float c, ms_delta ud) {
 	float t = (float)ut;
 	float d = (float)ud;
 	return (ut==0) ? b : c * pow(2.0f, 10.0f * (t/d - 1.0f)) + b;
 };
 
 // exponential easing out - decelerating to zero velocity
-float easeOutExpo(uint32 ut, float b, float c, uint32 ud) {
+float easeOutExpo(ms_delta ut, float b, float c, ms_delta ud) {
 	float t = (float)ut;
 	float d = (float)ud;
 	return (ut==d) ? b+c : c * (-pow(2.0f, -10.0f * t/d) + 1.0f) + b;
 };
 
 // exponential easing in/out - accelerating until halfway, then decelerating
-float easeInOutExpo(uint32 ut, float b, float c, uint32 ud) {
+float easeInOutExpo(ms_delta ut, float b, float c, ms_delta ud) {
 	float t = (float)ut;
 	float d = (float)ud;
 	if (ut==0) return b;
@@ -686,21 +686,21 @@ float easeInOutExpo(uint32 ut, float b, float c, uint32 ud) {
 
 // circular easing in - accelerating from zero velocity
 // t: current time, b: beginning value, c: change in position, d: duration
-float easeInCirc(uint32 ut, float b, float c, uint32 ud) {
+float easeInCirc(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / d;
 	return -c * (sqrt(1.0f - t*t) - 1.0f) + b;
 };
 
 // circular easing out - decelerating to zero velocity
-float easeOutCirc(uint32 ut, float b, float c, uint32 ud) {
+float easeOutCirc(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
-	float t = (float)ut / (d-1.0f);
+	float t = ((float)ut / d) - 1.0f;
 	return c * sqrt(1.0f - t*t) + b;
 };
 
 // circular easing in/out - acceleration until halfway, then deceleration
-float easeInOutCirc(uint32 ut, float b, float c, uint32 ud) {
+float easeInOutCirc(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / (d/2.0f);
 	if (t < 1.0f) return -c/2.0f * (sqrt(1.0f - t*t) - 1.0f) + b;
@@ -745,7 +745,7 @@ float easeInOutCirc(uint32 ut, float b, float c, uint32 ud) {
 // s controls the amount of overshoot: higher s means greater overshoot
 // s has a default value of 1.70158, which produces an overshoot of 10 percent
 // s==0 produces cubic easing with no overshoot
-float easeInBack(uint32 ut, float b, float c, uint32 ud) {
+float easeInBack(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / d;
 	float s = 1.70158f; 
@@ -753,16 +753,16 @@ float easeInBack(uint32 ut, float b, float c, uint32 ud) {
 };
 
 // back easing out - moving towards target, overshooting it slightly, then reversing and coming back to target
-float easeOutBack(uint32 ut, float b, float c, uint32 ud) {
+float easeOutBack(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
-	float t = (float)ut / (d-1.0f);
+	float t = ((float)ut / d) -1.0f;
 	float s = 1.70158f;
 	return c*(t*t*((s+1.0f)*t + s) + 1.0f) + b;
 };
 
 // back easing in/out - backtracking slightly, then reversing direction and moving to target,
 // then overshooting target, reversing, and finally coming back to target
-float easeInOutBack(uint32 ut, float b, float c, uint32 ud) {
+float easeInOutBack(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / (d/2.0f);
 	float s = 1.70158f * 1.525f; 
@@ -779,14 +779,14 @@ float easeInOutBack(uint32 ut, float b, float c, uint32 ud) {
 
 // bounce easing in
 // t: current time, b: beginning value, c: change in position, d: duration
-float easeInBounce(uint32 ut, float b, float c, uint32 ud) {
+float easeInBounce(ms_delta ut, float b, float c, ms_delta ud) {
 	float t = (float)ut;
 	float d = (float)ud;
-	return c - easeOutBounce ((uint32)(d-t), 0.0f, c, d) + b;
+	return c - easeOutBounce ((ms_delta)(d-t), 0.0f, c, d) + b;
 };
 
 // bounce easing out
-float easeOutBounce(uint32 ut, float b, float c, uint32 ud) {
+float easeOutBounce(ms_delta ut, float b, float c, ms_delta ud) {
 	float d = (float)ud;
 	float t = (float)ut / d;
 	if (t < (0.36363636f)) {
@@ -804,7 +804,7 @@ float easeOutBounce(uint32 ut, float b, float c, uint32 ud) {
 };
 
 // bounce easing in/out
-float easeInOutBounce(uint32 ut, float b, float c, uint32 ud) {
+float easeInOutBounce(ms_delta ut, float b, float c, ms_delta ud) {
 	float t = (float)ut;
 	float d = (float)ud;
 	if (t < d/2) return easeInBounce (t*2.0f, 0.0f, c, d) * 0.5f + b;

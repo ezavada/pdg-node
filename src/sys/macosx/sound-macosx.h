@@ -54,7 +54,7 @@ public:
     virtual ~SoundMac();
 
     // plays sound immediately, fire and forget new instance of sound 
-    virtual void    play(float vol, int32 offsetX, float pitch, uint32 fromMs, int32 lenMs);
+    virtual void    play(float vol, int32 offsetX, float pitch, ms_time fromMs, ms_delta lenMs);
 	// play this sound
     virtual void    start();
     virtual void    stop();
@@ -70,29 +70,29 @@ public:
 	// returns this sound for chaining calls
     virtual Sound&  setPitch(float pitchOffset);
 	// change the pitch level over time
-	virtual void	changePitch(float targetOffset, int32 msDuration, EasingFunc easing);
+	virtual void	changePitch(float targetOffset, ms_delta msDuration, EasingFunc easing);
     // set the X offset from the center of the screen for this sound only
 	// returns this sound for chaining calls
     virtual Sound&  setOffsetX(int32 offsetX);
 	// change the X offset from the center of the screen over time
-	virtual void	changeOffsetX(int32 targetOffset, int32 msDuration, EasingFunc easing);
+	virtual void	changeOffsetX(int32 targetOffset, ms_delta msDuration, EasingFunc easing);
 
     // Fade to zero volume and stop over the course of fadeMs milliseconds
-	virtual void    fadeOut(uint32 fadeMs, EasingFunc easing);
+	virtual void    fadeOut(ms_delta fadeMs, EasingFunc easing);
 	// Fade in to full volume over fadeMs milliseconds. If the sound was not already playing, start it.
-	virtual void    fadeIn(uint32 fadeMs, EasingFunc easing);
+	virtual void    fadeIn(ms_delta fadeMs, EasingFunc easing);
 	// Fade up or down to reach a new volume level over fadeMs milliseconds. If the sound was not already playing, start it.
-	virtual void	changeVolume(float level, uint32 fadeMs, EasingFunc easing);
+	virtual void	changeVolume(float level, ms_delta fadeMs, EasingFunc easing);
 
 	// skip forward (positive value) or backward (negative value) by skipMilliseconds
 	// returns this sound for chaining calls
-	virtual Sound&  skip(int32 skipMilleconds);
+	virtual Sound&  skip(ms_delta skipMilleconds);
     // skip to a specific point in the sound
 	// returns this sound for chaining calls
-	virtual Sound&  skipTo(uint32 timeMs);
+	virtual Sound&  skipTo(ms_time timeMs);
 
-	virtual void    createFromFile(const char* filename);
-	virtual void    createFromData(char* soundData, long soundDataLen);
+	virtual bool    createFromFile(const char* filename);
+	virtual bool    createFromData(char* soundData, long soundDataLen);
 
     void            idle();
 
@@ -106,17 +106,17 @@ protected:
     std::string mFilename;
 	std::string mExtension;
 	bool mPlaying;
-	uint32 mStartedFadeMs;
+	ms_time mStartedFadeMs;
 	float mTargetVolume;
 	float mStartingVolume;
 	float mDeltaVolumePerMs;
-	uint32 mSkipToMs;
-	uint32 mStartedPlayingAtMs;
-	uint32 mPausedAtMs;
-	uint32 mDieAt;
+	ms_time mSkipToMs;
+	ms_time mStartedPlayingAtMs;
+	ms_time mPausedAtMs;
+	ms_time mDieAt;
 	
-	void 			createFromFileUrl(CFURLRef fileRef);
-	void			dieAt(uint32 msTime) { mDieAt = msTime; }
+	bool 			createFromFileUrl(CFURLRef fileRef);
+	void			dieAt(ms_time msTime) { mDieAt = msTime; }
 
 };
 

@@ -76,7 +76,7 @@ struct NetData {
     void*       context;  // the context passed in when the connection was created
     long        dataLen;  // length of data in ptr
     const char* dataPtr;  // must call NetworkManager::releaseNetData() to free this
-    uint32      arrivalMs;  // millisecond timestamp when received. Compare to OS::getMilliseconds() to see how long packet sat in a queue
+    ms_time     arrivalMs;  // millisecond timestamp when received. Compare to OS::getMilliseconds() to see how long packet sat in a queue
 };
 
 //! got an error from network layer, not necessarily fatal

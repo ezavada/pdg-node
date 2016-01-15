@@ -58,7 +58,6 @@
 
 namespace pdg {
 	
-
 #ifndef PDG_DESERIALIZER_NO_THROW
 	class out_of_data : public PDGException {
 		public: out_of_data(const char* msg) : PDGException(msg) {}
@@ -69,12 +68,6 @@ namespace pdg {
 	class bad_tag : public PDGException {
 		public: bad_tag(const char* msg) : PDGException(msg) {}
 	};
-	class unknown_object : public PDGException {
-		public: unknown_object(const char* msg) : PDGException(msg) {}
-	};
-	#define MAY_THROW( __specs )
-#else
-	#define MAY_THROW( __specs )
 #endif
 
 	class ISerializable;
@@ -199,7 +192,7 @@ namespace pdg {
 		 still be advanced past the string to the start of the next entity in the internal buffer.
 		 \return the length of the string in bytes (not including NUL terminator)
 		 */
-		virtual uint32 deserialize_str(char* outStr, uint32 strMaxLen) MAY_THROW( (out_of_data, bad_tag) ) = 0;
+		virtual uint32 deserialize_str(char* outStr, size_t strMaxLen) MAY_THROW( (out_of_data, bad_tag) ) = 0;
 
 		//! get length of a string value, including NUL terminator, as if it were deserialized
 		/*! internal pointer is NOT advanced. Use this to pre-flight allocation for longer strings
@@ -239,6 +232,11 @@ namespace pdg {
 		 the internal pointer will still be advanced past the object to the start of the next entity in the buffer.
 		 */
 		virtual ISerializable* deserialize_obj() MAY_THROW( (out_of_data, bad_tag, sync_error, unknown_object) ) = 0;
+		
+		//! Deserialize a reference to a non-serializable object
+		// You must have called IDeserializer::registerObject() to assign specific object for
+		// this unique ID before deserializing it, otherwise an unknown_object exception will be thrown.
+		template<typename T> T* deserialize_ref() MAY_THROW( (out_of_data, bad_tag, sync_error, unknown_object) );
 
 		// ------------------------------------------------------------------
 		// class registry methods
@@ -247,7 +245,7 @@ namespace pdg {
 		//! Register a class that is derived from Serializable.
 		/*! this is the prefered way of registering classes for serialization
 		 */
-		template <class T> static void registerClass() { T tmp; IDeserializer::registerClass(tmp.getMyClassTag(), T::CreateInstance); }
+		template <class T> static void registerClass();
 		
 		//! Register a class that is derived from ISerializable
 		/*! \param classTag a 32 bit value uniquely identifying the class
@@ -256,11 +254,31 @@ namespace pdg {
 		   to register them unless you have a really good reason not to.
 		 */
 		static void registerClass(uint32 classTag, CreateSerializableFunc classNewFunc);
+		
+		//! Register object that is not serializable for use with |de|serialize_ref()
+		/*! \param uniqueId a 32 bit value that uniquely identifies this object
+		   Calling this twice with the same uniqueId will replace the old value.
+		   These values are then sent instead of the object data or pointer. On
+		   deserialization, the object registered to that id on the receiver is used.
+		 */
+		static void registerObject(void* obj, uint32 uniqueId);
 
 	protected:
 		virtual char* statusDump(int hiliteBytes = 0) = 0;
+		virtual void* deserialize_ptr() MAY_THROW( (out_of_data, bad_tag, sync_error, unknown_object) ) = 0;
 	};
 	
+	template<typename T> inline T* IDeserializer::deserialize_ref() {
+	    void* ptr = deserialize_ptr();
+	    T* obj = static_cast<T*>(ptr);
+	    return obj;
+	}
+
+	template <class T> inline void IDeserializer::registerClass() { 
+	    T tmp; 
+	    IDeserializer::registerClass(tmp.getMyClassTag(), T::CreateInstance); 
+	}
+
   #ifndef PDG_NO_64BIT
 	inline int64
 	IDeserializer::deserialize_8() { 

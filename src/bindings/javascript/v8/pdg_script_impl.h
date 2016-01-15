@@ -1,8 +1,8 @@
 // -----------------------------------------------
 // This file automatically generated from:
 //
-//    pdg/src/bindings/common/pdg_script_impl.h
-//    pdg/src/bindings/javascript/v8/pdg_script_macros.h
+//    work/pdg/src/bindings/common/pdg_script_impl.h
+//    work/pdg/src/bindings/javascript/v8/pdg_script_macros.h
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the
@@ -49,7 +49,7 @@ namespace pdg
     extern v8::Persistent<v8::Value> s_SavedError;
 
     v8::Local<v8::Value> EncodeBinary(const void *buf, size_t len);
-    void* DecodeBinary(v8::Handle<v8::Value> val, size_t* outLen = 0);
+    void* DecodeBinary(v8::Local<v8::Value> val, size_t* outLen = 0);
 
     const bool kNoErrorOnFail = true;
 
@@ -59,8 +59,8 @@ namespace pdg
     {
         public:
             ScriptAnimationHelper();
-            ScriptAnimationHelper(v8::Persistent<v8::Function> javascriptAnimateFunc);
-            bool animate(Animated* what, uint32 msElapsed) throw();
+            ScriptAnimationHelper(v8::Local<v8::Function> javascriptAnimateFunc);
+            bool animate(Animated* what, ms_delta msElapsed) throw();
         protected:
             v8::Persistent<v8::Function> mScriptAnimateFunc;
     };
@@ -69,7 +69,7 @@ namespace pdg
     {
         public:
             ScriptEventHandler();
-            ScriptEventHandler(v8::Persistent<v8::Function> javascriptHandlerFunc);
+            ScriptEventHandler(v8::Local<v8::Function> javascriptHandlerFunc);
             bool handleEvent(EventEmitter* emitter, long inEventType, void* inEventData) throw();
         protected:
             v8::Persistent<v8::Function> mScriptHandlerFunc;
@@ -80,10 +80,10 @@ namespace pdg
         public:
             ScriptSerializable();
             ScriptSerializable(
-                v8::Persistent<v8::Function> javascriptGetSerializedSizeFunc,
-                v8::Persistent<v8::Function> javascriptSerializeFunc,
-                v8::Persistent<v8::Function> javascriptDeserializeFunc,
-                v8::Persistent<v8::Function> javascriptGetMyClassTagFunc
+                v8::Local<v8::Function> javascriptGetSerializedSizeFunc,
+                v8::Local<v8::Function> javascriptSerializeFunc,
+                v8::Local<v8::Function> javascriptDeserializeFunc,
+                v8::Local<v8::Function> javascriptGetMyClassTagFunc
                 );
             virtual uint32 getSerializedSize(ISerializer* serializer) const;
             virtual void serialize(ISerializer* serializer) const;
@@ -100,7 +100,7 @@ namespace pdg
     {
         public:
             ScriptSpriteCollideHelper();
-            ScriptSpriteCollideHelper(v8::Persistent<v8::Function> javascriptDrawFunc);
+            ScriptSpriteCollideHelper(v8::Local<v8::Function> javascriptDrawFunc);
             bool allowCollision(Sprite* sprite, Sprite* withSprite) throw();
         protected:
             v8::Persistent<v8::Function> mScriptAllowCollisionFunc;
@@ -112,25 +112,25 @@ namespace pdg
     {
         public:
             ScriptSpriteDrawHelper();
-            ScriptSpriteDrawHelper(v8::Persistent<v8::Function> javascriptDrawFunc);
+            ScriptSpriteDrawHelper(v8::Local<v8::Function> javascriptDrawFunc);
             bool draw(Sprite* sprite, Port* port) throw();
         protected:
             v8::Persistent<v8::Function> mScriptDrawFunc;
     };
 #endif
 
-    float CallScriptEasingFunc(int which, uint32 ut, float b, float c, uint32 ud);
+    float CallScriptEasingFunc(int which, ms_delta ut, float b, float c, ms_delta ud);
 
-    extern float customEasing0(uint32 ut, float b, float c, uint32 ud);
-    extern float customEasing1(uint32 ut, float b, float c, uint32 ud);
-    extern float customEasing2(uint32 ut, float b, float c, uint32 ud);
-    extern float customEasing3(uint32 ut, float b, float c, uint32 ud);
-    extern float customEasing4(uint32 ut, float b, float c, uint32 ud);
-    extern float customEasing5(uint32 ut, float b, float c, uint32 ud);
-    extern float customEasing6(uint32 ut, float b, float c, uint32 ud);
-    extern float customEasing7(uint32 ut, float b, float c, uint32 ud);
-    extern float customEasing8(uint32 ut, float b, float c, uint32 ud);
-    extern float customEasing9(uint32 ut, float b, float c, uint32 ud);
+    extern float customEasing0(ms_delta ut, float b, float c, ms_delta ud);
+    extern float customEasing1(ms_delta ut, float b, float c, ms_delta ud);
+    extern float customEasing2(ms_delta ut, float b, float c, ms_delta ud);
+    extern float customEasing3(ms_delta ut, float b, float c, ms_delta ud);
+    extern float customEasing4(ms_delta ut, float b, float c, ms_delta ud);
+    extern float customEasing5(ms_delta ut, float b, float c, ms_delta ud);
+    extern float customEasing6(ms_delta ut, float b, float c, ms_delta ud);
+    extern float customEasing7(ms_delta ut, float b, float c, ms_delta ud);
+    extern float customEasing8(ms_delta ut, float b, float c, ms_delta ud);
+    extern float customEasing9(ms_delta ut, float b, float c, ms_delta ud);
 
     namespace EasingFuncRef
     {

@@ -1,4 +1,4 @@
-.TH "CpConstraint" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.TH "CpConstraint" 3 "Mon Oct 26 2015" "Version v0.9.5" "Pixel Dust Game Engine" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -95,7 +95,7 @@ describes how two sprites are connected to one another (\fIChipmunk Physics Only
 .ti -1c
 .RI "number \fBgetSlideMaxDist\fP ()"
 .br
-.RI "\fIget the maximum disable apart for the anchors of a slide joint \fP"
+.RI "\fIget the maximum distance apart for the anchors of a slide joint \fP"
 .ti -1c
 .RI "number \fBgetSlideMinDist\fP ()"
 .br
@@ -121,91 +121,91 @@ describes how two sprites are connected to one another (\fIChipmunk Physics Only
 .br
 .RI "\fIreturns a string for the type of joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetAnchor\fP (\fBOffset\fP inAnchor)"
+.RI "\fBCpConstraint\fP \fBsetAnchor\fP (\fBOffset\fP inAnchor)"
 .br
 .RI "\fIsets the anchor point for the joint on the primary sprite for pin, slide and spring joints \fP"
 .ti -1c
-.RI "cpConstraint \fBsetErrorBias\fP (number inErrorBias)"
+.RI "\fBCpConstraint\fP \fBsetErrorBias\fP (number inErrorBias)"
 .br
 .RI "\fIset the percentage of joint error than remains unfixed after one second \fP"
 .ti -1c
-.RI "cpConstraint \fBsetGearInitialAngle\fP (number inGearInitialAngle)"
+.RI "\fBCpConstraint\fP \fBsetGearInitialAngle\fP (number inGearInitialAngle)"
 .br
 .RI "\fIset the initial angular offset between the two sprites joined with a gear joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetGearRatio\fP (number inGearRatio)"
+.RI "\fBCpConstraint\fP \fBsetGearRatio\fP (number inGearRatio)"
 .br
 .RI "\fIset the ratio of rotation between the two sprites joined with a gear joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetGrooveEnd\fP (\fBOffset\fP inGrooveEnd)"
+.RI "\fBCpConstraint\fP \fBsetGrooveEnd\fP (\fBOffset\fP inGrooveEnd)"
 .br
 .RI "\fIset the position on the primary sprite of the end of the groove for a groove joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetGrooveStart\fP (\fBOffset\fP inGrooveStart)"
+.RI "\fBCpConstraint\fP \fBsetGrooveStart\fP (\fBOffset\fP inGrooveStart)"
 .br
 .RI "\fIset the position on the primary sprite of the start of the groove for a groove joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetMaxAngle\fP (number inMaxAngle)"
+.RI "\fBCpConstraint\fP \fBsetMaxAngle\fP (number inMaxAngle)"
 .br
 .RI "\fIset the maximum angle allowed by a RotaryLimit joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetMaxBias\fP (number inMaxBias)"
+.RI "\fBCpConstraint\fP \fBsetMaxBias\fP (number inMaxBias)"
 .br
 .RI "\fIset the maximum speed at which a joint can be error corrrected \fP"
 .ti -1c
-.RI "cpConstraint \fBsetMaxForce\fP (number inMaxForce)"
+.RI "\fBCpConstraint\fP \fBsetMaxForce\fP (number inMaxForce)"
 .br
 .RI "\fIset the maximum force the joint can apply to the sprites \fP"
 .ti -1c
-.RI "cpConstraint \fBsetMinAngle\fP (number inMinAngle)"
+.RI "\fBCpConstraint\fP \fBsetMinAngle\fP (number inMinAngle)"
 .br
 .RI "\fIset the minimum angle allowed by a RotaryLimit joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetMotorSpinRate\fP (number inMotorSpinRate)"
+.RI "\fBCpConstraint\fP \fBsetMotorSpinRate\fP (number inMotorSpinRate)"
 .br
 .RI "\fIset how fast the sprites rotate relative to one another in a motor joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetOtherAnchor\fP (\fBOffset\fP inOtherAnchor)"
+.RI "\fBCpConstraint\fP \fBsetOtherAnchor\fP (\fBOffset\fP inOtherAnchor)"
 .br
 .RI "\fIsets the anchor point for the joint on the secondary sprite \fP"
 .ti -1c
-.RI "cpConstraint \fBsetPinDist\fP (number inPinDist)"
+.RI "\fBCpConstraint\fP \fBsetPinDist\fP (number inPinDist)"
 .br
 .RI "\fIset the distance between the anchors on a pin joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetRatchetAngle\fP (number inRatchetAngle)"
+.RI "\fBCpConstraint\fP \fBsetRatchetAngle\fP (number inRatchetAngle)"
 .br
 .RI "\fIset the current angle of a ratchet joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetRatchetInterval\fP (number inRatchetInterval)"
+.RI "\fBCpConstraint\fP \fBsetRatchetInterval\fP (number inRatchetInterval)"
 .br
 .RI "\fIset the distance between backstops on a ratchet joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetRatchetPhase\fP (number inRatchetPhase)"
+.RI "\fBCpConstraint\fP \fBsetRatchetPhase\fP (number inRatchetPhase)"
 .br
 .RI "\fIset the initial offset for the ratchet backstops on a ratchet joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetRotarySpringRestAngle\fP (number inRotarySpringRestAngle)"
+.RI "\fBCpConstraint\fP \fBsetRotarySpringRestAngle\fP (number inRotarySpringRestAngle)"
 .br
 .RI "\fIset the angle between sprites at which a rotary spring is at rest on a rotary spring joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetSlideMaxDist\fP (number inSlideMaxDist)"
+.RI "\fBCpConstraint\fP \fBsetSlideMaxDist\fP (number inSlideMaxDist)"
 .br
 .RI "\fIset the maximum disable apart for the anchors of a slide joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetSlideMinDist\fP (number inSlideMinDist)"
+.RI "\fBCpConstraint\fP \fBsetSlideMinDist\fP (number inSlideMinDist)"
 .br
 .RI "\fIset the minimum distance apart for the anchors of a slide joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetSpringDamping\fP (number inSpringDamping)"
+.RI "\fBCpConstraint\fP \fBsetSpringDamping\fP (number inSpringDamping)"
 .br
 .RI "\fIset the damping for a rotary spring or a spring joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetSpringRestLength\fP (number inSpringRestLength)"
+.RI "\fBCpConstraint\fP \fBsetSpringRestLength\fP (number inSpringRestLength)"
 .br
 .RI "\fIset the distance between anchors at which the spring is at rest for a spring joint \fP"
 .ti -1c
-.RI "cpConstraint \fBsetSpringStiffness\fP (number inSpringStiffness)"
+.RI "\fBCpConstraint\fP \fBsetSpringStiffness\fP (number inSpringStiffness)"
 .br
 .RI "\fIset the stiffness for a rotary spring or a spring joint \fP"
 .in -1c
@@ -544,7 +544,7 @@ get the angle between sprites at which a rotary spring is at rest on a rotary sp
 .SS "getSlideMaxDist ()"
 
 .PP
-get the maximum disable apart for the anchors of a slide joint \fBSee Also:\fP
+get the maximum distance apart for the anchors of a slide joint \fBSee Also:\fP
 .RS 4
 \fBsetSlideMaxDist\fP 
 .PP

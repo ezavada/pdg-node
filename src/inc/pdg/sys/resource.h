@@ -100,13 +100,13 @@ public:
     const char*  getString(std::string& ioStr, short id, short substring = -1);
 
     // find out how big a resource is
-    unsigned long  getResourceSize(const char* resourceName);
+    size_t  getResourceSize(const char* resourceName);
     
     // load a resource into a preallocated buffer
     // use getResourceSize to determine the size of the buffer required for the whole
     // resource if you don't already know it
     // returns true if resource was found, false if not found
-    bool    getResource(const char* resourceName, void* buffer, unsigned long bufferSize);
+    bool    getResource(const char* resourceName, void* buffer, size_t bufferSize);
 
 	// return a semicolon separated list of paths (directories and zip file names) that
 	// are currently open for loading resources
@@ -127,8 +127,8 @@ protected:
 
 /// @cond INTERNAL
     // WARNING! alters string passed in
-	static char* getNthSubstring(int n, char* s, int bufflen);
-	static void getStringFromDataBlock( char* block, int blocksize, std::string& outStr, short id, short substring);
+	static char* getNthSubstring(int n, char* s, size_t bufflen);
+	static void getStringFromDataBlock( char* block, size_t blocksize, std::string& outStr, short id, short substring);
 
 	static ResourceManager* createSingletonInstance();
     ResourceManager(); // call ResourceManager::getSingletonInstance() instead

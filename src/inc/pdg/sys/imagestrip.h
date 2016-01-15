@@ -147,7 +147,7 @@ ImageStrip::getImageBounds( Point& at ) {
 inline void 
 ImageStrip::setFrameWidth(long wid) { 
 	frameWidth = wid; 
-	frames = width/frameWidth; 
+	frames = (int)(width/frameWidth);
 }
 
 inline void 

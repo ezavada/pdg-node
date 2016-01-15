@@ -95,7 +95,7 @@ namespace pdg {
 		virtual void	setEdgeClamping(bool inUseEdgeClamp);
 
 		virtual void	initFromData(char* imageData, long imageDataLen, const char* filename);
-    	virtual void    initEmpty(int width, int height, uint8 inBitsPerPixel = 32);
+    	virtual void    initEmpty(long width, long height, uint8 inBitsPerPixel = 32);
 
 		ImageImpl();
 		virtual ~ImageImpl();

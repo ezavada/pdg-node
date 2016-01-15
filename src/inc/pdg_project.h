@@ -96,4 +96,10 @@
 	#define PDG_COMPILING_FOR_SCRIPT_BINDINGS
 #endif
 
+#ifndef PDG_WAIT_TO_INCLUDE_GLOBAL_TYPES
+    // make sure this is included everywhere early
+    #include "pdg/sys/global_types.h"
+#endif
+
+
 #endif // PDG_PROJECT_H_INCLUDED

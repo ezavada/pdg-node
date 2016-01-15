@@ -163,14 +163,14 @@ bool gCharKeyStates[MAX_CHAR_KEYS];
 // click tracking
 Point   gMouseLoc[MAX_POINTERS];
 Point   gLastClickPos;
-uint32  gLastClickMillisec;
-uint32  gFPSBaseMs = 0;
+unsigned long  gLastClickMillisec;
+unsigned long gFPSBaseMs = 0;
 int gMaxAttachedMouse = 0;
 
 int gFPSFrameCount = 0;
 float gCurrentFPS = 0;
 float gTargetFPS = 40; // fps
-uint32 gNextRedrawMillisec = 0;
+unsigned long gNextRedrawMillisec = 0;
 uint32 gFrameNum = 0;
 
 #endif // PDG_NO_GUI
@@ -226,7 +226,7 @@ int main_getLogLevelFromArgs(int argc, const char* argv[], int defaultLevel) {
                 loglevel = log::trace;
             }
             if (loglevel == LOG_LEVEL_NOT_SPECIFIED) {
-                loglevel = std::atol(&argv[i][10]);
+                loglevel = std::atoi(&argv[i][10]);
             }
             DEBUG_ONLY( OS::_DOUT("Using log level specified by -loglevel=%d", loglevel); )
         }
@@ -389,11 +389,11 @@ int main_init(int argc, const char* argv[], bool isInitialized) {
  		gFullScreen = Initializer::getGraphicsEnvironmentDimensions(
                             maxWindowDim, maxFullScreenDim, gWindWidth, gWindHeight, gScreenDepth);
 		if (gFullScreen) {
-			gWindWidth = std::min(gWindWidth, (int32)maxFullScreenDim.width());
-			gWindHeight = std::min(gWindHeight, (int32)maxFullScreenDim.height());
+			gWindWidth = std::min(gWindWidth, (long)maxFullScreenDim.width());
+			gWindHeight = std::min(gWindHeight, (long)maxFullScreenDim.height());
 		} else {
-			gWindWidth = std::min(gWindWidth, (int32)maxWindowDim.width());
-			gWindHeight = std::min(gWindHeight, (int32)maxWindowDim.height());
+			gWindWidth = std::min(gWindWidth, (long)maxWindowDim.width());
+			gWindHeight = std::min(gWindHeight, (long)maxWindowDim.height());
 		}
 	  #else
 		gScreenDepth = 32;		
@@ -451,7 +451,7 @@ void main_run() {
 	RUN_LOOP_DEBUG_ONLY(OS::_DOUT("%12u - ENTERING main_run()", OS::getMilliseconds()); )
 
   #ifndef PDG_NO_GUI
-	uint32 currMs = OS::getMilliseconds();
+	ms_time currMs = OS::getMilliseconds();
 
 	DRAWING_DEBUG_ONLY(
 		static int mainLoopCounter = 0;
@@ -514,9 +514,9 @@ void main_run() {
   #ifndef PDG_NO_SLEEP
 	// now figure out how long we need to sleep and block for that long
 	// but make it interruptable by a semaphore
-	long maxSleepMs = TimerManager::instance().msTillNextFire();
+	ms_delta maxSleepMs = TimerManager::instance().msTillNextFire();
   #ifndef PDG_NO_GUI
-	long redrawDelay = gNextRedrawMillisec - OS::getMilliseconds();
+	ms_delta redrawDelay = gNextRedrawMillisec - OS::getMilliseconds();
 	if (maxSleepMs > redrawDelay) {
 		maxSleepMs = redrawDelay;
 	}
@@ -639,7 +639,7 @@ void main_handleKeyPress(utf16char keyChar, bool repeat, bool shift, bool contro
 
 void main_handleKeyDown(int keyCode, utf16char keyChar) {
   #ifdef PDG_DEBUG_KEYBOARD
-    std::cout << "main_handleKeyDown("<<keyCode<<", "<<(void*)keyChar<<" ("<<(char)keyChar<<")\n";
+    std::cout << "main_handleKeyDown("<<keyCode<<", "<<std::hex<<keyChar<<" ("<<(char)keyChar<<")\n";
   #endif
 	if (keyCode >= 0 && keyCode < MAX_RAW_KEYS) {
 		gRawKeyStates[keyCode] = true;
@@ -654,7 +654,7 @@ void main_handleKeyDown(int keyCode, utf16char keyChar) {
 	
 void main_handleKeyUp(int keyCode, utf16char keyChar) {
   #ifdef PDG_DEBUG_KEYBOARD
-    std::cout << "main_handleKeyUp("<<keyCode<<", "<<(void*)keyChar<<" ("<<(char)keyChar<<")\n";
+    std::cout << "main_handleKeyUp("<<keyCode<<", "<<std::hex<<keyChar<<" ("<<(char)keyChar<<")\n";
   #endif
 	if (keyCode >= 0 && keyCode < MAX_RAW_KEYS) {
 		gRawKeyStates[keyCode] = false;
@@ -720,7 +720,7 @@ void main_handleMouse(int action, float x, float y, int button, bool shift, bool
 		}
 	}
 	MouseInfo mi;
-	unsigned long ms = OS::getMilliseconds();
+	ms_time ms = OS::getMilliseconds();
 	mi.lastClickElapsed = ms - gLastClickMillisec;
 	Point pdgfMousePoint( (PDG_BASE_COORD_TYPE) std::floor(x), (PDG_BASE_COORD_TYPE) std::floor(y) );  
 	if (screenPos == screenPos_Normal) {

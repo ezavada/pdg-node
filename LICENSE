@@ -33,7 +33,7 @@ The externally maintained libraries used by PDG are:
 
 - Chipmunk, located at deps/chipmunk. Chipmunk's license follows:
   """
-	Copyright (c) 2007 Scott Lembcke and Howling Moon Software
+	Copyright (c) 2007-2013 Scott Lembcke and Howling Moon Software
 	
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -205,12 +205,12 @@ The externally maintained libraries used by PDG are:
    
     This code is released under the libpng license.
    
-    libpng versions 1.2.6, August 15, 2004, through 1.5.13, September 27, 2012, are
-    Copyright (c) 2004, 2006-2012 Glenn Randers-Pehrson, and are
-    distributed according to the same disclaimer and license as libpng-1.2.5
-    with the following individual added to the list of Contributing Authors
+	libpng versions 1.2.6, August 15, 2004, through 1.6.10, March 6, 2014, are
+	Copyright (c) 2004, 2006-2014 Glenn Randers-Pehrson, and are
+	distributed according to the same disclaimer and license as libpng-1.2.5
+	with the following individual added to the list of Contributing Authors
 
-       Cosmin Truta
+	   Cosmin Truta
    
     libpng versions 1.0.7, July 1, 2000, through 1.2.5, October 3, 2002, are
     Copyright (c) 2000-2002 Glenn Randers-Pehrson, and are
@@ -304,6 +304,66 @@ The externally maintained libraries used by PDG are:
 	3. This notice may not be removed or altered from any source
 	   distribution.
   """
+
+
+- libjpeg-turbo, located at deps/libjpeg-turbo. By default libpng is only used for 
+  Windows and Linux builds. libjpeg-turbo's license follows:
+  """
+	The authors make NO WARRANTY or representation, either express or implied,
+	with respect to this software, its quality, accuracy, merchantability, or
+	fitness for a particular purpose.  This software is provided "AS IS", and you,
+	its user, assume the entire risk as to its quality and accuracy.
+
+	This software is copyright (C) 1991-2012, Thomas G. Lane, Guido Vollbeding.
+	All Rights Reserved except as specified below.
+
+	Permission is hereby granted to use, copy, modify, and distribute this
+	software (or portions thereof) for any purpose, without fee, subject to these
+	conditions:
+	(1) If any part of the source code for this software is distributed, then this
+	README file must be included, with this copyright and no-warranty notice
+	unaltered; and any additions, deletions, or changes to the original files
+	must be clearly indicated in accompanying documentation.
+	(2) If only executable code is distributed, then the accompanying
+	documentation must state that "this software is based in part on the work of
+	the Independent JPEG Group".
+	(3) Permission for use of this software is granted only if the user accepts
+	full responsibility for any undesirable consequences; the authors accept
+	NO LIABILITY for damages of any kind.
+
+	These conditions apply to any software derived from or based on the IJG code,
+	not just to the unmodified library.  If you use our work, you ought to
+	acknowledge us.
+
+	Permission is NOT granted for the use of any IJG author's name or company name
+	in advertising or publicity relating to this software or products derived from
+	it.  This software may be referred to only as "the Independent JPEG Group's
+	software".
+
+	We specifically permit and encourage the use of this software as the basis of
+	commercial products, provided that all warranty or liability claims are
+	assumed by the product vendor.
+
+
+	The Unix configuration script "configure" was produced with GNU Autoconf.
+	It is copyright by the Free Software Foundation but is freely distributable.
+	The same holds for its supporting scripts (config.guess, config.sub,
+	ltmain.sh).  Another support script, install-sh, is copyright by X Consortium
+	but is also freely distributable.
+
+	The IJG distribution formerly included code to read and write GIF files.
+	To avoid entanglement with the Unisys LZW patent, GIF reading support has
+	been removed altogether, and the GIF writer has been simplified to produce
+	"uncompressed GIFs".  This technique does not use the LZW algorithm; the
+	resulting GIF files are larger than usual, but are readable by all standard
+	GIF decoders.
+
+	We are required to state that
+		"The Graphics Interchange Format(c) is the Copyright property of
+		CompuServe Incorporated.  GIF(sm) is a Service Mark property of
+		CompuServe Incorporated."
+  """
+
 
 - V8, located at lib/js-v8 and lib/node. V8's license follows:
   """

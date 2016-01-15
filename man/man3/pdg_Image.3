@@ -1,4 +1,4 @@
-.TH "Image" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.TH "Image" 3 "Mon Oct 26 2015" "Version v0.9.5" "Pixel Dust Game Engine" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -51,7 +51,7 @@ Inherited by \fBImageStrip\fP\&.
 .br
 .RI "\fIget image that is a rectangular subsection of this image \fP"
 .ti -1c
-.RI "object \fBgetTransparentColor\fP ()"
+.RI "\fBColor\fP \fBgetTransparentColor\fP ()"
 .br
 .RI "\fIget the color that is used to indicate transparency \fP"
 .ti -1c
@@ -79,7 +79,7 @@ Inherited by \fBImageStrip\fP\&.
 .br
 .RI "\fIset opacity of this image \fP"
 .ti -1c
-.RI "\fBImage\fP \fBsetTransparentColor\fP (object inTransparentColor)"
+.RI "\fBImage\fP \fBsetTransparentColor\fP (\fBColor\fP inTransparentColor)"
 .br
 .RI "\fIset the color that is used to indicate transparency \fP"
 .in -1c
@@ -429,7 +429,7 @@ set opacity of this image Opacity can be used on an \fBImage\fP regardless of wh
 .RE
 .PP
 
-.SS "setTransparentColor (objectinTransparentColor)"
+.SS "setTransparentColor (\fBColor\fPinTransparentColor)"
 
 .PP
 set the color that is used to indicate transparency In many cases an image with a single color that is marked as transparent is more space efficient than an entire alpha channel, since you can use RGB instead of RGBA colors (24 rather than 32 bits per pixel)\&.

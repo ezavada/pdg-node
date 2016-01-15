@@ -1,4 +1,4 @@
-/* Copyright (c) 2009 Scott Lembcke
+/* Copyright (c) 2013 Scott Lembcke and Howling Moon Software
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-#include "chipmunk_private.h"
+#include "chipmunk/chipmunk_private.h"
 
 static inline cpSpatialIndexClass *Klass();
 
@@ -132,7 +132,7 @@ static void
 PairRecycle(cpBBTree *tree, Pair *pair)
 {
 	// Share the pool of the master tree.
-	// TODO would be lovely to move the pairs stuff into an external data structure.
+	// TODO: would be lovely to move the pairs stuff into an external data structure.
 	tree = GetMasterTree(tree);
 	
 	pair->a.next = tree->pooledPairs;
@@ -143,7 +143,7 @@ static Pair *
 PairFromPool(cpBBTree *tree)
 {
 	// Share the pool of the master tree.
-	// TODO would be lovely to move the pairs stuff into an external data structure.
+	// TODO: would be lovely to move the pairs stuff into an external data structure.
 	tree = GetMasterTree(tree);
 	
 	Pair *pair = tree->pooledPairs;
@@ -475,7 +475,7 @@ MarkSubtree(Node *subtree, MarkContext *context)
 		MarkLeaf(subtree, context);
 	} else {
 		MarkSubtree(subtree->A, context);
-		MarkSubtree(subtree->B, context); // TODO Force TCO here?
+		MarkSubtree(subtree->B, context); // TODO: Force TCO here?
 	}
 }
 
@@ -605,7 +605,7 @@ cpBBTreeDestroy(cpBBTree *tree)
 static void
 cpBBTreeInsert(cpBBTree *tree, void *obj, cpHashValue hashid)
 {
-	Node *leaf = (Node *)cpHashSetInsert(tree->leaves, hashid, obj, tree, (cpHashSetTransFunc)leafSetTrans);
+	Node *leaf = (Node *)cpHashSetInsert(tree->leaves, hashid, obj, (cpHashSetTransFunc)leafSetTrans, tree);
 	
 	Node *root = tree->root;
 	tree->root = SubtreeInsert(root, leaf, tree);
@@ -633,13 +633,15 @@ cpBBTreeContains(cpBBTree *tree, void *obj, cpHashValue hashid)
 
 //MARK: Reindex
 
+static void LeafUpdateWrap(Node *leaf, cpBBTree *tree) {LeafUpdate(leaf, tree);}
+
 static void
 cpBBTreeReindexQuery(cpBBTree *tree, cpSpatialIndexQueryFunc func, void *data)
 {
 	if(!tree->root) return;
 	
 	// LeafUpdate() may modify tree->root. Don't cache it.
-	cpHashSetEach(tree->leaves, (cpHashSetIteratorFunc)LeafUpdate, tree);
+	cpHashSetEach(tree->leaves, (cpHashSetIteratorFunc)LeafUpdateWrap, tree);
 	
 	cpSpatialIndex *staticIndex = tree->spatialIndex.staticIndex;
 	Node *staticRoot = (staticIndex && staticIndex->klass == Klass() ? ((cpBBTree *)staticIndex)->root : NULL);

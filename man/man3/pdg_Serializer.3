@@ -1,4 +1,4 @@
-.TH "Serializer" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.TH "Serializer" 3 "Mon Oct 26 2015" "Version v0.9.5" "Pixel Dust Game Engine" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -101,6 +101,9 @@ serialize data into memory
 .br
 .RI "\fIserialize a \fBRect\fP's left, top, right, bottom values \fP"
 .ti -1c
+.RI "\fBserialize_ref\fP (object obj)"
+.br
+.ti -1c
 .RI "\fBserialize_rotr\fP (\fBRotatedRect\fP val)"
 .br
 .RI "\fIserialize a \fBRotatedRect\fP's data values \fP"
@@ -117,53 +120,92 @@ serialize data into memory
 .br
 .RI "\fIserialize a \fBVector\fP's (x,y) values \fP"
 .ti -1c
-.RI "number \fBserializedSize\fP (string arg)"
+.RI "uint \fBsizeof_1\fP (int val)"
 .br
-.RI "\fIget the number of bytes used to serialize the given string \fP"
 .ti -1c
-.RI "number \fBserializedSize\fP (boolean arg)"
+.RI "uint \fBsizeof_1u\fP (uint val)"
+.br
+.ti -1c
+.RI "uint \fBsizeof_2\fP (int val)"
+.br
+.ti -1c
+.RI "uint \fBsizeof_2u\fP (uint val)"
+.br
+.ti -1c
+.RI "uint \fBsizeof_3u\fP (uint val)"
+.br
+.ti -1c
+.RI "uint \fBsizeof_4\fP (int val)"
+.br
+.ti -1c
+.RI "uint \fBsizeof_4u\fP (uint val)"
+.br
+.ti -1c
+.RI "uint \fBsizeof_8\fP (int val)"
+.br
+.ti -1c
+.RI "uint \fBsizeof_8u\fP (uint val)"
+.br
+.ti -1c
+.RI "uint \fBsizeof_bool\fP (boolean val)"
 .br
 .RI "\fIget the number of bytes used to serialize the given boolean \fP"
 .ti -1c
-.RI "number \fBserializedSize\fP (uint arg)"
-.br
-.RI "\fIget the number of bytes used to serialize the given unsigned integer \fP"
-.ti -1c
-.RI "number \fBserializedSize\fP (\fBColor\fP arg)"
+.RI "uint \fBsizeof_color\fP (\fBColor\fP val)"
 .br
 .RI "\fIget the number of bytes used to serialize the given \fBColor\fP \fP"
 .ti -1c
-.RI "number \fBserializedSize\fP (\fBOffset\fP arg)"
+.RI "uint \fBsizeof_d\fP (number val)"
 .br
-.RI "\fIget the number of bytes used to serialize the given \fBOffset\fP \fP"
 .ti -1c
-.RI "number \fBserializedSize\fP (\fBPoint\fP arg)"
+.RI "uint \fBsizeof_f\fP (number val)"
 .br
-.RI "\fIget the number of bytes used to serialize the given \fBPoint\fP \fP"
 .ti -1c
-.RI "number \fBserializedSize\fP (\fBVector\fP arg)"
+.RI "uint \fBsizeof_mem\fP (BinaryString mem)"
 .br
-.RI "\fIget the number of bytes used to serialize the given \fBVector\fP \fP"
 .ti -1c
-.RI "number \fBserializedSize\fP (\fBRect\fP arg)"
-.br
-.RI "\fIget the number of bytes used to serialize the given \fBRect\fP \fP"
-.ti -1c
-.RI "number \fBserializedSize\fP (\fBRotatedRect\fP arg)"
-.br
-.RI "\fIget the number of bytes used to serialize the given \fBRotatedRect\fP \fP"
-.ti -1c
-.RI "number \fBserializedSize\fP (\fBQuad\fP arg)"
-.br
-.RI "\fIget the number of bytes used to serialize the given \fBQuad\fP \fP"
-.ti -1c
-.RI "number \fBserializedSize\fP (\fBMemBlock\fP arg)"
+.RI "uint \fBsizeof_mem\fP (\fBMemBlock\fP mem)"
 .br
 .RI "\fIget the number of bytes used to serialize the given block of memory \fP"
 .ti -1c
-.RI "number \fBserializedSize\fP (\fBISerializable\fP arg)"
+.RI "uint \fBsizeof_obj\fP (\fBISerializable\fP val)"
 .br
 .RI "\fIget the number of bytes used to serialize the given object, including any objects that it serializes \fP"
+.ti -1c
+.RI "uint \fBsizeof_offset\fP (\fBOffset\fP val)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBOffset\fP \fP"
+.ti -1c
+.RI "uint \fBsizeof_point\fP (\fBPoint\fP val)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBPoint\fP \fP"
+.ti -1c
+.RI "uint \fBsizeof_quad\fP (\fBQuad\fP val)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBQuad\fP \fP"
+.ti -1c
+.RI "uint \fBsizeof_rect\fP (\fBRect\fP val)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBRect\fP \fP"
+.ti -1c
+.RI "uint \fBsizeof_ref\fP (object val)"
+.br
+.ti -1c
+.RI "uint \fBsizeof_rotr\fP (\fBRotatedRect\fP val)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBRotatedRect\fP \fP"
+.ti -1c
+.RI "uint \fBsizeof_str\fP (string val)"
+.br
+.RI "\fIget the number of bytes used to serialize the given string \fP"
+.ti -1c
+.RI "uint \fBsizeof_uint\fP (uint val)"
+.br
+.RI "\fIget the number of bytes used to serialize the given unsigned integer \fP"
+.ti -1c
+.RI "uint \fBsizeof_vector\fP (\fBVector\fP val)"
+.br
+.RI "\fIget the number of bytes used to serialize the given \fBVector\fP \fP"
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -464,12 +506,12 @@ the \fBColor\fP is written as a 24 (no alpha channel) or 32 bit color (with alph
 .PP
 \fBNote:\fP
 .RS 4
-data size: varies, call \fBserializedSize(Color)\fP to determine
+data size: varies, call serializedSize(Color) to determine
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserializedSize(Color)\fP 
+serializedSize(Color) 
 .PP
 \fBDeserializer\&.deserialize_color()\fP 
 .RE
@@ -524,14 +566,14 @@ serialize a binary string Binary strings are a Node\&.js way of handling blocks 
 .PP
 \fBNote:\fP
 .RS 4
-data size: varies, call \fBserializedSize(MemBlock)\fP to determine\&. Because binary strings used 2 bytes for each actual byte stored, the serialized data takes less memory than the original string\&.
+data size: varies, call serializedSize(MemBlock) to determine\&. Because binary strings used 2 bytes for each actual byte stored, the serialized data takes less memory than the original string\&.
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
 \fBserialize_mem(MemBlock)\fP 
 .PP
-\fBserializedSize(MemBlock)\fP 
+serializedSize(MemBlock) 
 .PP
 \fBDeserializer\&.deserialize_mem\fP 
 .RE
@@ -544,12 +586,12 @@ serialize a block of memory MemBlocks are the game engine's way of handling bloc
 .PP
 \fBNote:\fP
 .RS 4
-data size: varies, call \fBserializedSize(MemBlock)\fP to determine\&.
+data size: varies, call serializedSize(MemBlock) to determine\&.
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserializedSize(MemBlock)\fP 
+serializedSize(MemBlock) 
 .PP
 \fBDeserializer\&.deserialize_mem\fP 
 .RE
@@ -564,12 +606,12 @@ The \fBSerializer\fP keeps track of what objects have already been added to the 
 .PP
 \fBNote:\fP
 .RS 4
-data size: varies, call \fBserializedSize()\fP to determine\&.
+data size: varies, call serializedSize() to determine\&.
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserializedSize(ISerializable)\fP 
+serializedSize(ISerializable) 
 .PP
 \fBDeserializer\&.deserialize_obj\fP 
 .PP
@@ -589,12 +631,12 @@ because JavaScript handles floating-point numbers as doubles internally but an \
 .PP
 \fBNote:\fP
 .RS 4
-data size: varies, call \fBserializedSize(Offset)\fP to determine
+data size: varies, call serializedSize(Offset) to determine
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserializedSize(Offset)\fP 
+serializedSize(Offset) 
 .PP
 \fBDeserializer\&.deserialize_offset()\fP 
 .RE
@@ -612,12 +654,12 @@ because JavaScript handles floating-point numbers as doubles internally but a \f
 .PP
 \fBNote:\fP
 .RS 4
-data size: varies, call \fBserializedSize(Point)\fP to determine
+data size: varies, call serializedSize(Point) to determine
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserializedSize(Point)\fP 
+serializedSize(Point) 
 .PP
 \fBDeserializer\&.deserialize_point()\fP 
 .RE
@@ -635,12 +677,12 @@ because JavaScript handles floating-point numbers as doubles internally but a \f
 .PP
 \fBNote:\fP
 .RS 4
-data size: varies, call \fBserializedSize(Quad)\fP to determine
+data size: varies, call serializedSize(Quad) to determine
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserializedSize(Quad)\fP 
+serializedSize(Quad) 
 .PP
 \fBDeserializer\&.deserialize_quad()\fP 
 .RE
@@ -658,16 +700,18 @@ because JavaScript handles floating-point numbers as doubles internally but a \f
 .PP
 \fBNote:\fP
 .RS 4
-data size: varies, call \fBserializedSize(Rect)\fP to determine
+data size: varies, call serializedSize(Rect) to determine
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserializedSize(Rect)\fP 
+serializedSize(Rect) 
 .PP
 \fBDeserializer\&.deserialize_rect()\fP 
 .RE
 .PP
+
+.SS "serialize_ref (objectobj)"
 
 .SS "serialize_rotr (\fBRotatedRect\fPval)"
 
@@ -681,12 +725,12 @@ because JavaScript handles floating-point numbers as doubles internally but a \f
 .PP
 \fBNote:\fP
 .RS 4
-data size: varies, call \fBserializedSize(RotatedRect)\fP to determine
+data size: varies, call serializedSize(RotatedRect) to determine
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserializedSize(RotatedRect)\fP 
+serializedSize(RotatedRect) 
 .PP
 \fBDeserializer\&.deserialize_rotr()\fP 
 .RE
@@ -699,12 +743,12 @@ serialize a JavaScript string Writes the string into the data stream\&.
 .PP
 \fBNote:\fP
 .RS 4
-data size: varies, call \fBserializedSize()\fP to determine\&. Format is Unicode UTF-8\&.
+data size: varies, call serializedSize() to determine\&. Format is Unicode UTF-8\&.
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserializedSize(string)\fP 
+serializedSize(string) 
 .PP
 \fBDeserializer\&.deserialize_str\fP 
 .RE
@@ -717,12 +761,12 @@ serialize up to 4 unsigned bytes Write a value in the range of \fB0 to 4,294,967
 .PP
 \fBNote:\fP
 .RS 4
-data size: varies, 1 to 5 bytes, call \fBserializedSize()\fP to determine\&.
+data size: varies, 1 to 5 bytes, call serializedSize() to determine\&.
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserializedSize(uint)\fP 
+serializedSize(uint) 
 .PP
 \fBserialize_4u\fP 
 .PP
@@ -742,34 +786,36 @@ because JavaScript handles floating-point numbers as doubles internally but a \f
 .PP
 \fBNote:\fP
 .RS 4
-data size: varies, call \fBserializedSize(Vector)\fP to determine
+data size: varies, call serializedSize(Vector) to determine
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserializedSize(Vector)\fP 
+serializedSize(Vector) 
 .PP
 \fBDeserializer\&.deserialize_vector()\fP 
 .RE
 .PP
 
-.SS "serializedSize (stringstr)"
+.SS "uint sizeof_1 (intval)"
 
-.PP
-get the number of bytes used to serialize the given string Does not actually write any data to stream
-.PP
-\fBReturns:\fP
-.RS 4
-the number of bytes needed
-.RE
-.PP
-\fBSee Also:\fP
-.RS 4
-\fBserialize_str\fP 
-.RE
-.PP
+.SS "uint sizeof_1u (uintval)"
 
-.SS "serializedSize (booleanarg)"
+.SS "uint sizeof_2 (intval)"
+
+.SS "uint sizeof_2u (uintval)"
+
+.SS "uint sizeof_3u (uintval)"
+
+.SS "uint sizeof_4 (intval)"
+
+.SS "uint sizeof_4u (uintval)"
+
+.SS "uint sizeof_8 (intval)"
+
+.SS "uint sizeof_8u (uintval)"
+
+.SS "sizeof_bool (booleanval)"
 
 .PP
 get the number of bytes used to serialize the given boolean Does not actually write any data to stream
@@ -790,23 +836,7 @@ this will often return 0, which simply means that the particular boolean bit is 
 .RE
 .PP
 
-.SS "serializedSize (uintn)"
-
-.PP
-get the number of bytes used to serialize the given unsigned integer Does not actually write any data to stream\&.
-.PP
-\fBReturns:\fP
-.RS 4
-the number of bytes needed (1-5) 
-.RE
-.PP
-\fBSee Also:\fP
-.RS 4
-\fBserialize_uint\fP 
-.RE
-.PP
-
-.SS "serializedSize (\fBColor\fParg)"
+.SS "sizeof_color (\fBColor\fPval)"
 
 .PP
 get the number of bytes used to serialize the given \fBColor\fP Does not actually write any data to stream
@@ -822,7 +852,45 @@ the number of bytes needed (3-5)
 .RE
 .PP
 
-.SS "serializedSize (\fBOffset\fParg)"
+.SS "uint sizeof_d (numberval)"
+
+.SS "uint sizeof_f (numberval)"
+
+.SS "uint sizeof_mem (BinaryStringmem)"
+
+.SS "sizeof_mem (\fBMemBlock\fPmem)"
+
+.PP
+get the number of bytes used to serialize the given block of memory Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_mem\fP 
+.RE
+.PP
+
+.SS "sizeof_obj (\fBISerializable\fPobj)"
+
+.PP
+get the number of bytes used to serialize the given object, including any objects that it serializes Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_obj\fP 
+.RE
+.PP
+
+.SS "sizeof_offset (\fBOffset\fPval)"
 
 .PP
 get the number of bytes used to serialize the given \fBOffset\fP Does not actually write any data to stream
@@ -843,7 +911,7 @@ this can return 0 for an offset whose value is (0,0), since a zero offset is opt
 .RE
 .PP
 
-.SS "serializedSize (\fBPoint\fParg)"
+.SS "sizeof_point (\fBPoint\fPval)"
 
 .PP
 get the number of bytes used to serialize the given \fBPoint\fP Does not actually write any data to stream
@@ -864,65 +932,7 @@ this can return 0 for a \fBPoint\fP whose value is (0,0), since a point at origi
 .RE
 .PP
 
-.SS "serializedSize (\fBVector\fParg)"
-
-.PP
-get the number of bytes used to serialize the given \fBVector\fP Does not actually write any data to stream
-.PP
-\fBReturns:\fP
-.RS 4
-the number of bytes needed (0-9)
-.RE
-.PP
-\fBNote:\fP
-.RS 4
-this can return 0 for an vector whose value is (0,0), since a zero vector is optimized to be stored as a single bit\&.
-.RE
-.PP
-\fBSee Also:\fP
-.RS 4
-\fBserialize_vector\fP 
-.RE
-.PP
-
-.SS "serializedSize (\fBRect\fParg)"
-
-.PP
-get the number of bytes used to serialize the given \fBRect\fP Does not actually write any data to stream
-.PP
-\fBReturns:\fP
-.RS 4
-the number of bytes needed (0-17)
-.RE
-.PP
-\fBNote:\fP
-.RS 4
-this can return 0 under some conditions, such as an \fBRect\fP located at (0,0) with zero width or height, which is optimized to be stored in 2 bits\&.
-.RE
-.PP
-\fBSee Also:\fP
-.RS 4
-\fBserialize_rect\fP 
-.RE
-.PP
-
-.SS "serializedSize (\fBRotatedRect\fParg)"
-
-.PP
-get the number of bytes used to serialize the given \fBRotatedRect\fP Does not actually write any data to stream
-.PP
-\fBReturns:\fP
-.RS 4
-the number of bytes needed (4-30)
-.RE
-.PP
-\fBSee Also:\fP
-.RS 4
-\fBserialize_rotr\fP 
-.RE
-.PP
-
-.SS "serializedSize (\fBQuad\fParg)"
+.SS "sizeof_quad (\fBQuad\fPval)"
 
 .PP
 get the number of bytes used to serialize the given \fBQuad\fP Does not actually write any data to stream
@@ -943,35 +953,95 @@ this can return 0 under some conditions, such as a \fBQuad\fP made up of 4 point
 .RE
 .PP
 
-.SS "serializedSize (\fBMemBlock\fPmem)"
+.SS "sizeof_rect (\fBRect\fPval)"
 
 .PP
-get the number of bytes used to serialize the given block of memory Does not actually write any data to stream
+get the number of bytes used to serialize the given \fBRect\fP Does not actually write any data to stream
 .PP
 \fBReturns:\fP
 .RS 4
-the number of bytes needed 
+the number of bytes needed (0-17)
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this can return 0 under some conditions, such as an \fBRect\fP located at (0,0) with zero width or height, which is optimized to be stored in 2 bits\&.
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserialize_mem\fP 
+\fBserialize_rect\fP 
 .RE
 .PP
 
-.SS "serializedSize (\fBISerializable\fPobj)"
+.SS "uint sizeof_ref (objectval)"
+
+.SS "sizeof_rotr (\fBRotatedRect\fPval)"
 
 .PP
-get the number of bytes used to serialize the given object, including any objects that it serializes Does not actually write any data to stream
+get the number of bytes used to serialize the given \fBRotatedRect\fP Does not actually write any data to stream
 .PP
 \fBReturns:\fP
 .RS 4
-the number of bytes needed 
+the number of bytes needed (4-30)
 .RE
 .PP
 \fBSee Also:\fP
 .RS 4
-\fBserialize_obj\fP 
+\fBserialize_rotr\fP 
+.RE
+.PP
+
+.SS "sizeof_str (stringstr)"
+
+.PP
+get the number of bytes used to serialize the given string Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_str\fP 
+.RE
+.PP
+
+.SS "sizeof_uint (uintn)"
+
+.PP
+get the number of bytes used to serialize the given unsigned integer Does not actually write any data to stream\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed (1-5) 
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_uint\fP 
+.RE
+.PP
+
+.SS "sizeof_vector (\fBVector\fPval)"
+
+.PP
+get the number of bytes used to serialize the given \fBVector\fP Does not actually write any data to stream
+.PP
+\fBReturns:\fP
+.RS 4
+the number of bytes needed (0-9)
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this can return 0 for an vector whose value is (0,0), since a zero vector is optimized to be stored as a single bit\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBserialize_vector\fP 
 .RE
 .PP
 

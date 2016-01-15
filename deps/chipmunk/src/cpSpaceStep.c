@@ -1,4 +1,4 @@
-/* Copyright (c) 2007 Scott Lembcke
+/* Copyright (c) 2013 Scott Lembcke and Howling Moon Software
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -18,8 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
- 
-#include "chipmunk_private.h"
+
+#include "chipmunk/chipmunk_private.h"
 
 //MARK: Post Step Callback Functions
 
@@ -90,7 +90,7 @@ cpSpaceUnlock(cpSpace *space, cpBool runPostStep)
 				cpPostStepFunc func = callback->func;
 				
 				// Mark the func as NULL in case calling it calls cpSpaceRunPostStepCallbacks() again.
-				// TODO need more tests around this case I think.
+				// TODO: need more tests around this case I think.
 				callback->func = NULL;
 				if(func) func(space, callback->key, callback->data);
 				
@@ -112,10 +112,10 @@ struct cpContactBufferHeader {
 	unsigned int numContacts;
 };
 
-#define CP_CONTACTS_BUFFER_SIZE ((CP_BUFFER_BYTES - sizeof(cpContactBufferHeader))/sizeof(cpContact))
+#define CP_CONTACTS_BUFFER_SIZE ((CP_BUFFER_BYTES - sizeof(cpContactBufferHeader))/sizeof(struct cpContact))
 typedef struct cpContactBuffer {
 	cpContactBufferHeader header;
-	cpContact contacts[CP_CONTACTS_BUFFER_SIZE];
+	struct cpContact contacts[CP_CONTACTS_BUFFER_SIZE];
 } cpContactBuffer;
 
 static cpContactBufferHeader *
@@ -158,7 +158,7 @@ cpSpacePushFreshContactBuffer(cpSpace *space)
 }
 
 
-cpContact *
+struct cpContact *
 cpContactBufferGetArray(cpSpace *space)
 {
 	if(space->contactBuffersHead->numContacts + CP_MAX_CONTACTS_PER_ARBITER > CP_CONTACTS_BUFFER_SIZE){
@@ -202,19 +202,32 @@ cpSpaceArbiterSetTrans(cpShape **shapes, cpSpace *space)
 }
 
 static inline cpBool
-queryReject(cpShape *a, cpShape *b)
+QueryRejectConstraint(cpBody *a, cpBody *b)
+{
+	CP_BODY_FOREACH_CONSTRAINT(a, constraint){
+		if(
+			!constraint->collideBodies && (
+				(constraint->a == a && constraint->b == b) ||
+				(constraint->a == b && constraint->b == a)
+			)
+		) return cpTrue;
+	}
+	
+	return cpFalse;
+}
+
+static inline cpBool
+QueryReject(cpShape *a, cpShape *b)
 {
 	return (
 		// BBoxes must overlap
 		!cpBBIntersects(a->bb, b->bb)
 		// Don't collide shapes attached to the same body.
 		|| a->body == b->body
-		// Don't collide objects in the same non-zero group
-		|| (a->group && a->group == b->group)
-		// Don't collide objects that don't share at least on layer.
-		|| !(a->layers & b->layers)
-		// Don't collide infinite mass objects
-		|| (a->body->m == INFINITY && b->body->m == INFINITY)
+		// Don't collide shapes that are filtered.
+		|| cpShapeFilterReject(a->filter, b->filter)
+		// Don't collide bodies if they have a constraint with collideBodies == cpFalse.
+		|| QueryRejectConstraint(a->body, b->body)
 	);
 }
 
@@ -223,62 +236,56 @@ cpCollisionID
 cpSpaceCollideShapes(cpShape *a, cpShape *b, cpCollisionID id, cpSpace *space)
 {
 	// Reject any of the simple cases
-	if(queryReject(a,b)) return id;
-	
-	cpCollisionHandler *handler = cpSpaceLookupHandler(space, a->collision_type, b->collision_type);
-	
-	cpBool sensor = a->sensor || b->sensor;
-	if(sensor && handler == &cpDefaultCollisionHandler) return id;
-	
-	// Shape 'a' should have the lower shape type. (required by cpCollideShapes() )
-	// TODO remove me: a < b comparison is for debugging collisions
-	if(a->klass->type > b->klass->type || (a->klass->type == b->klass->type && a < b)){
-		cpShape *temp = a;
-		a = b;
-		b = temp;
-	}
+	if(QueryReject(a,b)) return id;
 	
 	// Narrow-phase collision detection.
-	cpContact *contacts = cpContactBufferGetArray(space);
-	int numContacts = cpCollideShapes(a, b, &id, contacts);
-	if(!numContacts) return id; // Shapes are not colliding.
-	cpSpacePushContacts(space, numContacts);
+	struct cpCollisionInfo info = cpCollide(a, b, id, cpContactBufferGetArray(space));
+	
+	if(info.count == 0) return info.id; // Shapes are not colliding.
+	cpSpacePushContacts(space, info.count);
 	
 	// Get an arbiter from space->arbiterSet for the two shapes.
 	// This is where the persistant contact magic comes from.
-	cpShape *shape_pair[] = {a, b};
-	cpHashValue arbHashID = CP_HASH_PAIR((cpHashValue)a, (cpHashValue)b);
-	cpArbiter *arb = (cpArbiter *)cpHashSetInsert(space->cachedArbiters, arbHashID, shape_pair, space, (cpHashSetTransFunc)cpSpaceArbiterSetTrans);
-	cpArbiterUpdate(arb, contacts, numContacts, handler, a, b);
+	const cpShape *shape_pair[] = {info.a, info.b};
+	cpHashValue arbHashID = CP_HASH_PAIR((cpHashValue)info.a, (cpHashValue)info.b);
+	cpArbiter *arb = (cpArbiter *)cpHashSetInsert(space->cachedArbiters, arbHashID, shape_pair, (cpHashSetTransFunc)cpSpaceArbiterSetTrans, space);
+	cpArbiterUpdate(arb, &info, space);
+	
+	cpCollisionHandler *handler = arb->handler;
 	
 	// Call the begin function first if it's the first step
-	if(arb->state == cpArbiterStateFirstColl && !handler->begin(arb, space, handler->data)){
+	if(arb->state == CP_ARBITER_STATE_FIRST_COLLISION && !handler->beginFunc(arb, space, handler->userData)){
 		cpArbiterIgnore(arb); // permanently ignore the collision until separation
 	}
 	
 	if(
 		// Ignore the arbiter if it has been flagged
-		(arb->state != cpArbiterStateIgnore) && 
+		(arb->state != CP_ARBITER_STATE_IGNORE) && 
 		// Call preSolve
-		handler->preSolve(arb, space, handler->data) &&
+		handler->preSolveFunc(arb, space, handler->userData) &&
+		// Check (again) in case the pre-solve() callback called cpArbiterIgnored().
+		arb->state != CP_ARBITER_STATE_IGNORE &&
 		// Process, but don't add collisions for sensors.
-		!sensor
+		!(a->sensor || b->sensor) &&
+		// Don't process collisions between two infinite mass bodies.
+		// This includes collisions between two kinematic bodies, or a kinematic body and a static body.
+		!(a->body->m == INFINITY && b->body->m == INFINITY)
 	){
 		cpArrayPush(space->arbiters, arb);
 	} else {
-		cpSpacePopContacts(space, numContacts);
+		cpSpacePopContacts(space, info.count);
 		
 		arb->contacts = NULL;
-		arb->numContacts = 0;
+		arb->count = 0;
 		
 		// Normally arbiters are set as used after calling the post-solve callback.
-		// However, post-solve callbacks are not called for sensors or arbiters rejected from pre-solve.
-		if(arb->state != cpArbiterStateIgnore) arb->state = cpArbiterStateNormal;
+		// However, post-solve() callbacks are not called for sensors or arbiters rejected from pre-solve.
+		if(arb->state != CP_ARBITER_STATE_IGNORE) arb->state = CP_ARBITER_STATE_NORMAL;
 	}
 	
 	// Time stamp the arbiter so we know it was used recently.
 	arb->stamp = space->stamp;
-	return id;
+	return info.id;
 }
 
 // Hashset filter func to throw away old arbiters.
@@ -289,25 +296,26 @@ cpSpaceArbiterSetFilter(cpArbiter *arb, cpSpace *space)
 	
 	cpBody *a = arb->body_a, *b = arb->body_b;
 	
-	// TODO should make an arbiter state for this so it doesn't require filtering arbiters for dangling body pointers on body removal.
+	// TODO: should make an arbiter state for this so it doesn't require filtering arbiters for dangling body pointers on body removal.
 	// Preserve arbiters on sensors and rejected arbiters for sleeping objects.
 	// This prevents errant separate callbacks from happenening.
 	if(
-		(cpBodyIsStatic(a) || cpBodyIsSleeping(a)) &&
-		(cpBodyIsStatic(b) || cpBodyIsSleeping(b))
+		(cpBodyGetType(a) == CP_BODY_TYPE_STATIC || cpBodyIsSleeping(a)) &&
+		(cpBodyGetType(b) == CP_BODY_TYPE_STATIC || cpBodyIsSleeping(b))
 	){
 		return cpTrue;
 	}
 	
 	// Arbiter was used last frame, but not this one
-	if(ticks >= 1 && arb->state != cpArbiterStateCached){
-		arb->state = cpArbiterStateCached;
-		cpArbiterCallSeparate(arb, space);
+	if(ticks >= 1 && arb->state != CP_ARBITER_STATE_CACHED){
+		arb->state = CP_ARBITER_STATE_CACHED;
+		cpCollisionHandler *handler = arb->handler;
+		handler->separateFunc(arb, space, handler->userData);
 	}
 	
 	if(ticks >= space->collisionPersistence){
 		arb->contacts = NULL;
-		arb->numContacts = 0;
+		arb->count = 0;
 		
 		cpArrayPush(space->pooledArbiters, arb);
 		return cpFalse;
@@ -318,11 +326,10 @@ cpSpaceArbiterSetFilter(cpArbiter *arb, cpSpace *space)
 
 //MARK: All Important cpSpaceStep() Function
 
-void
+ void
 cpShapeUpdateFunc(cpShape *shape, void *unused)
 {
-	cpBody *body = shape->body;
-	cpShapeUpdate(shape, body->p, body->rot);
+	cpShapeCacheBB(shape);
 }
 
 void
@@ -336,14 +343,14 @@ cpSpaceStep(cpSpace *space, cpFloat dt)
 	cpFloat prev_dt = space->curr_dt;
 	space->curr_dt = dt;
 		
-	cpArray *bodies = space->bodies;
+	cpArray *bodies = space->dynamicBodies;
 	cpArray *constraints = space->constraints;
 	cpArray *arbiters = space->arbiters;
 	
 	// Reset and empty the arbiter lists.
 	for(int i=0; i<arbiters->num; i++){
 		cpArbiter *arb = (cpArbiter *)arbiters->arr[i];
-		arb->state = cpArbiterStateNormal;
+		arb->state = CP_ARBITER_STATE_NORMAL;
 		
 		// If both bodies are awake, unthread the arbiter from the contact graph.
 		if(!cpBodyIsSleeping(arb->body_a) && !cpBodyIsSleeping(arb->body_b)){
@@ -361,8 +368,8 @@ cpSpaceStep(cpSpace *space, cpFloat dt)
 		
 		// Find colliding pairs.
 		cpSpacePushFreshContactBuffer(space);
-		cpSpatialIndexEach(space->activeShapes, (cpSpatialIndexIteratorFunc)cpShapeUpdateFunc, NULL);
-		cpSpatialIndexReindexQuery(space->activeShapes, (cpSpatialIndexQueryFunc)cpSpaceCollideShapes, space);
+		cpSpatialIndexEach(space->dynamicShapes, (cpSpatialIndexIteratorFunc)cpShapeUpdateFunc, NULL);
+		cpSpatialIndexReindexQuery(space->dynamicShapes, (cpSpatialIndexQueryFunc)cpSpaceCollideShapes, space);
 	} cpSpaceUnlock(space, cpFalse);
 	
 	// Rebuild the contact graph (and detect sleeping components if sleeping is enabled)
@@ -432,7 +439,7 @@ cpSpaceStep(cpSpace *space, cpFloat dt)
 			cpArbiter *arb = (cpArbiter *) arbiters->arr[i];
 			
 			cpCollisionHandler *handler = arb->handler;
-			handler->postSolve(arb, space, handler->data);
+			handler->postSolveFunc(arb, space, handler->userData);
 		}
 	} cpSpaceUnlock(space, cpTrue);
 }

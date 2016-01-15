@@ -49,6 +49,12 @@
 
 namespace pdg {
 
+    enum {
+        // durations
+        duration_Constant = -1,
+        duration_Instantaneous = 0,
+    };
+
 // -----------------------------------------------------------------------------------
 // Animated
 // An object that can be automatically moved, spun or resized over time 
@@ -63,12 +69,6 @@ public:
 	SERIALIZABLE_METHODS();
 	static pdg::ISerializable* CreateInstance() { return new Animated(); }
 
-	enum {
-		// durations
-		duration_Constant = -1,
-		duration_Instantaneous = 0,
-	};
-	
 	// bounds
 	Rect			getBoundingBox();
 	RotatedRect		getRotatedBounds();
@@ -82,13 +82,13 @@ public:
     Animated&		move(const Offset& delta);
 
     // animate moving to new location, after wait() if applicable
-	virtual void	moveTo(const Point& loc, int32 msDuration, 
+	virtual void	moveTo(const Point& loc, ms_delta msDuration, 
                             EasingFunc easing = easeInOutQuad);
-	void			moveTo(float x, float y, int32 msDuration, 
+	void			moveTo(float x, float y, ms_delta msDuration, 
                          EasingFunc easing = easeInOutQuad);
-	void			move(float deltaX, float deltaY, int32 msDuration, 
+	void			move(float deltaX, float deltaY, ms_delta msDuration, 
                             EasingFunc easing = easeInOutQuad);
-	void			move(const Offset& delta, int32 msDuration, 
+	void			move(const Offset& delta, ms_delta msDuration, 
                          EasingFunc easing = easeInOutQuad);
 
 	// constant movement in pixels per second, direction in 2 PI radians per circle, 
@@ -103,9 +103,9 @@ public:
 	Animated&		stopMoving();
 
 	// animate changing speed over time, after wait() if applicable
-	virtual void	accelerateTo(float speed, int32 msDuration, 
+	virtual void	accelerateTo(float speed, ms_delta msDuration, 
                             EasingFunc easing = linearTween);
-	void			accelerate(float deltaSpeed, int32 msDuration, 
+	void			accelerate(float deltaSpeed, ms_delta msDuration, 
                             EasingFunc easing = linearTween);
 
 	// change in size
@@ -124,15 +124,15 @@ public:
 	Animated&		stopStretching();
 
 	// animate change in size over time, to specific size, after wait() if applicable
-	virtual void	resizeTo(float width, float height, int32 msDuration, 
+	virtual void	resizeTo(float width, float height, ms_delta msDuration, 
                             EasingFunc easing = easeInOutQuad);
 
 	// animate change in size over time, relative to current size, after wait() if applicable
-	void			resize(float deltaWidth, float deltaHeight, int32 msDuration, 
+	void			resize(float deltaWidth, float deltaHeight, ms_delta msDuration, 
                             EasingFunc easing = easeInOutQuad);
-	void			grow(float factor, int32 msDuration, 
+	void			grow(float factor, ms_delta msDuration, 
                             EasingFunc easing = easeInOutQuad); // from current size
-	void			stretch(float widthFactor, float weightFactor, int32 msDuration, 
+	void			stretch(float widthFactor, float weightFactor, ms_delta msDuration, 
                             EasingFunc easing = easeInOutQuad); // from current size
 
 	// rotation clockwise is postive, counter-clockwise negative, around centerpoint, in radians
@@ -149,22 +149,22 @@ public:
 	Animated&		stopSpinning();
 
 	// animate changing direction over time, after wait() if applicable
-	virtual void	rotateTo(float radiansRotation, int32 msDuration, 
+	virtual void	rotateTo(float radiansRotation, ms_delta msDuration, 
                                 EasingFunc easing = easeInOutQuad);
-	void			rotate(float radians, int32 msDuration, 
+	void			rotate(float radians, ms_delta msDuration, 
                                 EasingFunc easing = easeInOutQuad);
-	void			changeCenterTo(float xOffset, float yOffset, int32 msDuration, 
+	void			changeCenterTo(float xOffset, float yOffset, ms_delta msDuration, 
                                 EasingFunc easing = easeInOutQuad);
-	void			changeCenterTo(const Offset& offset, int32 msDuration, 
+	void			changeCenterTo(const Offset& offset, ms_delta msDuration, 
                                    EasingFunc easing = easeInOutQuad);
-	void			changeCenter(float deltaXOffset, float deltaYOffset, int32 msDuration, 
+	void			changeCenter(float deltaXOffset, float deltaYOffset, ms_delta msDuration, 
                                 EasingFunc easing = easeInOutQuad);
-	void			changeCenter(const Offset& offset, int32 msDuration, 
+	void			changeCenter(const Offset& offset, ms_delta msDuration, 
                                  EasingFunc easing = easeInOutQuad);
 
     // delay before starting next change over time operation (ie, one with easing)
     // no affect on constant motion operations
-    Animated*       wait(int32 msDuration);
+    Animated*       wait(ms_delta msDuration);
 
 	// Simple Physics-based animation
 	virtual Animated&	setMass(float mass);  // 1.0 is default, unit-less
@@ -178,9 +178,9 @@ public:
 	float   		getSizeFriction();
 
 	// multiple forces can be applied simultaneously, after wait() if applicable
-	virtual void	applyForce(const Vector& force, int32 msDuration = duration_Instantaneous);
-	virtual void	applyForce(float forceX, float forceY, int32 msDuration = duration_Instantaneous);
-	virtual void	applyTorque(float forceSpin, int32 msDuration = duration_Instantaneous);
+	virtual void	applyForce(const Vector& force, ms_delta msDuration = duration_Instantaneous);
+	virtual void	applyForce(float forceX, float forceY, ms_delta msDuration = duration_Instantaneous);
+	virtual void	applyTorque(float forceSpin, ms_delta msDuration = duration_Instantaneous);
 	virtual void	stopAllForces();  // removes all forces that were set by applyForce (but not friction)
 
 	// objects that will be called to help with animation of this object
@@ -204,7 +204,7 @@ protected:
 
 	// called by subclasses to do the actual work of animating
 	// returns true if anything changed
-	virtual bool	animate(int32 msElapsed);
+	virtual bool	animate(ms_delta msElapsed);
 
 	// ---------------------------------------
 	// subclasses should override these when something needs to
@@ -244,14 +244,14 @@ protected:
 
 	struct Animation {
 		EasingFunc	easing;
-        int32       delayMs;
+        ms_delta    delayMs;
         float       targetVal;  // only used with delay
 		float*		value;
-		uint32		currMs;
-		uint32		durationMs;
+		ms_time		currMs;
+		ms_delta	durationMs;
 		float		beginVal;
 		float		deltaVal;
-        Animation(float* valPtr, float val, EasingFunc func, int32 delay, uint32 duration) 
+        Animation(float* valPtr, float val, EasingFunc func, ms_delta delay, ms_delta duration)
             : easing(func),
             delayMs(delay),
             targetVal(val),
@@ -273,7 +273,7 @@ protected:
             {};
 	};
 
-    int32           mDelayMs;
+    ms_delta    mDelayMs;
 
 	std::vector<Animation> mAnimations;
 
@@ -289,11 +289,11 @@ protected:
 	float			mSizeFriction;
 
 	typedef struct {
-        int32 delayRemaining;
+        ms_delta delayRemaining;
 		float xAccelerationPerMs2;
 		float yAccelerationPerMs2;
 		float radianAccelerationPerMs2;
-		int32 milliRemaining;
+		ms_delta milliRemaining;
 	} Force;
 
 	std::vector<Force> mForces;
@@ -361,17 +361,17 @@ Animated::move(const Offset& delta) {
 
 
 inline void
-Animated::moveTo(float x, float y, int32 msDuration, EasingFunc easing) {
+Animated::moveTo(float x, float y, ms_delta msDuration, EasingFunc easing) {
     moveTo(Point(x, y), msDuration, easing);
 }
 
 inline void
-Animated::move(float deltaX, float deltaY, int32 msDuration, EasingFunc easing) {
+Animated::move(float deltaX, float deltaY, ms_delta msDuration, EasingFunc easing) {
 	move(Offset(deltaX, deltaY), msDuration, easing);
 }
 
 inline void
-Animated::move(const Offset& delta, int32 msDuration, EasingFunc easing) {
+Animated::move(const Offset& delta, ms_delta msDuration, EasingFunc easing) {
     moveTo(mLocation + delta, msDuration, easing);
 }
 
@@ -414,7 +414,7 @@ Animated::stopMoving() {
 }
 
 inline void
-Animated::accelerate(float deltaSpeed, int32 msDuration, EasingFunc easing) {
+Animated::accelerate(float deltaSpeed, ms_delta msDuration, EasingFunc easing) {
 	accelerateTo(getSpeed() + deltaSpeed, msDuration, easing);
 }
 
@@ -507,19 +507,19 @@ Animated::stopStretching() {
 
 // animate change in size over time, relative to current size
 inline void
-Animated::resize(float deltaWidth, float deltaHeight, int32 msDuration, EasingFunc easing) {
+Animated::resize(float deltaWidth, float deltaHeight, ms_delta msDuration, EasingFunc easing) {
 	resizeTo(mWidth + deltaWidth, mHeight + deltaHeight, msDuration, easing);
 }
 
 
 inline void
-Animated::grow(float factor, int32 msDuration, EasingFunc easing) {
+Animated::grow(float factor, ms_delta msDuration, EasingFunc easing) {
 	stretch(factor, factor, msDuration, easing);
 }
 
  // from current size
 inline void
-Animated::stretch(float widthFactor, float heightFactor, int32 msDuration, EasingFunc easing) {
+Animated::stretch(float widthFactor, float heightFactor, ms_delta msDuration, EasingFunc easing) {
 	resizeTo(mWidth * widthFactor, mHeight * heightFactor, msDuration, easing);
 }
 
@@ -563,28 +563,28 @@ Animated::stopSpinning() {
 }
 
 inline void
-Animated::rotate(float radians, int32 msDuration, EasingFunc easing) {
+Animated::rotate(float radians, ms_delta msDuration, EasingFunc easing) {
 	rotateTo(mFacing + radians, msDuration, easing);
 }
 
  // relative to real center
 inline void
-Animated::changeCenterTo(float xOffset, float yOffset, int32 msDuration, EasingFunc easing) {
+Animated::changeCenterTo(float xOffset, float yOffset, ms_delta msDuration, EasingFunc easing) {
 	changeCenterTo(Offset(xOffset, yOffset), msDuration, easing);
 }
 
 inline void
-Animated::changeCenter(float deltaXOffset, float deltaYOffset, int32 msDuration, EasingFunc easing) {
+Animated::changeCenter(float deltaXOffset, float deltaYOffset, ms_delta msDuration, EasingFunc easing) {
     changeCenter(Offset(deltaXOffset, deltaYOffset), msDuration, easing);
 }
 
 inline void
-Animated::changeCenter(const Offset& offset, int32 msDuration, EasingFunc easing) {
+Animated::changeCenter(const Offset& offset, ms_delta msDuration, EasingFunc easing) {
     changeCenterTo(mCenterOffset + offset, msDuration, easing);
 }
 
 inline Animated* 
-Animated::wait(int32 msDuration) {
+Animated::wait(ms_delta msDuration) {
     mDelayMs = (msDuration > 0) ? msDuration : 0;
     return this;
 }
@@ -604,7 +604,7 @@ Animated::getMass() {
 
 
 inline void	
-Animated::applyForce(float forceX, float forceY, int32 msDuration) {
+Animated::applyForce(float forceX, float forceY, ms_delta msDuration) {
     applyForce(Vector(forceX, forceY), msDuration);
 }
 

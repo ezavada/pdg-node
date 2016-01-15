@@ -32,6 +32,8 @@
 
 #include "config-macosx.h"
 
+#include <cstdlib>
+
 #include <CoreFoundation/CoreFoundation.h>
 
 namespace pdg {
@@ -74,7 +76,7 @@ bool ConfigManagerMac::getConfigString(const char* configItemName, std::string& 
     CFStringRef value = (CFStringRef) MacAPI::CFPreferencesCopyAppValue(key, kCFPreferencesCurrentApplication);
     bool exists = (value != NULL);
     if (value) {
-        int len = MacAPI::CFStringGetLength(value)*6 + 1; // utf8 chars are up to 6 bytes for each unicode char
+        long len = MacAPI::CFStringGetLength(value)*6 + 1; // utf8 chars are up to 6 bytes for each unicode char
         char* buf = (char*) std::malloc(len);
         buf[0] = 0;
         DEBUG_ASSERT( MacAPI::CFStringGetCString(value, buf, len, kCFStringEncodingUTF8), "CFString conversion failed" );

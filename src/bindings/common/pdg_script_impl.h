@@ -70,8 +70,8 @@ void CreateSingletons();
 class ScriptAnimationHelper : public pdg::IAnimationHelper {
 public:
 	ScriptAnimationHelper();
-	ScriptAnimationHelper(SAVED_FUNCTION javascriptAnimateFunc);
-    bool animate(Animated* what, uint32 msElapsed) throw();
+	ScriptAnimationHelper(FUNCTION_REF javascriptAnimateFunc);
+    bool animate(Animated* what, ms_delta msElapsed) throw();
 protected:
 	SAVED_FUNCTION mScriptAnimateFunc;
 };
@@ -79,7 +79,7 @@ protected:
 class ScriptEventHandler : public pdg::RefCountedImpl< pdg::IEventHandler > {
 public:
 	ScriptEventHandler();
-	ScriptEventHandler(SAVED_FUNCTION javascriptHandlerFunc);
+	ScriptEventHandler(FUNCTION_REF javascriptHandlerFunc);
     bool handleEvent(EventEmitter* emitter, long inEventType, void* inEventData) throw();
 protected:
 	SAVED_FUNCTION mScriptHandlerFunc;
@@ -89,10 +89,10 @@ class ScriptSerializable : public pdg::ISerializable {
 public:
 	ScriptSerializable();
 	ScriptSerializable(
-		SAVED_FUNCTION javascriptGetSerializedSizeFunc,
-		SAVED_FUNCTION javascriptSerializeFunc,
-		SAVED_FUNCTION javascriptDeserializeFunc,
-		SAVED_FUNCTION javascriptGetMyClassTagFunc
+		FUNCTION_REF javascriptGetSerializedSizeFunc,
+		FUNCTION_REF javascriptSerializeFunc,
+		FUNCTION_REF javascriptDeserializeFunc,
+		FUNCTION_REF javascriptGetMyClassTagFunc
 	);
 	virtual uint32 	getSerializedSize(ISerializer* serializer) const;
  	virtual void 	serialize(ISerializer* serializer) const;
@@ -108,7 +108,7 @@ protected:
 class ScriptSpriteCollideHelper : public pdg::ISpriteCollideHelper {
 public:
 	ScriptSpriteCollideHelper();
-	ScriptSpriteCollideHelper(SAVED_FUNCTION javascriptDrawFunc);
+	ScriptSpriteCollideHelper(FUNCTION_REF javascriptDrawFunc);
     bool allowCollision(Sprite* sprite, Sprite* withSprite) throw();
 protected:
 	SAVED_FUNCTION mScriptAllowCollisionFunc;
@@ -119,7 +119,7 @@ protected:
 class ScriptSpriteDrawHelper : public pdg::ISpriteDrawHelper {
 public:
 	ScriptSpriteDrawHelper();
-	ScriptSpriteDrawHelper(SAVED_FUNCTION javascriptDrawFunc);
+	ScriptSpriteDrawHelper(FUNCTION_REF javascriptDrawFunc);
     bool draw(Sprite* sprite, Port* port) throw();
 protected:
 	SAVED_FUNCTION mScriptDrawFunc;
@@ -131,10 +131,10 @@ protected:
 //MARK: Easing Functions
 // ========================================================================================
 
-float CallScriptEasingFunc(int which, uint32 ut, float b, float c, uint32 ud);
+float CallScriptEasingFunc(int which, ms_delta ut, float b, float c, ms_delta ud);
 
 #define DECL_CUSTOM_EASING(n) \
-  extern float customEasing##n(uint32 ut, float b, float c, uint32 ud);
+  extern float customEasing##n(ms_delta ut, float b, float c, ms_delta ud);
 
 DECL_CUSTOM_EASING(0)
 DECL_CUSTOM_EASING(1)

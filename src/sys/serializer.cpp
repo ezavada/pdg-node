@@ -129,7 +129,7 @@ Serializer::serialize_bool(bool val) {
 	}
 	// if we actually serialized a boolean, reset the size count
 	// to where we actually are, so interspersed calls to 
-	// getSerializedSize(bool) and serialize_bool() will work
+	// sizeof_bool(bool) and serialize_bool() will work
 	mBoolSizeCount = mBoolBitOffset;
 }
 
@@ -156,9 +156,9 @@ void
 Serializer::serialize_mem(const void* mem, uint32 memLen) {
 	ensureSpace(memLen + 8);
 	SERIALIZE_START;
-#ifdef SERIALIZER_SANITY_CHECKS
-	serialize_3u(tag_mem);
-#endif
+    if (mUsingTags) {
+    	serialize_3u(tag_mem);
+    }
 	if (mem == 0) memLen = 0;
 	serialize_uint(memLen);
 	if (memLen > 0) {
@@ -170,13 +170,13 @@ Serializer::serialize_mem(const void* mem, uint32 memLen) {
 
 void   
 Serializer::serialize_str(const char* str) { 
-	uint32 len = std::strlen(str);
+	size_t len = std::strlen(str);
 	ensureSpace(len + 8);
 	SERIALIZE_START;
-#ifdef SERIALIZER_SANITY_CHECKS
-	serialize_3u(tag_string);
-#endif
-	serialize_uint(len);
+    if (mUsingTags) {
+    	serialize_3u(tag_string);
+    }
+	serialize_uint((uint32)len);
 	if (len > 0) {
 		ensureSpace(len);
 		std::memcpy(p, str, len);
@@ -209,12 +209,12 @@ Serializer::serialize_obj(const ISerializable* obj) {
 	serialize_3u(tag_object);
 	uint32 tag = obj->getMyClassTag();
 	serialize_4(tag);
-	SERIALIZED("obj ", 0);   // stop here so we can see the object being serialized
-#ifdef SERIALIZER_SANITY_CHECKS
-	serialize_2(mSerializedInstances.size());
-#endif
+    if (mUsingTags) {
+    	serialize_2(mSerializedInstances.size());
+    }
 	uint32 objLen = obj->getSerializedSize(this);
 	serialize_uint(objLen);
+	SERIALIZED("obj ", 0);   // stop here so we can see the object being serialized
 	obj->serialize(this);
 	mSerializeObjDepth--;
 }
@@ -289,19 +289,39 @@ Serializer::serialize_quad(const Quad& q) {
 	SERIALIZED("quad", 0);
 }
 
+void   
+Serializer::serialize_ptr(const void* ptr) {
+	SERIALIZE_START;
+    uint32 uniqueId = 0;
+    for(ObjectRegistryT::iterator i = gObjectRegistry.begin(); i != gObjectRegistry.end(); i++) {
+        if (i->second == ptr) {
+            uniqueId = i->first;
+            break;
+        }
+    }
+    if (!uniqueId) {
+        throw unknown_object("");
+    }
+    if (mUsingTags) {
+    	serialize_3u(tag_pointerRef);
+    }
+	serialize_uint(uniqueId);
+	SERIALIZED("ptr ", 0);
+}
+
 uint32
-Serializer::serializedSize(const void* mem, uint32 memLen) const {
-	uint32 lenOfLen = serializedSize(memLen);
-#ifdef SERIALIZER_SANITY_CHECKS
-	lenOfLen += 3;
-#endif
+Serializer::sizeof_mem(const void* mem, uint32 memLen) const {
+	uint32 lenOfLen = sizeof_uint(memLen);
+    if (mUsingTags) {
+    	lenOfLen += 3;
+    }
 	if (mem == 0) memLen = 0;
 	return lenOfLen + memLen;
 }
 
 //! How many bytes are used to serialize a particular boolean value
 uint32 
-Serializer::serializedSize(bool val) const {
+Serializer::sizeof_bool(bool val) const {
 	uint32 result = (mBoolSizeCount == 0) ? 1 : 0;
 	mBoolSizeCount++;
 	if (mBoolSizeCount > 7) {
@@ -312,7 +332,7 @@ Serializer::serializedSize(bool val) const {
 
 // how many bytes are used to serialize this particular length value
 uint32 
-Serializer::serializedSize(uint32 num) const {
+Serializer::sizeof_uint(uint32 num) const {
 	if (num < tag_smallestLenTag) {
 		return 1;
 	} else if (num <= USHRT_MAX) {
@@ -324,18 +344,18 @@ Serializer::serializedSize(uint32 num) const {
 
 //! How many bytes are used to serialize a particular pdg::Color value
 uint32 
-Serializer::serializedSize(const Color& c) const {
+Serializer::sizeof_color(const Color& c) const {
 	uint8 v = c.alpha * 255.f;
 	bool hasAlpha = (v != 255);
-	uint32 result = hasAlpha ? serializedSize(hasAlpha) + 4 : 3;
+	uint32 result = hasAlpha ? sizeof_bool(hasAlpha) + 4 : 3;
 	return result;
 }
 
 //! How many bytes are used to serialize a particular pdg::Offset, Point or Vector value
 uint32 
-Serializer::serializedSize(const Offset& o) const {
+Serializer::sizeof_offset(const Offset& o) const {
 	bool nonZero = ((o.x != 0.0f) || (o.y != 0.0f));
-	uint32 result = serializedSize(nonZero);
+	uint32 result = sizeof_bool(nonZero);
 	if (nonZero) {
 		double ix;
 		double fx = modf(o.x, &ix);
@@ -343,15 +363,15 @@ Serializer::serializedSize(const Offset& o) const {
 		double fy = modf(o.y, &iy);
 		bool xIsInt = ( (ix >= 0.0f) && (ix <= 65535.0f) && ((int)(fabs(fx)*1000.0f) == 0) );
 		bool yIsInt = ( (iy >= 0.0f) && (iy <= 65535.0f) && ((int)(fabs(fy)*1000.0f) == 0) );
-		result += serializedSize(xIsInt);
-		result += serializedSize(yIsInt);	
+		result += sizeof_bool(xIsInt);
+		result += sizeof_bool(yIsInt);	
 		if (xIsInt) {
-			result += serializedSize((uint32)ix);
+			result += sizeof_uint(ix);
 		} else {
 			result += 4;
 		}
 		if (yIsInt) {
-			result += serializedSize((uint32)iy);
+			result += sizeof_uint(iy);
 		} else {
 			result += 4;
 		}
@@ -361,43 +381,43 @@ Serializer::serializedSize(const Offset& o) const {
 
 //! How many bytes are used to serialize a particular pdg::Rect or RotatedRect value
 uint32 
-Serializer::serializedSize(const Rect& r) const {
-	uint32 result = serializedSize(r.leftTop());
-	result += serializedSize(Offset(r.width(), r.height()));
+Serializer::sizeof_rect(const Rect& r) const {
+	uint32 result = sizeof_point(r.leftTop());
+	result += sizeof_offset(Offset(r.width(), r.height()));
 	return result;
 }
 
 //! How many bytes are used to serialize a particular pdg::Rect or RotatedRect value
 uint32 
-Serializer::serializedSize(const RotatedRect& rr) const {
-	uint32 result = serializedSize((const Rect&)rr);
-	result += serializedSize(rr.centerOffset) + 4;
+Serializer::sizeof_rotr(const RotatedRect& rr) const {
+	uint32 result = sizeof_rect(rr);
+	result += sizeof_offset(rr.centerOffset) + 4;
 	return result;
 }
 
 //! How many bytes are used to serialize a particular pdg::Quad value
 uint32 
-Serializer::serializedSize(const Quad& q) const {
-	uint32 result = serializedSize(q.points[0]);
-	result += serializedSize(q.points[1]);
-	result += serializedSize(q.points[2]);
-	result += serializedSize(q.points[3]);
+Serializer::sizeof_quad(const Quad& q) const {
+	uint32 result = sizeof_point(q.points[0]);
+	result += sizeof_point(q.points[1]);
+	result += sizeof_point(q.points[2]);
+	result += sizeof_point(q.points[3]);
 	return result;
 }
 
 
 uint32 
-Serializer::serializedSize(const char* str) const { 
-	uint32 strLen = std::strlen(str); 
-	uint32 lenOfLen = serializedSize(strLen);
-#ifdef SERIALIZER_SANITY_CHECKS
-	lenOfLen += 3;
-#endif
-	return lenOfLen + strLen;
+Serializer::sizeof_str(const char* str) const { 
+	size_t strLen = std::strlen(str);
+	size_t lenOfLen = sizeof_uint((uint32)strLen);
+    if (mUsingTags) {
+    	lenOfLen += 3;
+    }
+	return (uint32)(lenOfLen + strLen);
 }
 
 uint32
-Serializer::serializedSize(const ISerializable* obj) {
+Serializer::sizeof_obj(const ISerializable* obj) {
 	if (obj == 0) {
 		return 3;
 	}
@@ -407,7 +427,7 @@ Serializer::serializedSize(const ISerializable* obj) {
 		// just stored as references
 		for (uint16 i = 0; i < mSerializedSizeInstances.size(); i++) {
 			if (mSerializedSizeInstances[i] == obj) {
-				return serializedSize((uint32)i) + 3;
+				return sizeof_uint(i) + 3;
 			}
 		}
 		// wasn't previously serialized, calculate full serialized size
@@ -420,29 +440,60 @@ Serializer::serializedSize(const ISerializable* obj) {
 		// see if the object has already been serialized
 		for (uint16 i = 0; i < mSerializedInstances.size(); i++) {
 			if (mSerializedInstances[i] == obj) {
-				return serializedSize((uint32)i) + 3;
+				return sizeof_uint(i) + 3;
 			}
 		}
 	}
 	uint32 objLen = obj->getSerializedSize(this);
 	uint32 len = 3 + 4;
-#ifdef SERIALIZER_SANITY_CHECKS
-	len += 2;
-#endif
-	len += serializedSize(objLen);
+    if (mUsingTags) {
+    	len += 2;
+    }
+	len += sizeof_uint(objLen);
 	len += objLen;
     return len;
 }
 
-void  Serializer::ensureSpace(uint32 bytes) {
-	uint32 currSize = getDataSize();
-	uint32 blocksNeeded = ((currSize + bytes) / mBlockSize) + 1;
-	uint32 blocksAllocated = mAllocatedSize / mBlockSize;
+
+//! How many bytes are used to serialize a particular Object Reference value
+uint32 
+Serializer::sizeof_ptr(const void* ptr) const {
+    uint32 uniqueId = 0;
+    for(ObjectRegistryT::iterator i = gObjectRegistry.begin(); i != gObjectRegistry.end(); i++) {
+        if (i->second == ptr) {
+            uniqueId = i->first;
+            break;
+        }
+    }
+    if (!uniqueId) {
+        throw unknown_object("");
+    }
+    uint32 result = 0;
+    if (mUsingTags) {
+    	result += 3;
+    }
+	result += sizeof_uint(uniqueId);
+	return result;
+}
+
+
+void  Serializer::ensureSpace(size_t bytes) {
+	size_t currSize = getDataSize();
+	size_t blocksNeeded = ((currSize + bytes) / mBlockSize) + 1;
+	size_t blocksAllocated = mAllocatedSize / mBlockSize;
 	if (blocksNeeded > blocksAllocated) {
+	    bool firstAlloc = (mAllocatedSize == 0);
 		mAllocatedSize = blocksNeeded * mBlockSize;
-		uint32 offset = p - mDataPtr;
+		size_t offset = p - mDataPtr;
 		mDataPtr = (uint8*)std::realloc(mDataPtr, mAllocatedSize);
 		p = mDataPtr + offset;
+		mDataEnd = mDataPtr + mAllocatedSize;
+        // clear the new buffer for easier debugging
+        memset(p, 0, mDataEnd - p);
+		if (firstAlloc && mSendTags) {  // checks what we gave in setSendTags()
+            mUsingTags = true;  // prevents changes via setSendTags() during life of stream
+            serialize_3u(tag_pdgTaggedStream);  // save a tag that shows we are using tags
+		}
 	}
 }
 
@@ -452,6 +503,7 @@ void  Serializer::ensureSpace(uint32 bytes) {
 
 Serializer::Serializer()
  :  mDataPtr(0),
+    mDataEnd(0),
 	p(0),
 	mAllocatedSize(0),
 	mBlockSize(SERIALIZER_MALLOC_BLOCK_SIZE),
@@ -481,12 +533,12 @@ Serializer::~Serializer() {
 char* Serializer::statusDump(int hiliteBytes) {
 	static char buf[1024];
 	char* targBuf = buf + 22;
-	uint32 blockNum = (mMark - mDataPtr)/16;
-	uint32 blockStart = 16 * blockNum;
-	uint32 blockLen = 20;
-	if ((blockStart + blockLen) > mAllocatedSize) blockLen = mAllocatedSize - blockStart;
-	long hiliteStart = (mMark - mDataPtr) - blockStart;
-	std::sprintf(buf, "@%05lu/%05lu:  %04lX | ", p - mDataPtr, mAllocatedSize, blockStart);
+	size_t blockNum = (mMark - mDataPtr)/16;
+	size_t blockStart = 16 * blockNum;
+	int blockLen = 20;
+	if ((blockStart + blockLen) > mAllocatedSize) blockLen = (int)(mAllocatedSize - blockStart);
+	int hiliteStart = (int)((mMark - mDataPtr) - blockStart);
+	std::sprintf(buf, "@%05lu/%05lu:  %04lX | ", (unsigned long)(p - mDataPtr), (unsigned long)(mAllocatedSize), (unsigned long)(blockStart));
 	OS::binaryDump(targBuf, 1000, (char*)(mDataPtr + blockStart), blockLen, 20, hiliteStart, hiliteBytes);
 	return buf;
 }
@@ -499,7 +551,7 @@ void Serializer::startMark() {
 }
 
 int Serializer::bytesFromMark() { 
-	return (mMark && p) ? (p - mMark) : 0;
+	return (mMark && p) ? (int)(p - mMark) : 0;
 }
 
 } // end namespace pdg

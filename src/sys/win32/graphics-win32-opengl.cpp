@@ -175,7 +175,7 @@ void graphics_drawText(PortImpl& portimpl, const char* text, int len, const Quad
 
 		textInfo->tx = (float)textInfo->width/(float)glBufferWidth;
 		textInfo->ty = (float)textInfo->charHeight/(float)glBufferHeight;
-		if (style & Graphics::textStyle_Italic ) {
+		if (style & textStyle_Italic ) {
 			textInfo->tx_topoffset = -(font->getFontHeight(size, style) / (PDG_ITALICS_FACTOR * (float)glBufferWidth));
 		} else {
 			textInfo->tx_topoffset = 0;
@@ -331,13 +331,13 @@ PortImplWin::createWindowsFont(const char* inFontName, int size, uint32 style) {
    #endif   // can't use antialiasing if we aren't using GDI to draw directly into the back buffer
 
     // add styles as appropriate
-    if (style & Graphics::textStyle_Bold) {
+    if (style & textStyle_Bold) {
 	   pLF->lfWeight = FW_BOLD;
     }
-    if (style & Graphics::textStyle_Italic) {
+    if (style & textStyle_Italic) {
        pLF->lfItalic=1;
     }
-    if (style & Graphics::textStyle_Underline) {
+    if (style & textStyle_Underline) {
        pLF->lfUnderline=1;
     }
     WinAPI::HFONT font = WinAPI::CreateFontIndirectA(pLF); // NO UNICODE ON WIN98

@@ -1,4 +1,4 @@
-.TH "Rect" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.TH "Rect" 3 "Mon Oct 26 2015" "Version v0.9.5" "Pixel Dust Game Engine" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,6 +14,21 @@ Inherited by \fBRotatedRect\fP\&.
 .SS "Public Member Functions"
 
 .in +1c
+.ti -1c
+.RI "\fBRect\fP ()"
+.br
+.ti -1c
+.RI "\fBRect\fP (number w, number h)"
+.br
+.ti -1c
+.RI "\fBRect\fP (\fBPoint\fP topLeft, number w, number h)"
+.br
+.ti -1c
+.RI "\fBRect\fP (\fBPoint\fP \fBleftTop\fP, \fBPoint\fP \fBrightBottom\fP)"
+.br
+.ti -1c
+.RI "\fBRect\fP (number \fBleft\fP, number \fBtop\fP, number \fBright\fP, number \fBbottom\fP)"
+.br
 .ti -1c
 .RI "\fBRect\fP \fBadd\fP (\fBRect\fP r2)"
 .br
@@ -168,9 +183,6 @@ Inherited by \fBRotatedRect\fP\&.
 .RI "\fBQuad\fP \fBtoQuad\fP ()"
 .br
 .ti -1c
-.RI "string \fBtoString\fP ()"
-.br
-.ti -1c
 .RI "\fBRect\fP \fBunionWith\fP (\fBRect\fP r)"
 .br
 .ti -1c
@@ -205,9 +217,6 @@ Inherited by \fBRotatedRect\fP\&.
 .RI "number \fBbottom\fP"
 .br
 .ti -1c
-.RI "\fBRect\fP \fBException\fP: Cannot read property '\fBtop\fP' of null'"
-.br
-.ti -1c
 .RI "number \fBleft\fP"
 .br
 .ti -1c
@@ -222,6 +231,18 @@ Inherited by \fBRotatedRect\fP\&.
 Rectangle for 2D coordinate system\&. 
 
 \fBRect\fP is a class that provides support for dealing with rectangles in 2 dimensional space\&. The PDG coordinate space starts with the top left corner of the drawing port at Point(0,0) and the bottom left corner at Point( width, height ); 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "\fBRect\fP ()"
+
+.SS "\fBRect\fP (numberw, numberh)"
+
+.SS "\fBRect\fP (\fBPoint\fPtopLeft, numberw, numberh)"
+
+.SS "\fBRect\fP (\fBPoint\fPleftTop, \fBPoint\fPrightBottom)"
+
+.SS "\fBRect\fP (numberleft, numbertop, numberright, numberbottom)"
+
 .SH "Member Function Documentation"
 .PP 
 .SS "\fBRect\fP add (\fBRect\fPr2)"
@@ -326,8 +347,6 @@ Rectangle for 2D coordinate system\&.
 
 .SS "\fBQuad\fP toQuad ()"
 
-.SS "string toString ()"
-
 .SS "\fBRect\fP unionWith (\fBRect\fPr)"
 
 .SS "vertGrow (numberdelta)"
@@ -349,8 +368,6 @@ Rectangle for 2D coordinate system\&.
 .SH "Member Data Documentation"
 .PP 
 .SS "number bottom"
-
-.SS "\fBRect\fP Exception"
 
 .SS "number left"
 

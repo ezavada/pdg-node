@@ -159,16 +159,16 @@ namespace pdg {
 		// --------------------------------------------
 
 		//! How many bytes are used to serialize a particular boolean value
-		virtual uint32 serializedSize(bool val) const;
+		virtual uint32 sizeof_bool(bool val) const;
 
 		//! How many bytes are used to serialize a particular unsigned integer value
-		virtual uint32 serializedSize(uint32 num) const;
+		virtual uint32 sizeof_uint(uint32 num) const;
 
 		//! How many bytes are used to serialize a particular string
-		virtual uint32 serializedSize(const char* str) const;
+		virtual uint32 sizeof_str(const char* str) const;
 
 		//! How many bytes are used to serialize a particular block of memory
-		virtual uint32 serializedSize(const void* mem, uint32 memLen) const;
+		virtual uint32 sizeof_mem(const void* mem, uint32 memLen) const;
 
 		//! How many bytes are used to serialize a particular object, including tags and size data
 		/*! Since objects are only serialized once, it is critical that you call this on objects the same order that
@@ -177,29 +177,29 @@ namespace pdg {
 		    the number of bytes used to store a reference to the object, usually a much smaller number
 			A NULL object pointer will always take a constant number of bytes needed for the null object tag
 		 */
-		virtual uint32 serializedSize(const ISerializable* obj);  // non const method
+		virtual uint32 sizeof_obj(const ISerializable* obj);  // non const method
 
 		//! How many bytes are used to serialize a particular pdg::Color value
-		virtual uint32 serializedSize(const Color& c) const;
+		virtual uint32 sizeof_color(const Color& c) const;
 
 		//! How many bytes are used to serialize a particular pdg::Offset, Point or Vector value
-		virtual uint32 serializedSize(const Offset& o) const;
+		virtual uint32 sizeof_offset(const Offset& o) const;
 
 		//! How many bytes are used to serialize a particular pdg::Rect value
-		virtual uint32 serializedSize(const Rect& r) const;
+		virtual uint32 sizeof_rect(const Rect& r) const;
 
 		//! How many bytes are used to serialize a particular pdg::RotatedRect value
-		virtual uint32 serializedSize(const RotatedRect& rr) const;
+		virtual uint32 sizeof_rotr(const RotatedRect& rr) const;
 
 		//! How many bytes are used to serialize a particular pdg::Quad value
-		virtual uint32 serializedSize(const Quad& q) const;
+		virtual uint32 sizeof_quad(const Quad& q) const;
 
 		// --------------------------------------------
 		// data methods
 		// --------------------------------------------
 		
 		uint8* getDataPtr() { return mDataPtr; }
-		uint32 getDataSize() { return (mDataPtr) ? p - mDataPtr : 0; }
+		size_t getDataSize() { return (mDataPtr) ? p - mDataPtr : 0; }
 		
 		// --------------------------------------------
 		// constructors
@@ -217,14 +217,17 @@ namespace pdg {
 		virtual char* statusDump(int hiliteBytes = 0);
 		virtual void startMark();
 		virtual int bytesFromMark();
+		virtual void serialize_ptr(const void* ptr);
+		virtual uint32 sizeof_ptr(const void* ptr) const;
 
 		// Make sure there is space to write 
-		virtual void  ensureSpace(uint32 bytes);
+		virtual void  ensureSpace(size_t bytes);
 		
 		uint8* mDataPtr;
+		uint8* mDataEnd;
 		uint8* p;   // current position in pointer
-		uint32 mAllocatedSize;
-		uint32 mBlockSize;
+		size_t mAllocatedSize;
+		size_t mBlockSize;
 		
 		// used to track objects that have been streamed
 		std::vector<const ISerializable*> mSerializedInstances;
@@ -235,6 +238,7 @@ namespace pdg {
 		uint8* mLastBoolPtr;
 		int mBoolBitOffset;
 		mutable int mBoolSizeCount;
+		bool mUsingTags;
 	};
 
 		

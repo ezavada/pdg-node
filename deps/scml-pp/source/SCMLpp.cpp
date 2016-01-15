@@ -2504,7 +2504,7 @@ Entity::Entity(SCML::Data* data, const char* entityName, int animation, int key)
     load(data);
     SCML_BEGIN_MAP_FOREACH_CONST(data->entities, int, SCML::Data::Entity*, entity_ptr)
     {
-    	if (std::strcmp( entity_ptr->name.c_str(), entityName ) == 0) 
+    	if (std::strcmp( entity_ptr->name.c_str(), entityName ) == 0)
     	{
     		entity = entity_ptr->id;
     		break;
@@ -2532,6 +2532,19 @@ void Entity::load(SCML::Data* data)
     SCML_BEGIN_MAP_FOREACH_CONST(entity_ptr->animations, int, SCML::Data::Entity::Animation*, item)
     {
         SCML_MAP_INSERT_ONLY(animations, item->id, new Animation(item));
+    }
+    SCML_END_MAP_FOREACH_CONST;
+
+    // Need to keep track of initial pivots
+    SCML_BEGIN_MAP_FOREACH_CONST(data->folders, int, SCML::Data::Folder*, iFolder)
+    {
+        SCML_BEGIN_MAP_FOREACH_CONST(iFolder->files, int, SCML::Data::Folder::File*, iFile)
+        {
+            FolderFile_t folderFile = FolderFile_t(iFolder->id, iFile->id);
+            Pivot_t pivot = Pivot_t(iFile->pivot_x, iFile->pivot_y);
+            SCML_MAP_INSERT_ONLY(m_pivots, folderFile, pivot);
+        }
+        SCML_END_MAP_FOREACH_CONST;
     }
     SCML_END_MAP_FOREACH_CONST;
 }
@@ -2563,7 +2576,7 @@ void Entity::startAnimation(const char* animationName)
     SCML::Entity::Animation* animation_ptr = getAnimation(animationName);
 	if (animation_ptr == NULL) {
 		this->animation = -1;
-	} else {	
+	} else {
     	this->animation = animation_ptr->id;
     }
     key = 0;
@@ -2585,8 +2598,8 @@ void Entity::update(int dt_ms)
     if(animation_ptr->looping == "true")
     {
         time %= animation_ptr->length;
-    } 
-    else 
+    }
+    else
     {
         if(time > animation_ptr->length)
             time = animation_ptr->length;
@@ -2656,6 +2669,10 @@ void Entity::draw(float x, float y, float angle, float scale_x, float scale_y)
     SCML_END_MAP_FOREACH_CONST;
 }
 
+Entity::Pivot_t Entity::getImagePivots(int folder, int file) const
+{
+    return SCML_MAP_FIND(m_pivots, SCML_PAIR(int, int)(folder, file));
+}
 
 void Entity::draw_simple_object(Animation::Mainline::Key::Object* obj1)
 {
@@ -2681,11 +2698,16 @@ void Entity::draw_simple_object(Animation::Mainline::Key::Object* obj1)
     float pivot_y_ratio = obj1->pivot_y;
     
     // No image tweening
-    std::pair<unsigned int, unsigned int> img_dims = getImageDimensions(obj1->folder, obj1->file);
+    SCML_PAIR(float, float) img_pivot = getImagePivots(obj1->folder, obj1->file);
+    SCML_PAIR(unsigned int, unsigned int) img_dims = getImageDimensions(obj1->folder, obj1->file);
+
+    // The origin
+    float origin_x = SCML_PAIR_FIRST(img_pivot) * img_dims.first;
+    float origin_y = (SCML_PAIR_SECOND(img_pivot) - 1.f) * img_dims.second;
     
     // Rotate about the pivot point and draw from the center of the image
-    float offset_x = (pivot_x_ratio - 0.5f)*SCML_PAIR_FIRST(img_dims);
-    float offset_y = (pivot_y_ratio - 0.5f)*SCML_PAIR_SECOND(img_dims);
+    float offset_x = origin_x + (pivot_x_ratio - 0.5f)*SCML_PAIR_FIRST(img_dims);
+    float offset_y = origin_y + (pivot_y_ratio - 0.5f)*SCML_PAIR_SECOND(img_dims);
     float sprite_x = -offset_x*obj_transform.scale_x;
     float sprite_y = -offset_y*obj_transform.scale_y;
     
@@ -2746,67 +2768,67 @@ void Entity::draw_tweened_object(Animation::Mainline::Key::Object_Ref* ref)
         float pivot_y_ratio = lerp(obj1->pivot_y, obj2->pivot_y, t);
         
         // No image tweening
-        std::pair<unsigned int, unsigned int> img_dims = getImageDimensions(obj1->folder, obj1->file);
+        SCML_PAIR(float, float) img_pivot = getImagePivots(obj1->folder, obj1->file);
+        SCML_PAIR(unsigned int, unsigned int) img_dims = getImageDimensions(obj1->folder, obj1->file);
         
-        if (img_dims.first == 0 && img_dims.second == 0) return;
+        // The origin
+        float origin_x = SCML_PAIR_FIRST(img_pivot) * img_dims.first;
+        float origin_y = (SCML_PAIR_SECOND(img_pivot) - 1.f) * img_dims.second;
 
         // Rotate about the pivot point and draw from the center of the image
-        float offset_x = (pivot_x_ratio - 0.5f)*SCML_PAIR_FIRST(img_dims);
-        float offset_y = (pivot_y_ratio - 0.5f)*SCML_PAIR_SECOND(img_dims);
-//        float offset_x = (0.5f - pivot_x_ratio)*SCML_PAIR_FIRST(img_dims);
-//        float offset_y = (0.5f - pivot_y_ratio)*SCML_PAIR_SECOND(img_dims);
+        float offset_x = origin_x + (pivot_x_ratio - 0.5f)*SCML_PAIR_FIRST(img_dims);
+        float offset_y = origin_y + (pivot_y_ratio - 0.5f)*SCML_PAIR_SECOND(img_dims);
         float sprite_x = -offset_x*obj_transform.scale_x;
         float sprite_y = -offset_y*obj_transform.scale_y;
         
         bool flipped = ((obj_transform.scale_x < 0) != (obj_transform.scale_y < 0));
         
-  #ifndef PDG_NO_GUI
-        pdg::Port* port = pdg::GraphicsManager::instance().getMainPort();
-        pdg::Point from, to;
-        from.x = (sprite_x - 5 + obj_transform.x - 150);
-        from.y = -(sprite_y + obj_transform.y);
-        to.x = (sprite_x + 5 + obj_transform.x - 150);
-        to.y = -(sprite_y + obj_transform.y);
-        port->drawLine(from, to, PDG_RED_COLOR);
-        from.x = (sprite_x + obj_transform.x - 150);
-        from.y = -(sprite_y - 5 + obj_transform.y);
-        to.x = (sprite_x + obj_transform.x - 150);
-        to.y = -(sprite_y + 5 + obj_transform.y);
-        port->drawLine(from, to, PDG_RED_COLOR);
-        
-        pdg::Rect r(img_dims.first, img_dims.second);
-// 		r.horzScale(scale_x);
-// 		r.vertScale(scale_y);
-        to.x = (sprite_x + obj_transform.x - 150);
-        to.y = -(sprite_y + obj_transform.y);
-		r.center(to);
-		pdg::RotatedRect rr(r, (M_PI/180.0f) * -obj_transform.angle);
-		port->frameRect(rr, pdg::Color(1.0f, 0.0f, 0.0f, 0.5f));
-  #endif // PDG_NO_GUI
+//   #ifndef PDG_NO_GUI
+//         pdg::Port* port = pdg::GraphicsManager::instance().getMainPort();
+//         pdg::Point from, to;
+//         from.x = (sprite_x - 5 + obj_transform.x - 150);
+//         from.y = -(sprite_y + obj_transform.y);
+//         to.x = (sprite_x + 5 + obj_transform.x - 150);
+//         to.y = -(sprite_y + obj_transform.y);
+//         port->drawLine(from, to, PDG_RED_COLOR);
+//         from.x = (sprite_x + obj_transform.x - 150);
+//         from.y = -(sprite_y - 5 + obj_transform.y);
+//         to.x = (sprite_x + obj_transform.x - 150);
+//         to.y = -(sprite_y + 5 + obj_transform.y);
+//         port->drawLine(from, to, PDG_RED_COLOR);
+//         
+//         pdg::Rect r(img_dims.first, img_dims.second);
+// // 		r.horzScale(scale_x);
+// // 		r.vertScale(scale_y);
+//         to.x = (sprite_x + obj_transform.x - 150);
+//         to.y = -(sprite_y + obj_transform.y);
+// 		r.center(to);
+// 		pdg::RotatedRect rr(r, (M_PI/180.0f) * -obj_transform.angle);
+// 		port->frameRect(rr, pdg::Color(1.0f, 0.0f, 0.0f, 0.5f));
+//   #endif // PDG_NO_GUI
 
         rotate_point(sprite_x, sprite_y, obj_transform.angle, obj_transform.x, obj_transform.y, flipped);
-//        rotate_point(sprite_x, sprite_y, 0, obj_transform.x, obj_transform.y, flipped);
         
-  #ifndef PDG_NO_GUI
-        from.x = (sprite_x - 5);
-        from.y = -(sprite_y);
-        to.x = (sprite_x + 5);
-        to.y = -(sprite_y);
-        port->drawLine(from, to, pdg::Color(0.0f, 0.0f, 1.0f, 0.5f));
-        from.x = (sprite_x);
-        from.y = -(sprite_y - 5);
-        to.x = (sprite_x);
-        to.y = -(sprite_y + 5);
-        port->drawLine(from, to, pdg::Color(0.0f, 0.0f, 1.0f, 0.5f));
-        to.x = (sprite_x);
-        to.y = -(sprite_y);
-		r.center(to);
-		rr = pdg::RotatedRect(r, (M_PI/180.0f) * -obj_transform.angle);
-		port->frameRect(rr, pdg::Color(0.0f, 0.0f, 1.0f, 0.5f));
-  #endif // PDG_NO_GUI
+//   #ifndef PDG_NO_GUI
+//         from.x = (sprite_x - 5);
+//         from.y = -(sprite_y);
+//         to.x = (sprite_x + 5);
+//         to.y = -(sprite_y);
+//         port->drawLine(from, to, pdg::Color(0.0f, 0.0f, 1.0f, 0.5f));
+//         from.x = (sprite_x);
+//         from.y = -(sprite_y - 5);
+//         to.x = (sprite_x);
+//         to.y = -(sprite_y + 5);
+//         port->drawLine(from, to, pdg::Color(0.0f, 0.0f, 1.0f, 0.5f));
+//         to.x = (sprite_x);
+//         to.y = -(sprite_y);
+// 		r.center(to);
+// 		rr = pdg::RotatedRect(r, (M_PI/180.0f) * -obj_transform.angle);
+// 		port->frameRect(rr, pdg::Color(0.0f, 0.0f, 1.0f, 0.5f));
+//   #endif // PDG_NO_GUI
 
         // Let the renderer draw it
-        draw_internal(obj1->folder, obj1->file, sprite_x + 120, sprite_y, obj_transform.angle, obj_transform.scale_x, obj_transform.scale_y);
+        draw_internal(obj1->folder, obj1->file, sprite_x, sprite_y, obj_transform.angle, obj_transform.scale_x, obj_transform.scale_y);
     }
 }
 
@@ -2873,10 +2895,10 @@ Entity::Bone_Transform_State::Bone_Transform_State()
 
 bool Entity::Bone_Transform_State::should_rebuild(int entity, int animation, int key, int time, const Transform& base_transform)
 {
-    return (entity != this->entity || 
-            animation != this->animation || 
-            key != this->key || 
-            time != this->time || 
+    return (entity != this->entity ||
+            animation != this->animation ||
+            key != this->key ||
+            time != this->time ||
             this->base_transform != base_transform);
 }
 
@@ -3231,7 +3253,7 @@ Entity::Animation* Entity::getAnimation(const char* animationName) const
 {
     SCML_BEGIN_MAP_FOREACH_CONST(animations, int, Entity::Animation*, anim_ptr)
     {
-    	if (std::strcmp( anim_ptr->name.c_str(), animationName ) == 0) 
+    	if (std::strcmp( anim_ptr->name.c_str(), animationName ) == 0)
     	{
     		return anim_ptr;
     	}

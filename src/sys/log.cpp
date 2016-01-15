@@ -138,9 +138,9 @@ LogManagerImpl::writeLogEntry(int8 level, const char* category, const char* mess
         	if (level > log::trace) {
         	    level = log::trace;
         	}
-            unsigned long mstime = OS::getMilliseconds();
+            ms_time msTime = OS::getMilliseconds();
         	char msStr[40];
-        	std::snprintf(msStr, 40, "%.10lu\t", mstime);
+        	std::snprintf(msStr, 40, "%.10lu\t", msTime);
             MAKE_STRING_BUFFER_SAFE(msStr, 40);
         	// following section is mutexed so we don't have multiple threads
         	// attempting to alter the file at once

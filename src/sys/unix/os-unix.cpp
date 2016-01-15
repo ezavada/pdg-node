@@ -41,6 +41,7 @@
 #include <iostream>
 #include <cstdarg>
 
+#include <unistd.h>
 #include <assert.h>
 #include <dirent.h>
 #include <string.h>
@@ -99,22 +100,31 @@ std::string os_makeCanonicalPath(const char* fromPath, bool resolveSimLinks) {
 				// found a slash, see what follows it
 				if (p[1] == '/') {
 					// another slash, remove
-					std::strcpy(p, &p[1]);
+					char* q = p;
+					while(q[1]) {
+					    q[0] = q[1];
+					    q++;
+					}
+					*q = 0;
 				} else if (std::strncmp(p, "/./", 3) == 0) {
 					// an empty segment, remove
-					std::strcpy(p, &p[2]);
+					char* q = p;
+					while(q[2]) {
+					    q[0] = q[2];
+					    q++;
+					}
+					*q = 0;
 				} else if (std::strncmp(p, "/../", 4) == 0) {
 					// a backtrack, remove along with the prior directory segment
-					std::strcpy(lastSlash, &p[3]);
-					// now search backwards for prev segment
-					p = lastSlash;
-					while (p > workingBuf) {
-						p--;
-						if (*p == '/') {
-							lastSlash = p;
-							break;
-						}
+					char* q = p+3;  // skip over the backtrack section
+					p = lastSlash+1; // go back to the start of the prior segment
+					while(q[1]) {   // copy everything from after the backtrack
+					    *p++ = q[1];  // into the prior segment
+					    q++;
 					}
+					*p = 0;
+					p = lastSlash+1;
+					// now search backwards for prev segment
 				} else {
 					// something else, so we are starting a new path segment
 					// save this as the new last slash
@@ -124,7 +134,7 @@ std::string os_makeCanonicalPath(const char* fromPath, bool resolveSimLinks) {
 				if (resolveSimLinks && (*p == '/')) {
 					char buf[MAX_PATH];
 					*p = 0;
-					int len = readlink(workingBuf, buf, MAX_PATH);
+					ssize_t len = readlink(workingBuf, buf, MAX_PATH);
 					if (len > 0 && len < MAX_PATH) {
 						char buf2[MAX_PATH];
 						std::strcpy(buf2, &p[1]); // this is safe because p[1] starts a string that is always shorter than MAX_PATH
@@ -144,7 +154,7 @@ std::string os_makeCanonicalPath(const char* fromPath, bool resolveSimLinks) {
 		if (resolveSimLinks) {
 			// final resolution of sim link
 			char buf[MAX_PATH];
-			int len = readlink(workingBuf, buf, MAX_PATH);
+			ssize_t len = readlink(workingBuf, buf, MAX_PATH);
 			if (len > 0 && len < MAX_PATH) {
 				std::strcpy(workingBuf, buf); // also safe, buf always shorter than MAX_PATH
 			}
@@ -174,6 +184,9 @@ bool OS::findFirst(const char* inFindName, FindDataT& outFindData) {
   if (end != 0) {
     char* start = (char*)inFindName;
 
+    if (start[0] == '/') {
+      dirName = '/';
+    }
     while(start != end) {
       dirName += *start;
       start++;
@@ -260,7 +273,7 @@ OS::renameFile(const char* inFileName, const char* inNewFileName) {
 	return (rename (inFileName, inNewFileName) == 0);
 }
 	
-unsigned long 
+ms_time
 OS::getMilliseconds() {
     unsigned long mstime = 0;
     // this is a more accurate way on Unix to get this
@@ -292,7 +305,7 @@ namespace std {
 #endif // COMPILER_GCC
 
 void pdg::OS::_DOUT( const char * fmt, ...) {
-    static const int bufsize = 1024;
+    static const int bufsize = 4068;
 	static char buf[bufsize];
 	std::va_list lst;
 	va_start(lst, fmt);

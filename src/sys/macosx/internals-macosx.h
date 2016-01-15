@@ -28,6 +28,9 @@
 // -----------------------------------------------
 
 
+#ifndef PDG_INTERNALS_MACOSX_H_DEFINED
+#define PDG_INTERNALS_MACOSX_H_DEFINED
+
 #include "pdg_project.h"
 
 // -----------------------------------------------
@@ -45,8 +48,10 @@ typedef struct CGContext *CGContextRef;
 #define IN_PDG_NAMESPACE(item) item
 #endif // cplusplus	
 
+//#ifndef _PDG_OBJC_DEF_BOOL
+//typedef signed char BOOL;
+//#endif
 
-typedef signed char	BOOL; 
 typedef unsigned short unichar;
 #if __cplusplus
 extern "C" {
@@ -64,3 +69,5 @@ extern "C" {
 #if __cplusplus
 }
 #endif
+
+#endif //PDG_INTERNALS_MACOSX_H_DEFINED

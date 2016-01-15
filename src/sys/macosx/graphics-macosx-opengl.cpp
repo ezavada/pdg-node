@@ -36,6 +36,7 @@
 #include <algorithm>
 #include <string>
 #include <cmath>
+#include <cstdlib>
 
 #include "graphics-macosx.h"
 #include "internals.h"
@@ -118,7 +119,7 @@ void graphics_drawText(PortImpl& port, const char* text, int len, const Quad& qu
 		std::memset( imageData, 0x00, dataSize );
 		MacAPI::CGContextSetTextPosition(cgl_ctx, 0, glBufferHeight - textInfo->ascent );
 		
-		if (style & Graphics::textStyle_Bold) {
+		if (style & textStyle_Bold) {
 			MacAPI::CGContextSetTextDrawingMode (cgl_ctx, MacAPI::kCGTextFillStroke);
 		} else {
 			MacAPI::CGContextSetTextDrawingMode (cgl_ctx, MacAPI::kCGTextFill);
@@ -127,7 +128,7 @@ void graphics_drawText(PortImpl& port, const char* text, int len, const Quad& qu
 		MacAPI::CGContextSetGrayStrokeColor(cgl_ctx, 1.0f, 1.0f);
 		graphics_CG_drawText(cgl_ctx, font, size, style, text, len);
 		// draw underline if needed
-		if (style & Graphics::textStyle_Underline ) {
+		if (style & textStyle_Underline ) {
 			float underlineThickness = std::ceil((float)size / 12.0f);
 			MacAPI::CGContextSetLineWidth(cgl_ctx, underlineThickness );
 			MacAPI::CGPoint points[2];
@@ -151,7 +152,7 @@ void graphics_drawText(PortImpl& port, const char* text, int len, const Quad& qu
 		
 		textInfo->tx = (float)textInfo->width/(float)glBufferWidth;
 		textInfo->ty = (float)textInfo->charHeight/(float)glBufferHeight;
-		if (style & Graphics::textStyle_Italic ) {
+		if (style & textStyle_Italic ) {
 			textInfo->tx_topoffset = -(font->getFontHeight(size, style) / (PDG_ITALICS_FACTOR * (float)glBufferWidth));
 		} else {
 			textInfo->tx_topoffset = 0;
@@ -194,7 +195,7 @@ Port::getTextWidth(const char* text, int size, uint32 style, int len) {
 //    PortImplMac& port = static_cast<PortImplMac&>(*this); // get us access to our private data
     if (text == 0) return 0;
     if (len == -1) {
-        len = std::strlen(text);
+        len = (int)std::strlen(text);
     }
 	if (len == 0) return 0;
 	FontImplMac* font = dynamic_cast<FontImplMac*> ( getCurrentFont(style) );
@@ -214,7 +215,7 @@ Port::getTextWidth(const char* text, int size, uint32 style, int len) {
 		MacAPI::CGContextSetTextDrawingMode (sFontMeasuringContext, MacAPI::kCGTextInvisible);
 		graphics_CG_drawText(sFontMeasuringContext, font, size, style, text, len);
 		MacAPI::CGPoint textPt = MacAPI::CGContextGetTextPosition(sFontMeasuringContext);
-		if (style & Graphics::textStyle_Underline ) {
+		if (style & textStyle_Underline ) {
 			textPt.x += (font->getFontHeight(size, style) / PDG_ITALICS_FACTOR);
 		}
 		// save the new info in the cache

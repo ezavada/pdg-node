@@ -89,7 +89,7 @@ METHOD_IMPL(MemBlock, GetBytes)
 
 CLEANUP_IMPL(MemBlock)
 
-NATIVE_CONSTRUCTOR_IMPL(MemBlock)
+CPP_CONSTRUCTOR_IMPL(MemBlock)
 	return new MemBlock(0, 0, false);
 	END
 
@@ -200,7 +200,7 @@ METHOD_IMPL(ConfigManager, SetConfigBool)
 	NO_RETURN;
 	END
 
-NATIVE_CONSTRUCTOR_IMPL(ConfigManager)
+CPP_CONSTRUCTOR_IMPL(ConfigManager)
 	return ConfigManager::getSingletonInstance();
 	END
 
@@ -256,7 +256,7 @@ STATIC_METHOD_IMPL(LogManager, BinaryDump)
 		inData = (char*)ptr;
 		dataSize = (length == 0) ? bytes : length;
 	} else {
-    	REQUIRE_NATIVE_OBJECT_ARG(1, memBlock, MemBlock);
+    	REQUIRE_CPP_OBJECT_ARG(1, memBlock, MemBlock);
     	inData = memBlock->ptr;
     	dataSize = (length == 0) ? memBlock->bytes : length;
     }
@@ -270,7 +270,7 @@ STATIC_METHOD_IMPL(LogManager, BinaryDump)
 
 log& main_getDebugLog();  // defined in main-{platform}.cpp
 
-NATIVE_CONSTRUCTOR_IMPL(LogManager)
+CPP_CONSTRUCTOR_IMPL(LogManager)
     LogManager *theLogMgr = LogManager::getSingletonInstance();
 	pdg::log& debugLog = main_getDebugLog();
 	debugLog.setLogManager(theLogMgr);
@@ -307,7 +307,7 @@ CLEANUP_IMPL(IEventHandler)
 	" \\param inEventType the type of event to handle",  \
 		undefined, 2, ([object IEventHandler] inHandler, [number int] inEventType = all_events)); CR \
     REQUIRE_ARG_MIN_COUNT(1); CR \
-	REQUIRE_NATIVE_OBJECT_OR_SUBCLASS_ARG(1, inHandler, IEventHandler); CR \
+	REQUIRE_CPP_OBJECT_OR_SUBCLASS_ARG(1, inHandler, IEventHandler); CR \
 	DEBUG_DUMP_SCRIPT_OBJECT(ARGV[0], IEventHandler); CR \
 	OPTIONAL_INT32_ARG(2, inType, pdg::all_events); CR \
 	self->addHandler(inHandler, inType); CR \
@@ -326,7 +326,7 @@ CLEANUP_IMPL(IEventHandler)
 	" \\param inEventType the type of event to stop handling (see note)",  \
 	 	undefined, 2, ([object IEventHandler] inHandler, [number int] inEventType = all_events)); CR \
     REQUIRE_ARG_MIN_COUNT(1); CR \
-	REQUIRE_NATIVE_OBJECT_OR_SUBCLASS_ARG(1, inHandler, IEventHandler); CR \
+	REQUIRE_CPP_OBJECT_OR_SUBCLASS_ARG(1, inHandler, IEventHandler); CR \
 	OPTIONAL_INT32_ARG(2, inType, pdg::all_events); CR \
 	self->removeHandler(inHandler, inType); CR \
 	NO_RETURN; CR \
@@ -365,7 +365,7 @@ BINDING_INITIALIZER_IMPL(EventEmitter)
 	END
 EMITTER_BASE_CLASS_IMPL(EventEmitter)
 
-NATIVE_CONSTRUCTOR_IMPL(EventEmitter)
+CPP_CONSTRUCTOR_IMPL(EventEmitter)
     return new EventEmitter();
 	END
 
@@ -394,12 +394,11 @@ STATIC_METHOD_IMPL(EventManager, IsRawKeyDown)
 	END
 STATIC_METHOD_IMPL(EventManager, IsButtonDown)
 	METHOD_SIGNATURE("", boolean, 1, ([number int] buttonNumber = 0));
-    REQUIRE_ARG_MIN_COUNT(0);
     OPTIONAL_INT32_ARG(1, buttonNumber, 0);
 	RETURN_BOOL( OS::isButtonDown(buttonNumber) );
 	END
 
-NATIVE_CONSTRUCTOR_IMPL(EventManager)
+CPP_CONSTRUCTOR_IMPL(EventManager)
 	return EventManager::getSingletonInstance();
 	END
 
@@ -490,7 +489,7 @@ METHOD_IMPL(ResourceManager, GetResourcePaths)
 	RETURN_STRING(outStr.c_str());
 	END
 
-NATIVE_CONSTRUCTOR_IMPL(ResourceManager)
+CPP_CONSTRUCTOR_IMPL(ResourceManager)
 	return ResourceManager::getSingletonInstance();
 	END
 
@@ -511,7 +510,7 @@ NATIVE_CONSTRUCTOR_IMPL(ResourceManager)
 	METHOD_SIGNATURE("get size of this object's data for the given stream", CR \
 		[number uint], 1, ([object Serializer] serializer)); CR \
     REQUIRE_ARG_MIN_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, serializer, Serializer); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, serializer, Serializer); CR \
     uint32 dataSize = self->getSerializedSize(serializer); CR \
 	RETURN_UINT32(dataSize); CR \
 	END CR \
@@ -519,7 +518,7 @@ NATIVE_CONSTRUCTOR_IMPL(ResourceManager)
 	METHOD_SIGNATURE("write this object's data into the given stream", CR \
 		undefined, 1, ([object Serializer] serializer)); CR \
     REQUIRE_ARG_MIN_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, serializer, Serializer); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, serializer, Serializer); CR \
     self->serialize(serializer); CR \
 	NO_RETURN; CR \
 	END CR \
@@ -527,7 +526,7 @@ NATIVE_CONSTRUCTOR_IMPL(ResourceManager)
 	METHOD_SIGNATURE("read this object's data from the given stream", CR \
 		undefined, 1, ([object Deserializer] deserializer)); CR \
     REQUIRE_ARG_MIN_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, deserializer, Deserializer); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, deserializer, Deserializer); CR \
     try { CR \
     	self->deserialize(deserializer); CR \
 		NO_RETURN; CR \
@@ -555,13 +554,14 @@ CLEANUP_IMPL(ISerializable)
 //MARK: Serializer
 // ========================================================================================
 
-
 BINDING_INITIALIZER_IMPL(Serializer)
     EXPORT_CLASS_SYMBOLS("Serializer", Serializer, , ,
     	// method section
 	  %#ifndef PDG_NO_64BIT CR
 		HAS_METHOD(Serializer, "serialize_8", Serialize_8)   // no 64 bit int in Script
 		HAS_METHOD(Serializer, "serialize_8u", Serialize_8u)
+		HAS_METHOD(Serializer, "sizeof_8", Sizeof_8)
+		HAS_METHOD(Serializer, "sizeof_8u", Sizeof_8u)
 	  %#endif CR
 		HAS_METHOD(Serializer, "serialize_d", Serialize_d)
 		HAS_METHOD(Serializer, "serialize_f", Serialize_f)
@@ -584,7 +584,30 @@ BINDING_INITIALIZER_IMPL(Serializer)
 		HAS_METHOD(Serializer, "serialize_str", Serialize_str)
 		HAS_METHOD(Serializer, "serialize_mem", Serialize_mem)
 		HAS_METHOD(Serializer, "serialize_obj", Serialize_obj)
-		HAS_METHOD(Serializer, "serializedSize", SerializedSize)
+		HAS_METHOD(Serializer, "serialize_ref", Serialize_ref)
+//		HAS_METHOD(Serializer, "serializedSize", SerializedSize)
+		HAS_METHOD(Serializer, "sizeof_d", Sizeof_d)
+		HAS_METHOD(Serializer, "sizeof_f", Sizeof_f)
+		HAS_METHOD(Serializer, "sizeof_4", Sizeof_4)
+		HAS_METHOD(Serializer, "sizeof_4u", Sizeof_4u)
+		HAS_METHOD(Serializer, "sizeof_3u", Sizeof_3u)
+		HAS_METHOD(Serializer, "sizeof_2", Sizeof_2)
+		HAS_METHOD(Serializer, "sizeof_2u", Sizeof_2u)
+		HAS_METHOD(Serializer, "sizeof_1", Sizeof_1)
+		HAS_METHOD(Serializer, "sizeof_1u", Sizeof_1u)
+		HAS_METHOD(Serializer, "sizeof_bool", Sizeof_bool)
+		HAS_METHOD(Serializer, "sizeof_uint", Sizeof_uint)
+ 		HAS_METHOD(Serializer, "sizeof_color", Sizeof_color)
+ 		HAS_METHOD(Serializer, "sizeof_offset", Sizeof_offset)
+ 		HAS_METHOD(Serializer, "sizeof_point", Sizeof_point)
+ 		HAS_METHOD(Serializer, "sizeof_vector", Sizeof_vector)
+ 		HAS_METHOD(Serializer, "sizeof_rect", Sizeof_rect)
+ 		HAS_METHOD(Serializer, "sizeof_rotr", Sizeof_rotr)
+ 		HAS_METHOD(Serializer, "sizeof_quad", Sizeof_quad)
+		HAS_METHOD(Serializer, "sizeof_str", Sizeof_str)
+		HAS_METHOD(Serializer, "sizeof_mem", Sizeof_mem)
+		HAS_METHOD(Serializer, "sizeof_obj", Sizeof_obj)
+		HAS_METHOD(Serializer, "sizeof_ref", Sizeof_ref)
 		HAS_METHOD(Serializer, "getDataSize", GetDataSize)
 		HAS_METHOD(Serializer, "getDataPtr", GetDataPtr)
     );
@@ -750,9 +773,16 @@ METHOD_IMPL(Serializer, Serialize_mem)
     	uint8* ptr = (uint8*) DecodeBinary(ARGV[0], &bytes);
 		self->serialize_mem(ptr, bytes);
 	} else {
-    	REQUIRE_NATIVE_OBJECT_ARG(1, memBlock, MemBlock);
+    	REQUIRE_CPP_OBJECT_ARG(1, memBlock, MemBlock);
     	self->serialize_mem(memBlock->ptr, memBlock->bytes);
     }
+	NO_RETURN;
+	END
+METHOD_IMPL(Serializer, Serialize_ref)
+	METHOD_SIGNATURE("", undefined, 1, (object obj));
+    REQUIRE_ARG_COUNT(1);
+	REQUIRE_OBJECT_ARG(1, obj);
+    self->serialize_ref< OBJECT_REF >(&obj);
 	NO_RETURN;
 	END
 METHOD_IMPL(Serializer, GetDataSize)
@@ -766,12 +796,60 @@ METHOD_IMPL(Serializer, GetDataPtr)
     REQUIRE_ARG_COUNT(0);
     // mem block doesn't own this memory, it belongs to the Serializer
  	MemBlock* memBlock = new MemBlock((char*)self->getDataPtr(), self->getDataSize(), false);
-	RETURN_NATIVE_OBJECT(memBlock, MemBlock);
+	RETURN_CPP_OBJECT(memBlock, MemBlock);
 	END
+SERIALIZER_SIZE_OF_METHOD_IMPL(1)
+SERIALIZER_SIZE_OF_METHOD_IMPL(1u)
+SERIALIZER_SIZE_OF_METHOD_IMPL(2)
+SERIALIZER_SIZE_OF_METHOD_IMPL(2u)
+SERIALIZER_SIZE_OF_METHOD_IMPL(3u)
+SERIALIZER_SIZE_OF_METHOD_IMPL(4)
+SERIALIZER_SIZE_OF_METHOD_IMPL(4u)
+%#ifndef PDG_NO_64BIT
+SERIALIZER_SIZE_OF_METHOD_IMPL(8)
+SERIALIZER_SIZE_OF_METHOD_IMPL(8u)
+%#endif
+SERIALIZER_SIZE_OF_METHOD_IMPL(f)
+SERIALIZER_SIZE_OF_METHOD_IMPL(d)
+SERIALIZER_SIZE_OF_METHOD_IMPL(uint)
+SERIALIZER_SIZE_OF_METHOD_IMPL(str)
+SERIALIZER_SIZE_OF_METHOD_IMPL(bool)
+SERIALIZER_SIZE_OF_METHOD_IMPL(point)
+SERIALIZER_SIZE_OF_METHOD_IMPL(offset)
+SERIALIZER_SIZE_OF_METHOD_IMPL(vector)
+SERIALIZER_SIZE_OF_METHOD_IMPL(rect)
+SERIALIZER_SIZE_OF_METHOD_IMPL(rotr)
+SERIALIZER_SIZE_OF_METHOD_IMPL(quad)
+SERIALIZER_SIZE_OF_METHOD_IMPL(color)
+CUSTOM_SERIALIZER_SIZE_OF_METHOD_IMPL(ref,
+    size_t n = self->sizeof_ref< OBJECT_REF >(&val) )
+CUSTOM_SERIALIZER_SIZE_OF_METHOD_IMPL(obj,
+    size_t n = 0 )
+
+METHOD_IMPL(Serializer, Sizeof_mem)
+	METHOD_SIGNATURE("", [number uint], 1, ({[string Binary]|[object MemBlock]} mem));
+    REQUIRE_ARG_COUNT(1);
+    bool isStr = VALUE_IS_STRING(ARGV[0]);
+    if (!isStr && !VALUE_IS_OBJECT(ARGV[0])) {
+    	THROW_TYPE_ERR("argument 1 (mem) must be either a binary string or an object of type MemBlock");
+    }
+    size_t n = 0;
+    if (isStr) {
+    	size_t bytes = 0;
+    	uint8* ptr = (uint8*) DecodeBinary(ARGV[0], &bytes);
+		n = self->sizeof_mem(ptr, bytes);
+	} else {
+    	REQUIRE_CPP_OBJECT_ARG(1, memBlock, MemBlock);
+    	n = self->sizeof_mem(memBlock->ptr, memBlock->bytes);
+    }
+	RETURN_UNSIGNED(n);
+	END
+
+//SERIALIZER_SIZE_OF_METHOD_IMPL(mem)
 
 CLEANUP_IMPL(Serializer)
 
-NATIVE_CONSTRUCTOR_IMPL(Serializer)
+CPP_CONSTRUCTOR_IMPL(Serializer)
 	return new Serializer();
 	END
 
@@ -780,11 +858,12 @@ NATIVE_CONSTRUCTOR_IMPL(Serializer)
 //MARK: Deserializer
 // ========================================================================================
 
-//DECLARE_SYMBOL(getSerializedSize);
-//DECLARE_SYMBOL(serialize);
-//DECLARE_SYMBOL(deserialize);
-//DECLARE_SYMBOL(getMyClassTag);
-//DECLARE_SYMBOL(constructor);
+DECLARE_SYMBOL(getSerializedSize);
+DECLARE_SYMBOL(serialize);
+DECLARE_SYMBOL(deserialize);
+DECLARE_SYMBOL(getMyClassTag);
+DECLARE_SYMBOL(constructor);
+
 
 BINDING_INITIALIZER_IMPL(Deserializer) 
     EXPORT_CLASS_SYMBOLS("Deserializer", Deserializer, , ,
@@ -816,6 +895,7 @@ BINDING_INITIALIZER_IMPL(Deserializer)
 		HAS_METHOD(Deserializer, "deserialize_mem", Deserialize_mem)
 		HAS_METHOD(Deserializer, "deserialize_memGetLen", Deserialize_memGetLen)
 		HAS_METHOD(Deserializer, "deserialize_obj", Deserialize_obj)
+		HAS_METHOD(Deserializer, "deserialize_ref", Deserialize_ref)
 		HAS_METHOD(Deserializer, "setDataPtr", SetDataPtr)
     );
 	END
@@ -1069,7 +1149,7 @@ METHOD_IMPL(Deserializer, Deserialize_mem)
     }
     // MemBlock owns this memory and will free it when destroyed
  	MemBlock* memBlock = new MemBlock(mem, len, true);
-	RETURN_NATIVE_OBJECT(memBlock, MemBlock);
+	RETURN_CPP_OBJECT(memBlock, MemBlock);
 	END
 METHOD_IMPL(Deserializer, Deserialize_memGetLen)
 	METHOD_SIGNATURE("", number, 0, ());
@@ -1094,15 +1174,70 @@ METHOD_IMPL(Deserializer, SetDataPtr)
     	uint8* ptr = (uint8*) DecodeBinary(ARGV[0], &bytes);
 		self->setDataPtr(ptr, bytes);
 	} else {
-    	REQUIRE_NATIVE_OBJECT_ARG(1, memBlock, MemBlock);
+    	REQUIRE_CPP_OBJECT_ARG(1, memBlock, MemBlock);
     	self->setDataPtr(memBlock->ptr, memBlock->bytes);
     }
 	NO_RETURN;
 	END
+METHOD_IMPL(Deserializer, Deserialize_obj)
+	OBJECT_SAVE(self->mDeserializerScriptObj, THIS);
+	METHOD_SIGNATURE("", [object ISerializable], 1, ());
+    REQUIRE_ARG_COUNT(0);
+  	try {
+		ISerializable* obj = self->deserialize_obj();
+		DEBUG_DUMP_SCRIPT_OBJECT(obj->mISerializableScriptObj, ISerializable)
+		RETURN_CPP_OBJECT(obj, ISerializable);
+	} catch(out_of_data& e) {
+    	THROW_ERR(e.what());
+	} catch(bad_tag& e) {
+    	THROW_ERR(e.what());
+	} catch(sync_error& e) {
+    	THROW_ERR(e.what());
+	} catch(unknown_object& e) {
+    	THROW_ERR(e.what());
+	}
+	END
+METHOD_IMPL(Deserializer, Deserialize_ref)
+	METHOD_SIGNATURE("", object, 0, ());
+    REQUIRE_ARG_COUNT(0);
+    try {
+		OBJECT_REF obj = *self->deserialize_ref< OBJECT_REF >();
+        RETURN_OBJECT(obj);
+	} catch(out_of_data& e) {
+    	THROW_ERR(e.what());
+	} catch(bad_tag& e) {
+    	THROW_ERR(e.what());
+	} catch(unknown_object& e) {
+    	THROW_ERR(e.what());
+	}
+	END
+
+
+FUNCTION_IMPL(RegisterSerializableClass)
+	METHOD_SIGNATURE("", undefined, 1, (function klass));
+	REQUIRE_ARG_COUNT(1);
+	REQUIRE_FUNCTION_ARG(1, constructorFunc);
+	VALUE objVal = CALL_CONSTRUCTOR(constructorFunc);
+	OBJECT obj = VAL2OBJ(objVal);
+	DEBUG_DUMP_SCRIPT_OBJECT(obj, ISerializable);
+    FUNCTION_REF func;
+	if (OBJECT_HAS_PROPERTY(obj, SYMBOL(getMyClassTag))) {
+    	func = VAL2FUNC( OBJECT_GET_PROPERTY(obj, SYMBOL(getMyClassTag)) );
+	} else {
+		std::ostringstream msg;
+        msg << "argument 1: ISerializable subclass " << OBJECT_GET_CLASS_NAME(obj) << " missing getMyClassTag() Function!!";
+		THROW_ERR(msg.str().c_str());
+	}
+ 	uint32 classTag = VAL2UINT( CALL_SCRIPT(func, obj, 0, 0) );
+	Deserializer::registerScriptClass(classTag, constructorFunc);
+    NO_RETURN;
+    END
+
+
 
 CLEANUP_IMPL(Deserializer)
 
-NATIVE_CONSTRUCTOR_IMPL(Deserializer)
+CPP_CONSTRUCTOR_IMPL(Deserializer)
 	return new Deserializer();
 	END
 
@@ -1133,7 +1268,6 @@ NATIVE_CONSTRUCTOR_IMPL(Deserializer)
   METHOD_IMPL(klass, GetImageBounds) CR \
 	METHOD_SIGNATURE("get image boundary rect, optionally with top left at given point", CR \
 		[object Rect], 1, ([object Point] at)); CR \
-    REQUIRE_ARG_MIN_COUNT(0); CR \
     OPTIONAL_POINT_ARG(1, at, pdg::Point(0,0)); CR \
     Rect r = self->getImageBounds(at); CR \
 	RETURN(RECT2VAL(r)); CR \
@@ -1144,7 +1278,7 @@ NATIVE_CONSTRUCTOR_IMPL(Deserializer)
     REQUIRE_ARG_COUNT(1); CR \
 	REQUIRE_QUAD_ARG(1, quad); CR \
 	Image* image = self->getSubsection(quad); CR \
-	RETURN_NATIVE_OBJECT(image, Image); CR \
+	RETURN_CPP_OBJECT(image, Image); CR \
 	END CR \
   METHOD_IMPL(klass, GetOpacity) CR \
 	METHOD_SIGNATURE("get opacity of this image: 0.0 - completely transparent to 1.0 - completely solid", CR \
@@ -1197,7 +1331,7 @@ NATIVE_CONSTRUCTOR_IMPL(Deserializer)
 	NO_RETURN; CR \
 	END CR \
   METHOD_IMPL(klass, GetAlphaValue) CR \
-	METHOD_SIGNATURE("", number, 2, ({ ([object Point] p) | ([number int] x, [number int] y) }));  CR \
+	METHOD_SIGNATURE("", number, 2, ({[object Point] p|[number int] x, [number int] y}));  CR \
     REQUIRE_ARG_MIN_COUNT(1);  CR \
     OPTIONAL_INT32_ARG(2, y, -1); CR \
     uint8 a; CR \
@@ -1211,7 +1345,7 @@ NATIVE_CONSTRUCTOR_IMPL(Deserializer)
 	RETURN_UNSIGNED(a); CR \
 	END CR \
   METHOD_IMPL(klass, GetPixel) CR \
-	METHOD_SIGNATURE("", [object Color], 2, ({ ([object Point] p) | ([number int] x, [number int] y) }));  CR \
+	METHOD_SIGNATURE("", [object Color], 2, ({[object Point] p|[number int] x, [number int] y}));  CR \
     REQUIRE_ARG_MIN_COUNT(1);  CR \
     OPTIONAL_INT32_ARG(2, y, -1); CR \
     pdg::Color c; CR \
@@ -1237,7 +1371,7 @@ IMAGE_BASE_CLASS_IMPL(Image)
 
 CLEANUP_IMPL(Image)
 
-NATIVE_CONSTRUCTOR_IMPL(Image)
+CPP_CONSTRUCTOR_IMPL(Image)
 	SETUP_NON_SCRIPT_CALL;
 	if (ARGC < 1) {
 		return 0;
@@ -1246,9 +1380,16 @@ NATIVE_CONSTRUCTOR_IMPL(Image)
 		return 0;
 	} else {
 		VALUE_TO_CSTRING(filename, ARGV[0]);
-		return Image::createImageFromFile(filename);
+		Image* img = Image::createImageFromFile(filename);
+		if (!img) {
+		    SAVE_ERR("could not create Image from file ["<<filename<<"]");
+		    return 0;
+		} else {
+		    return img;
+		}
 	}
 	END
+
 
 // ========================================================================================
 //MARK: ImageStrip
@@ -1272,13 +1413,13 @@ METHOD_IMPL(ImageStrip, GetFrame)
     REQUIRE_ARG_COUNT(1);
 	REQUIRE_INT32_ARG(1, frameNum);
 	Image* image = self->getFrame(frameNum);
-	RETURN_NATIVE_OBJECT(image, Image);
+	RETURN_CPP_OBJECT(image, Image);
 	END
 
 CLEANUP_IMPL(ImageStrip)
 
 
-NATIVE_CONSTRUCTOR_IMPL(ImageStrip)
+CPP_CONSTRUCTOR_IMPL(ImageStrip)
 	SETUP_NON_SCRIPT_CALL;
 	if (ARGC < 1) {
 		return 0;
@@ -1287,7 +1428,13 @@ NATIVE_CONSTRUCTOR_IMPL(ImageStrip)
 		return 0;
 	} else {
 		VALUE_TO_CSTRING(filename, ARGV[0]);
-		return ImageStrip::createImageStripFromFile(filename);
+		ImageStrip* img = ImageStrip::createImageStripFromFile(filename);
+		if (!img) {
+		    SAVE_ERR("could not create ImageStrip from file ["<<filename<<"]");
+		    return 0;
+		} else {
+		    return img;
+		}
 	}
 	END
 
@@ -1324,7 +1471,7 @@ CUSTOM_GETTER_IMPL(GraphicsManager, Mouse, POINT, 1, MIN_,
 	OPTIONAL_INT32_ARG(1, mouseNumber, 0); CR , 
     pdg::Point theMouse = self->getMouse(mouseNumber), ([number int] mouseNumber = 0) )
 CUSTOM_GETTER_IMPL(GraphicsManager, NumSupportedScreenModes, INTEGER, 0, ,
-	OPTIONAL_INT32_ARG(1, screenNum, GraphicsManager::screenNum_PrimaryScreen); CR ,
+	OPTIONAL_INT32_ARG(1, screenNum, screenNum_PrimaryScreen); CR ,
     int32 theNumSupportedScreenModes = self->getNumSupportedScreenModes(screenNum), ([number int] screen = PRIMARY_SCREEN) )
 METHOD_IMPL(GraphicsManager, SetScreenMode);
  	METHOD_SIGNATURE("changes specified screen to closest matching mode", 
@@ -1332,7 +1479,7 @@ METHOD_IMPL(GraphicsManager, SetScreenMode);
     REQUIRE_ARG_MIN_COUNT(2);
 	REQUIRE_INT32_ARG(1, width);
 	REQUIRE_INT32_ARG(2, height);
-	OPTIONAL_INT32_ARG(3, screenNum, GraphicsManager::screenNum_PrimaryScreen);
+	OPTIONAL_INT32_ARG(3, screenNum, screenNum_PrimaryScreen);
 	OPTIONAL_INT32_ARG(4, bpp, 0);
 	self->setScreenMode(width, height, screenNum, bpp);
 	NO_RETURN;
@@ -1345,24 +1492,23 @@ METHOD_IMPL(GraphicsManager, CreateWindowPort)
 	OPTIONAL_STRING_ARG(2, windName, "");
 	OPTIONAL_INT32_ARG(3, bpp, 0);
 	Port* port = self->createWindowPort(rect, windName, bpp);
-	RETURN_NATIVE_OBJECT(port, Port);
+	RETURN_CPP_OBJECT(port, Port);
 	END
 METHOD_IMPL(GraphicsManager, CreateFullScreenPort)
 	METHOD_SIGNATURE("create full screen drawing port with given dimensions on given screen, optionally changing depth", 
 		[object Port], 3, ([object Rect] rect, [number int] screenNum = PRIMARY_SCREEN, boolean allowResChange = true, [number int] bpp = 0));
     REQUIRE_ARG_MIN_COUNT(1);
 	REQUIRE_RECT_ARG(1, rect);
-	OPTIONAL_INT32_ARG(2, screenNum, GraphicsManager::screenNum_PrimaryScreen);
+	OPTIONAL_INT32_ARG(2, screenNum, screenNum_PrimaryScreen);
 	OPTIONAL_BOOL_ARG(3, allowResChange, true);
 	OPTIONAL_INT32_ARG(4, bpp, 0);
 	Port* port = self->createFullScreenPort(rect, screenNum, allowResChange, bpp);
-	RETURN_NATIVE_OBJECT(port, Port);
+	RETURN_CPP_OBJECT(port, Port);
 	END
 METHOD_IMPL(GraphicsManager, CloseGraphicsPort)
 	METHOD_SIGNATURE("close given port, along with its window and restore screen mode if changed", 
 		undefined, 1, ([object Port] port = MAIN_PORT));
-    REQUIRE_ARG_MIN_COUNT(0);
-	OPTIONAL_NATIVE_OBJECT_ARG(1, port, Port, 0);
+	OPTIONAL_CPP_OBJECT_ARG(1, port, Port, 0);
 	self->closeGraphicsPort(port);
 	NO_RETURN;
 	END
@@ -1373,29 +1519,27 @@ METHOD_IMPL(GraphicsManager, CreateFont)
 	REQUIRE_STRING_ARG(1, fontName);
 	OPTIONAL_NUMBER_ARG(2, scalingFactor, 1.0f);
 	Font* font = self->createFont(fontName, scalingFactor);
-	RETURN_NATIVE_OBJECT(font, Font);
+	RETURN_CPP_OBJECT(font, Font);
 	END
 METHOD_IMPL(GraphicsManager, GetMainPort)
 	METHOD_SIGNATURE("return the primary graphics port", 
 		[object Port], 0, ());
     REQUIRE_ARG_COUNT(0);
     Port* port = self->getMainPort();
-	RETURN_NATIVE_OBJECT(port, Port);
+	RETURN_CPP_OBJECT(port, Port);
 	END
 METHOD_IMPL(GraphicsManager, SwitchToFullScreenMode)
 	METHOD_SIGNATURE("change a port to fullscreen mode, return true on success", 
 		boolean, 0, (boolean allowResChange = false, [object Port] port = MAIN_PORT));
-    REQUIRE_ARG_MIN_COUNT(0);
 	OPTIONAL_BOOL_ARG(1, allowResChange, 0);
-	OPTIONAL_NATIVE_OBJECT_ARG(2, port, Port, 0);
+	OPTIONAL_CPP_OBJECT_ARG(2, port, Port, 0);
 	bool result = self->switchToFullScreenMode(allowResChange, port);
 	RETURN_BOOL(result);
 	END
 METHOD_IMPL(GraphicsManager, SwitchToWindowMode)
 	METHOD_SIGNATURE("change a port to window mode, return true on success", 
 		boolean, 0, ([object Port] port = MAIN_PORT, string windName = ""));
-    REQUIRE_ARG_MIN_COUNT(0);
-	OPTIONAL_NATIVE_OBJECT_ARG(1, port, Port, 0);
+	OPTIONAL_CPP_OBJECT_ARG(1, port, Port, 0);
 	OPTIONAL_STRING_ARG(2, windName, "");
 	bool result = self->switchToWindowMode(port, windName);
 	RETURN_BOOL(result);
@@ -1408,7 +1552,7 @@ METHOD_IMPL(GraphicsManager, InFullScreenMode)
 	RETURN_BOOL(fullscreen);
 	END
 	
-NATIVE_CONSTRUCTOR_IMPL(GraphicsManager)
+CPP_CONSTRUCTOR_IMPL(GraphicsManager)
 	return GraphicsManager::getSingletonInstance();
 	END
 
@@ -1420,7 +1564,7 @@ NATIVE_CONSTRUCTOR_IMPL(GraphicsManager)
 #define FONT_GETTER_IMPL(prop) \
 CUSTOM_GETTER_IMPL(Font, prop, NUMBER, 1, MIN_,                		\
 	REQUIRE_INT32_ARG(1, size); CR                             		\
-    OPTIONAL_UINT32_ARG(2, style, Graphics::textStyle_Plain); CR ,	\
+    OPTIONAL_UINT32_ARG(2, style, textStyle_Plain); CR ,	\
     float the##prop = self->get##prop(size, style),                 \
     (number size, [number int] style = textStyle_Plain) )
 
@@ -1442,12 +1586,17 @@ FONT_GETTER_IMPL(FontDescent)
 
 CLEANUP_IMPL(Font)
 
+CPP_CONSTRUCTOR_IMPL(Font)
+    SAVE_ERR("Font cannot be created directly, use pdg.gfx.createFont()");
+    return 0;
+    END
+
 // ========================================================================================
 //MARK: Port
 // ========================================================================================
 
 WRAPPER_INITIALIZER_IMPL_CUSTOM(Port,
-  nativeObj->mPortScriptObj = obj )
+  OBJECT_SAVE(cppObj->mPortScriptObj, obj) )
     EXPORT_CLASS_SYMBOLS("Port", Port, , ,
     	// method section
 		HAS_PROPERTY(Port, ClipRect)
@@ -1611,7 +1760,7 @@ METHOD_IMPL(Port, DrawText)
 	REQUIRE_STRING_ARG(1, text);
 	// Arg 2 handled below
 	REQUIRE_INT32_ARG(3, size); 
-	OPTIONAL_UINT32_ARG(4, style, Graphics::textStyle_Plain); 
+	OPTIONAL_UINT32_ARG(4, style, textStyle_Plain); 
 	OPTIONAL_COLOR_ARG(5, rgba, PDG_BLACK_COLOR);
 	if (VALUE_IS_POINT(ARGV[1])) { 
 		// do this if 2nd argument is a point
@@ -1625,8 +1774,8 @@ METHOD_IMPL(Port, DrawText)
 	NO_RETURN;
 	END
 METHOD_IMPL(Port, DrawImage)
-	METHOD_SIGNATURE("", undefined, 4, ({ ([object Image] img, [object Point] loc) | ([object Image] img, [object Quad] quad) | ([object Image] img, [object Rect] rect, [number int] fitType = fit_Fill, boolean clipOverflow = false) })); 
-    REQUIRE_NATIVE_OBJECT_ARG(1, img, Image);
+	METHOD_SIGNATURE("", undefined, 4, ({[object Image] img, [object Point] loc|[object Image] img, [object Quad] quad|[object Image] img, [object Rect] rect, [number int] fitType = fit_Fill, boolean clipOverflow = false})); 
+    REQUIRE_CPP_OBJECT_ARG(1, img, Image);
     ImageStrip* imgStrip = dynamic_cast<ImageStrip*>(img);
     int argAdd = (imgStrip->frames) ? 1 : 0;
     REQUIRE_ARG_MIN_COUNT( 2 + argAdd );
@@ -1644,12 +1793,12 @@ METHOD_IMPL(Port, DrawImage)
         }
     } else if (ARGC > 2 + argAdd) {
         REQUIRE_RECT_ARG(2 + argAdd, rect);
-        OPTIONAL_INT32_ARG(3 + argAdd, fitType, Image::fit_Fill);
+        OPTIONAL_INT32_ARG(3 + argAdd, fitType, fit_Fill);
         OPTIONAL_BOOL_ARG(4 + argAdd, clipOverflow, false);  	
         if (imgStrip->frames) {
-            self->drawImage(imgStrip, frameNum, rect, (Image::FitType)fitType, clipOverflow);
+            self->drawImage(imgStrip, frameNum, rect, (FitType)fitType, clipOverflow);
         } else {
-            self->drawImage(img, rect, (Image::FitType)fitType, clipOverflow);
+            self->drawImage(img, rect, (FitType)fitType, clipOverflow);
         }
     } else {
         // otherwise require a quad for 2nd argument
@@ -1664,7 +1813,7 @@ METHOD_IMPL(Port, DrawImage)
 	END
 METHOD_IMPL(Port, DrawTexture)
 	METHOD_SIGNATURE("", undefined, 2, ([object Image] img, [object Rect] r)); 
-    REQUIRE_NATIVE_OBJECT_ARG(1, img, Image);
+    REQUIRE_CPP_OBJECT_ARG(1, img, Image);
     ImageStrip* imgStrip = dynamic_cast<ImageStrip*>(img);
     int argAdd = (imgStrip->frames) ? 1 : 0;
     REQUIRE_ARG_MIN_COUNT( 2 + argAdd );
@@ -1682,7 +1831,7 @@ METHOD_IMPL(Port, DrawTexture)
 	END
 METHOD_IMPL(Port, DrawTexturedSphere)
     METHOD_SIGNATURE("", undefined, 2, ({[object Image] img|[object ImageStrip] imgStrip, [number int] frameNum}, [object Point] loc, number radius, number rotation = 0, [object Offset] polarOffsetRadians = Offset(0,0), [object Offset] lightOffsetRadians = Offset(0,0)));
-    REQUIRE_NATIVE_OBJECT_ARG(1, img, Image);
+    REQUIRE_CPP_OBJECT_ARG(1, img, Image);
     ImageStrip* imgStrip = dynamic_cast<ImageStrip*>(img);
     int argAdd = (imgStrip->frames) ? 1 : 0;
     REQUIRE_ARG_MIN_COUNT( 3 + argAdd );
@@ -1707,22 +1856,20 @@ METHOD_IMPL(Port, GetTextWidth)
     REQUIRE_ARG_MIN_COUNT(2);
 	REQUIRE_STRING_ARG(1, text);
 	REQUIRE_INT32_ARG(2, size); 
-	OPTIONAL_UINT32_ARG(3, style, Graphics::textStyle_Plain); 
+	OPTIONAL_UINT32_ARG(3, style, textStyle_Plain); 
 	OPTIONAL_INT32_ARG(4, len, -1); 
 	int width = self->getTextWidth(text, size, style, len);
 	RETURN_INTEGER(width);
 	END
 METHOD_IMPL(Port, GetCurrentFont)
 	METHOD_SIGNATURE("", [object Font], 1, ([number uint] style = textStyle_Plain)); 
-    REQUIRE_ARG_MIN_COUNT(0);
-	OPTIONAL_UINT32_ARG(1, style, Graphics::textStyle_Plain);
+	OPTIONAL_UINT32_ARG(1, style, textStyle_Plain);
 	Font* font = self->getCurrentFont(style);
-	RETURN_NATIVE_OBJECT(font, Font);
+	RETURN_CPP_OBJECT(font, Font);
 	END
 METHOD_IMPL(Port, SetFont)
 	METHOD_SIGNATURE("", undefined, 1, ([object Font] font = DEFAULT_FONT)); 
-    REQUIRE_ARG_MIN_COUNT(0);
-	OPTIONAL_NATIVE_OBJECT_ARG(1, font, Font, 0);
+	OPTIONAL_CPP_OBJECT_ARG(1, font, Font, 0);
 	self->setFont(font);
 	NO_RETURN;
 	END
@@ -1730,7 +1877,7 @@ METHOD_IMPL(Port, SetFontForStyle)
 	METHOD_SIGNATURE("", undefined, 2, ([number uint] style, [object Font] font = DEFAULT_FONT)); 
     REQUIRE_ARG_MIN_COUNT(1);
 	REQUIRE_UINT32_ARG(1, style); 
-	OPTIONAL_NATIVE_OBJECT_ARG(2, font, Font, 0);
+	OPTIONAL_CPP_OBJECT_ARG(2, font, Font, 0);
 	self->setFontForStyle(font, style);
 	NO_RETURN;
 	END
@@ -1758,7 +1905,7 @@ METHOD_IMPL(Port, StopTrackingMouse)
 METHOD_IMPL(Port, SetCursor)
 	METHOD_SIGNATURE("NOT IMPLEMENTED", undefined, 1, ([object Image] cursorImage, [object Point] hotSpot));
     REQUIRE_ARG_COUNT(2);
-	REQUIRE_NATIVE_OBJECT_ARG(1, cursorImage, Image); 
+	REQUIRE_CPP_OBJECT_ARG(1, cursorImage, Image); 
 	REQUIRE_POINT_ARG(2, hotSpot); 
 	self->setCursor(cursorImage, hotSpot);
 	NO_RETURN;
@@ -1768,7 +1915,7 @@ METHOD_IMPL(Port, GetCursor)
 		[object Image], 0, ());
     REQUIRE_ARG_COUNT(0);
     Image* cursorImage = self->getCursor();
-    RETURN_NATIVE_OBJECT(cursorImage, Image);
+    RETURN_CPP_OBJECT(cursorImage, Image);
 	END
 METHOD_IMPL(Port, ResetCursor)
 	METHOD_SIGNATURE("NOT IMPLEMENTED: restore the default system cursor",
@@ -1779,6 +1926,11 @@ METHOD_IMPL(Port, ResetCursor)
 	END
 
 CLEANUP_IMPL(Port)
+
+CPP_CONSTRUCTOR_IMPL(Port)
+    SAVE_ERR("Port cannot be created directly, use pdg.gfx.createWindowPort() or pdg.gfx.createFullScreenPort()");
+    return 0;
+    END
 
 %#endif //!PDG_NO_GUI
 
@@ -1816,7 +1968,7 @@ METHOD_IMPL(SoundManager, SetMute)
 //     RETURN( SoundManager_getScriptSingletonInstance() );
 //     END
 
-NATIVE_CONSTRUCTOR_IMPL(SoundManager)
+CPP_CONSTRUCTOR_IMPL(SoundManager)
 	return SoundManager::getSingletonInstance();
 	END
 
@@ -1825,9 +1977,9 @@ NATIVE_CONSTRUCTOR_IMPL(SoundManager)
 // ========================================================================================
 
 WRAPPER_INITIALIZER_IMPL_CUSTOM(Sound, 
-  nativeObj->mEventEmitterScriptObj = obj; 
-  nativeObj->mSoundScriptObj = obj;
-  nativeObj->addRef() )
+  OBJECT_SAVE(cppObj->mEventEmitterScriptObj, obj); 
+  OBJECT_SAVE(cppObj->mSoundScriptObj, obj);
+  cppObj->addRef() )
     EXPORT_CLASS_SYMBOLS("Sound", Sound, , ,
     	// method section
 		HAS_EMITTER_METHODS(Sound)
@@ -1855,8 +2007,7 @@ EMITTER_BASE_CLASS_IMPL(Sound)
 PROPERTY_IMPL(Sound, Volume, NUMBER)
 METHOD_IMPL(Sound, Play)
 	METHOD_SIGNATURE("", undefined, 0, (number vol = 1.0, [number int] offsetX = 0, number pitch = 0, [number uint] fromMs = 0, [number int] lenMs = ENTIRE_LENGTH));
-    REQUIRE_ARG_MIN_COUNT(0);
-	OPTIONAL_NUMBER_ARG(1, vol, 1.0); 
+	OPTIONAL_NUMBER_ARG(1, vol, 1.0);
 	OPTIONAL_INT32_ARG(2, offsetX, 0); 
 	OPTIONAL_NUMBER_ARG(3, pitch, 0.0); 
 	OPTIONAL_UINT32_ARG(4, fromMs, 0); 
@@ -2001,7 +2152,7 @@ METHOD_IMPL(Sound, SkipTo)
 
 CLEANUP_IMPL(Sound)
 
-NATIVE_CONSTRUCTOR_IMPL(Sound)
+CPP_CONSTRUCTOR_IMPL(Sound)
 	SETUP_NON_SCRIPT_CALL;
 	if (ARGC < 1) {
 		return 0;
@@ -2010,7 +2161,13 @@ NATIVE_CONSTRUCTOR_IMPL(Sound)
 		return 0;
 	} else {
 		VALUE_TO_CSTRING(filename, ARGV[0]);
-		return Sound::createSoundFromFile(filename);
+		Sound* snd = Sound::createSoundFromFile(filename);
+		if (!snd) {
+		    SAVE_ERR("could not create Sound from file ["<<filename<<"]");
+		    return 0;
+		} else {
+		    return snd;
+		}
 	}
 	END
 
@@ -2210,7 +2367,7 @@ STATIC_METHOD_IMPL(TimerManager, GetMilliseconds)
 	RETURN_UNSIGNED( OS::getMilliseconds() );
 	END
 
-NATIVE_CONSTRUCTOR_IMPL(TimerManager)
+CPP_CONSTRUCTOR_IMPL(TimerManager)
     return TimerManager::getSingletonInstance();
 	END
 
@@ -2220,8 +2377,8 @@ NATIVE_CONSTRUCTOR_IMPL(TimerManager)
 // ========================================================================================
 
 #define SETUP_CUSTOM_EASING(n) CR \
-  float customEasing##n(uint32 ut, float b, float c, uint32 ud) {	CR \
-	return CallScriptEasingFunc(n, ut, b, c, ud);					CR \
+  float customEasing##n(ms_delta ut, float b, float c, ms_delta ud) {	CR \
+	return CallScriptEasingFunc(n, ut, b, c, ud);					    CR \
   }
 
 SETUP_CUSTOM_EASING(0)
@@ -2321,7 +2478,7 @@ METHOD_IMPL(klass, GetBoundingBox) CR \
 	RETURN( RECT2VAL(r) ); CR \
 	END CR \
 METHOD_IMPL(klass, GetRotatedBounds) CR \
- 	METHOD_SIGNATURE("", [object Rect], 0, ()); CR \
+ 	METHOD_SIGNATURE("", [object RotatedRect], 0, ()); CR \
     REQUIRE_ARG_COUNT(0); CR \
     pdg::RotatedRect r = self->getRotatedBounds(); CR \
 	RETURN( RECT2VAL(r) ); CR \
@@ -2334,7 +2491,7 @@ METHOD_IMPL(klass, Move) CR \
 	int easing; CR \
 	if (VALUE_IS_OFFSET(ARGV[0])) { CR \
 		delta = VAL2OFFSET(ARGV[0]); CR \
-		OPTIONAL_INT32_ARG(2, msDuration_2, 0); CR \
+		OPTIONAL_INT32_ARG(2, msDuration_2, duration_Instantaneous); CR \
 		OPTIONAL_INT32_ARG(3, easing_3, EasingFuncRef::easeInOutQuad); CR \
 		msDuration = msDuration_2; CR \
 		easing = easing_3; CR \
@@ -2343,7 +2500,7 @@ METHOD_IMPL(klass, Move) CR \
 		REQUIRE_NUMBER_ARG(2, deltaY); CR \
 		delta.x = deltaX; CR \
 		delta.y = deltaY; CR \
-		OPTIONAL_INT32_ARG(3, msDuration_3, 0); CR \
+		OPTIONAL_INT32_ARG(3, msDuration_3, duration_Instantaneous); CR \
 		OPTIONAL_INT32_ARG(4, easing_4, EasingFuncRef::easeInOutQuad); CR \
 		msDuration = msDuration_3; CR \
 		easing = easing_4; CR \
@@ -2367,16 +2524,16 @@ METHOD_IMPL(klass, MoveTo) CR \
 	int easing; CR \
 	if (VALUE_IS_POINT(ARGV[0])) {  CR \
 		where = VAL2POINT(ARGV[0]); CR \
-		OPTIONAL_INT32_ARG(2, msDuration2, 0); CR \
+		OPTIONAL_INT32_ARG(2, msDuration_2, duration_Instantaneous); CR \
 		OPTIONAL_INT32_ARG(3, easing_3, EasingFuncRef::easeInOutQuad); CR \
 		easing = easing_3; CR \
-		msDuration = msDuration2; CR \
+		msDuration = msDuration_2; CR \
     } else { CR \
 		REQUIRE_NUMBER_ARG(1, x); CR \
 		REQUIRE_NUMBER_ARG(2, y); CR \
 		where.x = x; CR \
 		where.y = y; CR \
-		OPTIONAL_INT32_ARG(3, msDuration3, 0); CR \
+		OPTIONAL_INT32_ARG(3, msDuration3, duration_Instantaneous); CR \
 		OPTIONAL_INT32_ARG(4, easing_4, EasingFuncRef::easeInOutQuad); CR \
 		easing = easing_4; CR \
 		msDuration = msDuration3; CR \
@@ -2407,7 +2564,7 @@ METHOD_IMPL(klass, GetMovementDirectionInRadians) CR \
 	RETURN_NUMBER(dir); CR \
 	END CR \
 METHOD_IMPL(klass, SetVelocity) CR \
- 	METHOD_SIGNATURE("", [object Animated], 2, ({ ([object Vector] deltaPerSec) | (number deltaXPerSec, number deltaYPerSec) })); CR \
+ 	METHOD_SIGNATURE("", [object Animated], 2, ({[object Vector] deltaPerSec|number deltaXPerSec, number deltaYPerSec})); CR \
     REQUIRE_ARG_MIN_COUNT(1); CR \
 	pdg::Vector deltaPerSec; CR \
 	if (VALUE_IS_VECTOR(ARGV[0])) { CR \
@@ -2431,7 +2588,7 @@ METHOD_IMPL(klass, Accelerate) CR \
  	METHOD_SIGNATURE("", undefined, 3, (number deltaSpeed, [number int] msDuration = duration_Instantaneous, [number int] easing = linearTween)); CR \
     REQUIRE_ARG_MIN_COUNT(2); CR \
 	REQUIRE_NUMBER_ARG(1, deltaSpeed); CR \
-	REQUIRE_INT32_ARG(2, msDuration); CR \
+	OPTIONAL_INT32_ARG(2, msDuration, duration_Instantaneous); CR \
 	OPTIONAL_INT32_ARG(3, easing, EasingFuncRef::linearTween); CR \
 	if (easing >= 0 && easing < NUM_EASING_FUNCTIONS) { CR \
 		self->accelerate(deltaSpeed, msDuration, gEasingFunctions[easing]); CR \
@@ -2444,7 +2601,7 @@ METHOD_IMPL(klass, AccelerateTo) CR \
  	METHOD_SIGNATURE("", undefined, 3, (number speed, [number int] msDuration = duration_Instantaneous, [number int] easing = linearTween)); CR \
     REQUIRE_ARG_MIN_COUNT(2); CR \
 	REQUIRE_NUMBER_ARG(1, speed); CR \
-	REQUIRE_INT32_ARG(2, msDuration); CR \
+	OPTIONAL_INT32_ARG(2, msDuration, duration_Instantaneous); CR \
 	OPTIONAL_INT32_ARG(3, easing, EasingFuncRef::linearTween); CR \
 	if (easing >= 0 && easing < NUM_EASING_FUNCTIONS) { CR \
 		self->accelerateTo(speed, msDuration, gEasingFunctions[easing]); CR \
@@ -2465,7 +2622,7 @@ METHOD_IMPL(klass, Grow) CR \
  	METHOD_SIGNATURE("", undefined, 3, (number factor, [number int] msDuration = duration_Instantaneous, [number int] easing = easeInOutQuad)); CR \
     REQUIRE_ARG_MIN_COUNT(1); CR \
 	REQUIRE_NUMBER_ARG(1, factor); CR \
-	OPTIONAL_INT32_ARG(2, msDuration, 0); CR \
+	OPTIONAL_INT32_ARG(2, msDuration, duration_Instantaneous); CR \
 	OPTIONAL_INT32_ARG(3, easing, EasingFuncRef::easeInOutQuad); CR \
 	if (msDuration == 0) { CR \
 		self->grow(factor); CR \
@@ -2528,7 +2685,7 @@ METHOD_IMPL(klass, Resize) CR \
     REQUIRE_ARG_MIN_COUNT(3); CR \
 	REQUIRE_NUMBER_ARG(1, deltaWidth); CR \
 	REQUIRE_NUMBER_ARG(2, deltaHeight); CR \
-	REQUIRE_INT32_ARG(3, msDuration); CR \
+	OPTIONAL_INT32_ARG(3, msDuration, duration_Instantaneous); CR \
 	OPTIONAL_INT32_ARG(4, easing, EasingFuncRef::easeInOutQuad); CR \
 	if (easing >= 0 && easing < NUM_EASING_FUNCTIONS) { CR \
 		self->resize(deltaWidth, deltaHeight, msDuration, gEasingFunctions[easing]); CR \
@@ -2542,7 +2699,7 @@ METHOD_IMPL(klass, ResizeTo) CR \
     REQUIRE_ARG_MIN_COUNT(3); CR \
 	REQUIRE_NUMBER_ARG(1, width); CR \
 	REQUIRE_NUMBER_ARG(2, height); CR \
-	REQUIRE_INT32_ARG(3, msDuration); CR \
+	OPTIONAL_INT32_ARG(3, msDuration, duration_Instantaneous); CR \
 	OPTIONAL_INT32_ARG(4, easing, EasingFuncRef::easeInOutQuad); CR \
 	if (easing >= 0 && easing < NUM_EASING_FUNCTIONS) { CR \
 		self->resizeTo(width, height, msDuration, gEasingFunctions[easing]); CR \
@@ -2572,7 +2729,7 @@ METHOD_IMPL(klass, RotateTo) CR \
  	METHOD_SIGNATURE("", undefined, 4, (number radiansRotation, [number int] msDuration = duration_Instantaneous, [number int] easing = easeInOutQuad)); CR \
     REQUIRE_ARG_MIN_COUNT(1); CR \
 	REQUIRE_NUMBER_ARG(1, radiansRotation); CR \
-	OPTIONAL_INT32_ARG(2, msDuration, 0); CR \
+	OPTIONAL_INT32_ARG(2, msDuration, duration_Instantaneous); CR \
 	OPTIONAL_INT32_ARG(3, easing, EasingFuncRef::easeInOutQuad); CR \
 	if (msDuration == 0) { CR \
 		self->rotateTo(radiansRotation); CR \
@@ -2599,19 +2756,19 @@ METHOD_IMPL(klass, ChangeCenter) CR \
 	int easing; CR \
 	if (VALUE_IS_OFFSET(ARGV[0])) { CR \
 		offset = VAL2OFFSET(ARGV[0]);  CR \
-		REQUIRE_INT32_ARG(2, msDuration2); CR \
+		REQUIRE_INT32_ARG(2, msDuration_2); CR \
 		OPTIONAL_INT32_ARG(3, easing_3, EasingFuncRef::easeInOutQuad); CR \
 		easing = easing_3; CR \
-		msDuration = msDuration2; CR \
+		msDuration = msDuration_2; CR \
     } else { CR \
 		REQUIRE_NUMBER_ARG(1, deltaXOffset); CR \
 		REQUIRE_NUMBER_ARG(2, deltaYOffset); CR \
 		offset.x = deltaXOffset; CR \
 		offset.y = deltaYOffset; CR \
-		REQUIRE_INT32_ARG(3, msDuration3); CR \
+		REQUIRE_INT32_ARG(3, msDuration_3); CR \
 		OPTIONAL_INT32_ARG(4, easing_4, EasingFuncRef::easeInOutQuad); CR \
 		easing = easing_4; CR \
-		msDuration = msDuration3; CR \
+		msDuration = msDuration_3; CR \
     } CR \
 	if (easing >= 0 && easing < NUM_EASING_FUNCTIONS) { CR \
 		self->changeCenter(offset, msDuration, gEasingFunctions[easing]); CR \
@@ -2628,19 +2785,19 @@ METHOD_IMPL(klass, ChangeCenterTo) CR \
 	int easing; CR \
 	if (VALUE_IS_OFFSET(ARGV[0])) { CR \
 		offset = VAL2OFFSET(ARGV[0]);  CR \
-		REQUIRE_INT32_ARG(2, msDuration2); CR \
+		REQUIRE_INT32_ARG(2, msDuration_2); CR \
 		OPTIONAL_INT32_ARG(3, easing_3, EasingFuncRef::easeInOutQuad); CR \
 		easing = easing_3; CR \
-		msDuration = msDuration2; CR \
+		msDuration = msDuration_2; CR \
     } else { CR \
 		REQUIRE_NUMBER_ARG(1, deltaXOffset); CR \
 		REQUIRE_NUMBER_ARG(2, deltaYOffset); CR \
 		offset.x = deltaXOffset; CR \
 		offset.y = deltaYOffset; CR \
-		REQUIRE_INT32_ARG(3, msDuration3); CR \
+		REQUIRE_INT32_ARG(3, msDuration_3); CR \
 		OPTIONAL_INT32_ARG(4, easing_4, EasingFuncRef::easeInOutQuad); CR \
 		easing = easing_4; CR \
-		msDuration = msDuration3; CR \
+		msDuration = msDuration_3; CR \
     } CR \
 	if (easing >= 0 && easing < NUM_EASING_FUNCTIONS) { CR \
 		self->changeCenterTo(offset, msDuration, gEasingFunctions[easing]); CR \
@@ -2667,7 +2824,7 @@ METHOD_IMPL(klass, ApplyForce) CR \
 	METHOD_SIGNATURE("", undefined, 2, ([object Vector] force, [number int] msDuration = duration_Instantaneous)); CR \
     REQUIRE_ARG_MIN_COUNT(1); CR \
 	REQUIRE_VECTOR_ARG(1, force); CR \
-	OPTIONAL_INT32_ARG(2, msDuration, Animated::duration_Instantaneous); CR \
+	OPTIONAL_INT32_ARG(2, msDuration, duration_Instantaneous); CR \
 	self->applyForce(force, msDuration); CR \
 	NO_RETURN; CR \
 	END CR \
@@ -2675,7 +2832,7 @@ METHOD_IMPL(klass, ApplyTorque) CR \
 	METHOD_SIGNATURE("", undefined, 2, (number forceSpin, [number int] msDuration = duration_Instantaneous)); CR \
     REQUIRE_ARG_MIN_COUNT(1); CR \
 	REQUIRE_NUMBER_ARG(1, forceSpin); CR \
-	OPTIONAL_INT32_ARG(2, msDuration, Animated::duration_Instantaneous); CR \
+	OPTIONAL_INT32_ARG(2, msDuration, duration_Instantaneous); CR \
 	self->applyTorque(forceSpin, msDuration); CR \
 	NO_RETURN; CR \
 	END CR \
@@ -2690,14 +2847,14 @@ METHOD_IMPL(klass, AddAnimationHelper) CR \
 	OBJECT_SAVE(self->mAnimatedScriptObj, THIS); CR \
     DEBUG_DUMP_SCRIPT_OBJECT(ARGV[0], IAnimationHelper); CR \
     REQUIRE_ARG_COUNT(1); CR \
-	REQUIRE_NATIVE_OBJECT_OR_SUBCLASS_ARG(1, helper, IAnimationHelper); CR \
+	REQUIRE_CPP_OBJECT_OR_SUBCLASS_ARG(1, helper, IAnimationHelper); CR \
 	self->addAnimationHelper(helper); CR \
 	NO_RETURN; CR \
 	END CR \
 METHOD_IMPL(klass, RemoveAnimationHelper) CR \
 	METHOD_SIGNATURE("", undefined, 1, ([object IAnimationHelper] helper)); CR \
     REQUIRE_ARG_COUNT(1); CR \
-	REQUIRE_NATIVE_OBJECT_ARG(1, helper, IAnimationHelper); CR \
+	REQUIRE_CPP_OBJECT_ARG(1, helper, IAnimationHelper); CR \
 	self->removeAnimationHelper(helper); CR \
 	NO_RETURN; CR \
 	END CR \
@@ -2710,7 +2867,7 @@ METHOD_IMPL(klass, ClearAnimationHelpers) CR \
 
 
 WRAPPER_INITIALIZER_IMPL_CUSTOM(Animated,
-  nativeObj->mAnimatedScriptObj = obj)
+  OBJECT_SAVE(cppObj->mAnimatedScriptObj, obj) )
     EXPORT_CLASS_SYMBOLS("Animated", Animated, , , 
 		HAS_ANIMATED_METHODS(Animated)
 		HAS_METHOD(Animated, "animate", Animate)
@@ -2728,7 +2885,7 @@ METHOD_IMPL(Animated, Animate)
 
 CLEANUP_IMPL(Animated)
 
-NATIVE_CONSTRUCTOR_IMPL(Animated)
+CPP_CONSTRUCTOR_IMPL(Animated)
     return new Animated();
 	END
 
@@ -2744,7 +2901,8 @@ WRAPPER_INITIALIZER_IMPL_CUSTOM(cpArbiter, )
 		HAS_METHOD(cpArbiter, "isFirstContact", IsFirstContact)
 		HAS_GETTER(cpArbiter, Count)
 		HAS_GETTER(cpArbiter, Normal)
-		HAS_GETTER(cpArbiter, Point)
+		HAS_GETTER(cpArbiter, PointA)
+		HAS_GETTER(cpArbiter, PointB)
 		HAS_GETTER(cpArbiter, Depth)
     );
 	END
@@ -2757,21 +2915,25 @@ METHOD_IMPL(cpArbiter, IsFirstContact)
 	RETURN_BOOL(isFirst);
 	END
 CP_GETTER_IMPL(cpArbiter, Count, INTEGER)
-CUSTOM_GETTER_IMPL(cpArbiter, Normal, VECTOR, 1, ,
+CUSTOM_GETTER_IMPL(cpArbiter, Normal, VECTOR, 0, , ,
+	cpVect nv = cpArbiterGetNormal(self); CR
+	pdg::Vector theNormal(nv.x, nv.y), () )
+CUSTOM_GETTER_IMPL(cpArbiter, PointA, POINT, 1, ,
 	REQUIRE_INT32_ARG(1, i); CR ,
-	cpVect normal = cpArbiterGetNormal(self, i); CR
-	pdg::Vector theNormal(normal.x, normal.y), ([number int] i) )
-CUSTOM_GETTER_IMPL(cpArbiter, Point, POINT, 1, ,
+	cpVect pt = cpArbiterGetPointA(self, i); CR
+	pdg::Point thePointA(pt.x, pt.y), ([number int] i) )
+CUSTOM_GETTER_IMPL(cpArbiter, PointB, POINT, 1, ,
 	REQUIRE_INT32_ARG(1, i); CR ,
-	cpVect pt = cpArbiterGetPoint(self, i); CR
-	pdg::Point thePoint(pt.x, pt.y), ([number int] i) )
+	cpVect pt = cpArbiterGetPointB(self, i); CR
+	pdg::Point thePointB(pt.x, pt.y), ([number int] i) )
 CUSTOM_GETTER_IMPL(cpArbiter, Depth, NUMBER, 1, ,
 	REQUIRE_INT32_ARG(1, i); CR ,
 	cpFloat theDepth = cpArbiterGetDepth(self, i), ([number int] i) )
 
-// NATIVE_CONSTRUCTOR_IMPL(cpArbiter)
-// 	return 0;
-//	END
+CPP_CONSTRUCTOR_IMPL(cpArbiter)
+    SAVE_ERR("CpArbiter cannot be created directly, it is only returned from certain Sprite calls.");
+ 	return 0;
+	END
 
 
 // ========================================================================================
@@ -2853,27 +3015,27 @@ METHOD_IMPL(cpConstraint, ActivateBodies);
 METHOD_IMPL(cpConstraint, GetSprite);
 	METHOD_SIGNATURE("", [object Sprite], 0, ());
 	REQUIRE_ARG_COUNT(0);
-	cpBody* body = cpConstraintGetA(self);
+	cpBody* body = cpConstraintGetBodyA(self);
 	Sprite* sprite = (Sprite*) cpBodyGetUserData(body);
-	RETURN_NATIVE_OBJECT(sprite, Sprite);
+	RETURN_CPP_OBJECT(sprite, Sprite);
 	END
 METHOD_IMPL(cpConstraint, GetOtherSprite);
 	METHOD_SIGNATURE("", [object Sprite], 0, ());
 	REQUIRE_ARG_COUNT(0);
-	cpBody* body = cpConstraintGetB(self);
+	cpBody* body = cpConstraintGetBodyB(self);
 	Sprite* otherSprite = (Sprite*) cpBodyGetUserData(body);
-	RETURN_NATIVE_OBJECT(otherSprite, Sprite);
+	RETURN_CPP_OBJECT(otherSprite, Sprite);
 	END
 CUSTOM_GETTER_IMPL(cpConstraint, Anchor, OFFSET, 0, , ,
 	cpVect anchor; CR
 	IF_CONSTRAINT_TYPE(PinJoint) { CR
-		anchor = cpPinJointGetAnchr1(self);
+		anchor = cpPinJointGetAnchorA(self);
 	} else IF_CONSTRAINT_TYPE(SlideJoint) { CR
-		anchor = cpSlideJointGetAnchr1(self);
+		anchor = cpSlideJointGetAnchorA(self);
 	} else IF_CONSTRAINT_TYPE(PivotJoint) { CR
-		anchor = cpPivotJointGetAnchr1(self);
+		anchor = cpPivotJointGetAnchorA(self);
 	} else IF_CONSTRAINT_TYPE(SpringJoint) { CR
-		anchor = cpDampedSpringGetAnchr1(self);
+		anchor = cpDampedSpringGetAnchorA(self);
 	} else { CR
 		RETURN_UNDEFINED; CR
 	} CR
@@ -2881,13 +3043,13 @@ CUSTOM_GETTER_IMPL(cpConstraint, Anchor, OFFSET, 0, , ,
 CUSTOM_SETTER_IMPL(cpConstraint, Anchor, OFFSET, 1, , ,
 	cpVect anchor = cpv(theAnchor.x, theAnchor.y); CR
 	IF_CONSTRAINT_TYPE(PinJoint) { CR
-		cpPinJointSetAnchr1(self, anchor);
+		cpPinJointSetAnchorA(self, anchor);
 	} else IF_CONSTRAINT_TYPE(SlideJoint) { CR
-		cpSlideJointSetAnchr1(self, anchor);
+		cpSlideJointSetAnchorA(self, anchor);
 	} else IF_CONSTRAINT_TYPE(PivotJoint) { CR
-		cpPivotJointSetAnchr1(self, anchor);
+		cpPivotJointSetAnchorA(self, anchor);
 	} else IF_CONSTRAINT_TYPE(SpringJoint) { CR
-		cpDampedSpringSetAnchr1(self, anchor);
+		cpDampedSpringSetAnchorA(self, anchor);
 	} else { CR
 		std::ostringstream msg; CR
         msg << "cpConstraint.setAnchor() not valid for constraint type "  CR
@@ -2897,15 +3059,15 @@ CUSTOM_SETTER_IMPL(cpConstraint, Anchor, OFFSET, 1, , ,
 CUSTOM_GETTER_IMPL(cpConstraint, OtherAnchor, OFFSET, 0, , ,
 	cpVect anchor; CR
 	IF_CONSTRAINT_TYPE(PinJoint) { CR
-		anchor = cpPinJointGetAnchr2(self);
+		anchor = cpPinJointGetAnchorB(self);
 	} else IF_CONSTRAINT_TYPE(SlideJoint) { CR
-		anchor = cpSlideJointGetAnchr2(self);
+		anchor = cpSlideJointGetAnchorB(self);
 	} else IF_CONSTRAINT_TYPE(PivotJoint) { CR
-		anchor = cpPivotJointGetAnchr2(self);
+		anchor = cpPivotJointGetAnchorB(self);
 	} else IF_CONSTRAINT_TYPE(GrooveJoint) { CR
-		anchor = cpGrooveJointGetAnchr2(self);
+		anchor = cpGrooveJointGetAnchorB(self);
 	} else IF_CONSTRAINT_TYPE(SpringJoint) { CR
-		anchor = cpDampedSpringGetAnchr2(self);
+		anchor = cpDampedSpringGetAnchorB(self);
 	} else { CR
 		RETURN_UNDEFINED; CR
 	} CR
@@ -2913,15 +3075,15 @@ CUSTOM_GETTER_IMPL(cpConstraint, OtherAnchor, OFFSET, 0, , ,
 CUSTOM_SETTER_IMPL(cpConstraint, OtherAnchor, OFFSET, 1, , ,
 	cpVect anchor = cpv(theOtherAnchor.x, theOtherAnchor.y); CR
 	IF_CONSTRAINT_TYPE(PinJoint) { CR
-		cpPinJointSetAnchr2(self, anchor);
+		cpPinJointSetAnchorB(self, anchor);
 	} else IF_CONSTRAINT_TYPE(SlideJoint) { CR
-		cpSlideJointSetAnchr2(self, anchor);
+		cpSlideJointSetAnchorB(self, anchor);
 	} else IF_CONSTRAINT_TYPE(PivotJoint) { CR
-		cpPivotJointSetAnchr2(self, anchor);
+		cpPivotJointSetAnchorB(self, anchor);
 	} else IF_CONSTRAINT_TYPE(GrooveJoint) { CR
-		cpGrooveJointSetAnchr2(self, anchor);
+		cpGrooveJointSetAnchorB(self, anchor);
 	} else IF_CONSTRAINT_TYPE(SpringJoint) { CR
-		cpDampedSpringSetAnchr2(self, anchor);
+		cpDampedSpringSetAnchorB(self, anchor);
 	} else { CR
 		std::ostringstream msg; CR
         msg << "cpConstraint.setOtherAnchor() not valid for constraint type "  CR
@@ -2990,9 +3152,10 @@ CUSTOM_SETTER_IMPL(cpConstraint, SpringDamping, NUMBER, 1, , ,
 		THROW_TYPE_ERR(msg.str().c_str()) ; CR
 	})
 
-// NATIVE_CONSTRUCTOR_IMPL(cpConstraint)
-// 	return 0;
-//	END
+CPP_CONSTRUCTOR_IMPL(cpConstraint)
+    SAVE_ERR("CpConstraint cannot be created directly, it is only returned from certain Sprite calls.");
+ 	return 0;
+	END
 
 // ========================================================================================
 //MARK: cpSpace
@@ -3009,7 +3172,6 @@ WRAPPER_INITIALIZER_IMPL_CUSTOM(cpSpace, )
 		HAS_PROPERTY(cpSpace, CollisionSlop)
 		HAS_PROPERTY(cpSpace, CollisionBias)
 		HAS_PROPERTY(cpSpace, CollisionPersistence)
-		HAS_PROPERTY(cpSpace, EnableContactGraph)
     );
 	END
 METHOD_IMPL(cpSpace, UseSpatialHash)
@@ -3038,11 +3200,11 @@ CP_PROPERTY_IMPL(cpSpace, SleepTimeThreshold, NUMBER)
 CP_PROPERTY_IMPL(cpSpace, CollisionSlop, NUMBER)
 CP_PROPERTY_IMPL(cpSpace, CollisionBias, NUMBER)
 CP_PROPERTY_IMPL(cpSpace, CollisionPersistence, NUMBER)
-CP_PROPERTY_IMPL(cpSpace, EnableContactGraph, BOOL)
 
-// NATIVE_CONSTRUCTOR_IMPL(cpSpace)
-// 	return 0;
-//	END
+CPP_CONSTRUCTOR_IMPL(cpSpace)
+    SAVE_ERR("CpSpace cannot be created directly, it is only returned from certain Sprite calls.");
+ 	return 0;
+	END
 
 %#endif // PDG_USE_CHIPMUNK_PHYSICS
 
@@ -3088,11 +3250,11 @@ static const char* sGearStr = "Gear";
 static const char* sMotorStr = "Motor";
 
 WRAPPER_INITIALIZER_IMPL_CUSTOM(Sprite, 
-  nativeObj->mEventEmitterScriptObj = obj; 
-  nativeObj->mAnimatedScriptObj = obj;
-  nativeObj->mSpriteScriptObj = obj;
-  nativeObj->mISerializableScriptObj = obj;
-  nativeObj->addRef() )
+  OBJECT_SAVE(cppObj->mEventEmitterScriptObj, obj); 
+  OBJECT_SAVE(cppObj->mAnimatedScriptObj, obj);
+  OBJECT_SAVE(cppObj->mSpriteScriptObj, obj);
+  OBJECT_SAVE(cppObj->mISerializableScriptObj, obj);
+  cppObj->addRef() )
     EXPORT_CLASS_SYMBOLS("Sprite", Sprite, , ,
     	// method section
 		HAS_EMITTER_METHODS(Sprite)
@@ -3104,9 +3266,9 @@ WRAPPER_INITIALIZER_IMPL_CUSTOM(Sprite,
 		HAS_METHOD(Sprite, "getFrameCount", GetFrameCount)
 		HAS_METHOD(Sprite, "startFrameAnimation", StartFrameAnimation)
 		HAS_METHOD(Sprite, "stopFrameAnimation", StopFrameAnimation)
-		HAS_METHOD(Sprite, "setWantsAnimLoopEvents", SetWantsAnimLoopEvents)
-		HAS_METHOD(Sprite, "setWantsAnimEndEvents", SetWantsAnimEndEvents)
-		HAS_METHOD(Sprite, "setWantsCollideWallEvents", SetWantsCollideWallEvents)
+		HAS_PROPERTY(Sprite, WantsAnimLoopEvents)
+		HAS_PROPERTY(Sprite, WantsAnimEndEvents)
+		HAS_PROPERTY(Sprite, WantsCollideWallEvents)
 		HAS_METHOD(Sprite, "addFramesImage", AddFramesImage)
 	%#ifdef PDG_SCML_SUPPORT CR
 		HAS_METHOD(Sprite, "hasAnimation", HasAnimation)
@@ -3116,8 +3278,7 @@ WRAPPER_INITIALIZER_IMPL_CUSTOM(Sprite,
 		HAS_METHOD(Sprite, "changeFramesImage", ChangeFramesImage)
 		HAS_METHOD(Sprite, "offsetFrameCenters", OffsetFrameCenters)
 		HAS_METHOD(Sprite, "getFrameCenterOffset", GetFrameCenterOffset)
-		HAS_METHOD(Sprite, "setOpacity", SetOpacity)
-		HAS_METHOD(Sprite, "getOpacity", GetOpacity)
+		HAS_PROPERTY(Sprite, Opacity)
 		HAS_METHOD(Sprite, "fadeTo", FadeTo)
 		HAS_METHOD(Sprite, "fadeIn", FadeIn)
 		HAS_METHOD(Sprite, "fadeOut", FadeOut)
@@ -3129,20 +3290,18 @@ WRAPPER_INITIALIZER_IMPL_CUSTOM(Sprite,
 		HAS_METHOD(Sprite, "moveToBack", MoveToBack)
 		HAS_METHOD(Sprite, "enableCollisions", EnableCollisions)
 		HAS_METHOD(Sprite, "disableCollisions", DisableCollisions)
-		HAS_METHOD(Sprite, "setCollisionRadius", SetCollisionRadius)
-		HAS_METHOD(Sprite, "getCollisionRadius", GetCollisionRadius)
+		HAS_PROPERTY(Sprite, CollisionRadius)
 		HAS_METHOD(Sprite, "useCollisionMask", UseCollisionMask)
 		HAS_METHOD(Sprite, "setCollisionHelper", SetCollisionHelper)
-		HAS_METHOD(Sprite, "setElasticity", SetElasticity)
-		HAS_METHOD(Sprite, "getElasticity", GetElasticity)
+		HAS_PROPERTY(Sprite, Elasticity)
 		HAS_METHOD(Sprite, "getLayer", GetLayer)
 	%#ifndef PDG_NO_GUI  CR
 		HAS_METHOD(Sprite, "setDrawHelper", SetDrawHelper)
 		HAS_METHOD(Sprite, "setPostDrawHelper", SetPostDrawHelper)
-		HAS_METHOD(Sprite, "setWantsMouseOverEvents", SetWantsMouseOverEvents)
-		HAS_METHOD(Sprite, "setWantsClickEvents", SetWantsClickEvents)
-		HAS_METHOD(Sprite, "setMouseDetectMode", SetMouseDetectMode)
-		HAS_METHOD(Sprite, "setWantsOffscreenEvents", SetWantsOffscreenEvents)
+		HAS_PROPERTY(Sprite, WantsMouseOverEvents)
+		HAS_PROPERTY(Sprite, WantsClickEvents)
+		HAS_PROPERTY(Sprite, MouseDetectMode)
+		HAS_PROPERTY(Sprite, WantsOffscreenEvents)
 	%#endif  CR // !PDG_NO_GUI
 	  %#ifdef PDG_USE_CHIPMUNK_PHYSICS CR
 		HAS_METHOD(Sprite, "makeStatic", MakeStatic)
@@ -3169,11 +3328,19 @@ WRAPPER_INITIALIZER_IMPL_CUSTOM(Sprite,
 EMITTER_BASE_CLASS_IMPL(Sprite)
 ANIMATED_BASE_CLASS_IMPL(Sprite)
 SERIALIZABLE_BASE_CLASS_IMPL(Sprite)
+GETTER_IMPL(Sprite, WantsAnimLoopEvents, BOOL)
+GETTER_IMPL(Sprite, WantsAnimEndEvents, BOOL)
+GETTER_IMPL(Sprite, WantsCollideWallEvents, BOOL)
+%#ifndef PDG_NO_GUI  CR
+  GETTER_IMPL(Sprite, WantsMouseOverEvents, BOOL)
+  GETTER_IMPL(Sprite, WantsClickEvents, BOOL)
+  GETTER_IMPL(Sprite, MouseDetectMode, INTEGER)
+  GETTER_IMPL(Sprite, WantsOffscreenEvents, BOOL)
+%#endif  CR // !PDG_NO_GUI
 METHOD_IMPL(Sprite, GetFrameRotatedBounds)
-	METHOD_SIGNATURE("", [object Rect], 1, ([number int] frame));
-    REQUIRE_ARG_COUNT(1);
-    REQUIRE_INT32_ARG(1, frame);
-    pdg::RotatedRect r = self->getFrameRotatedBounds(frame);
+	METHOD_SIGNATURE("", [object RotatedRect], 0, ([number int] frameNum = -1));
+    OPTIONAL_INT32_ARG(1, frameNum, -1);
+    pdg::RotatedRect r = self->getFrameRotatedBounds(frameNum);
 	RETURN( RECT2VAL(r) );
 	END
 METHOD_IMPL(Sprite, SetFrame)
@@ -3214,22 +3381,19 @@ METHOD_IMPL(Sprite, StopFrameAnimation)
 	NO_RETURN;
 	END
 METHOD_IMPL(Sprite, SetWantsAnimLoopEvents)
-	METHOD_SIGNATURE("", boolean, 0, (boolean wantsThem = true));
-    REQUIRE_ARG_MIN_COUNT(0);
+	METHOD_SIGNATURE("", [object Sprite], 0, (boolean wantsThem = true));
     OPTIONAL_BOOL_ARG(1, wantsThem, true);
-	bool wanted = self->setWantsAnimLoopEvents(wantsThem);
-	RETURN_BOOL(wanted);
+	self->setWantsAnimLoopEvents(wantsThem);
+	RETURN_THIS;
 	END
 METHOD_IMPL(Sprite, SetWantsAnimEndEvents)
-	METHOD_SIGNATURE("", boolean, 0, (boolean wantsThem = true));
-    REQUIRE_ARG_MIN_COUNT(0);
+	METHOD_SIGNATURE("", [object Sprite], 0, (boolean wantsThem = true));
     OPTIONAL_BOOL_ARG(1, wantsThem, true);
-	bool wanted = self->setWantsAnimEndEvents(wantsThem);
-	RETURN_BOOL(wanted);
+	self->setWantsAnimEndEvents(wantsThem);
+	RETURN_THIS;
 	END
 METHOD_IMPL(Sprite, SetWantsCollideWallEvents)
 	METHOD_SIGNATURE("", [object Sprite], 0, (boolean wantsThem = true));
-    REQUIRE_ARG_MIN_COUNT(0);
     OPTIONAL_BOOL_ARG(1, wantsThem, true);
 	self->setWantsCollideWallEvents(wantsThem);
 	RETURN_THIS;
@@ -3237,7 +3401,7 @@ METHOD_IMPL(Sprite, SetWantsCollideWallEvents)
 METHOD_IMPL(Sprite, AddFramesImage)
 	METHOD_SIGNATURE("", undefined, 3, ([object Image] image, [number int] startingFrame = start_FromFirstFrame, [number int] numFrames = all_Frames));
     REQUIRE_ARG_MIN_COUNT(1);
-    REQUIRE_NATIVE_OBJECT_ARG(1, image, Image);
+    REQUIRE_CPP_OBJECT_ARG(1, image, Image);
     OPTIONAL_INT32_ARG(2, startingFrame, Sprite::start_FromFirstFrame);
     OPTIONAL_INT32_ARG(3, numFrames, Sprite::all_Frames);
 	self->addFramesImage(image, startingFrame, numFrames);
@@ -3281,7 +3445,6 @@ METHOD_IMPL(Sprite, SetEntityScale)
 %#ifndef PDG_NO_GUI
 METHOD_IMPL(Sprite, SetWantsOffscreenEvents)
 	METHOD_SIGNATURE("", [object Sprite], 0, (boolean wantsThem = true));
-    REQUIRE_ARG_MIN_COUNT(0);
     OPTIONAL_BOOL_ARG(1, wantsThem, true);
 	self->setWantsOffscreenEvents(wantsThem);
 	RETURN_THIS;
@@ -3290,7 +3453,7 @@ METHOD_IMPL(Sprite, SetDrawHelper)
 	METHOD_SIGNATURE("", undefined, 1, ([object ISpriteDrawHelper] helper));
 	OBJECT_SAVE(self->mSpriteScriptObj, THIS);
     REQUIRE_ARG_COUNT(1);
-    REQUIRE_NATIVE_OBJECT_OR_SUBCLASS_OR_NULL_ARG(1, helper, ISpriteDrawHelper);
+    REQUIRE_CPP_OBJECT_OR_SUBCLASS_OR_NULL_ARG(1, helper, ISpriteDrawHelper);
 	DEBUG_DUMP_SCRIPT_OBJECT(ARGV[0], ISpriteDrawHelper)	
     self->setDrawHelper(helper);
 	NO_RETURN;
@@ -3299,7 +3462,7 @@ METHOD_IMPL(Sprite, SetPostDrawHelper)
 	METHOD_SIGNATURE("", undefined, 1, ([object ISpriteDrawHelper] helper));
 	OBJECT_SAVE(self->mSpriteScriptObj, THIS);
     REQUIRE_ARG_COUNT(1);
-    REQUIRE_NATIVE_OBJECT_OR_SUBCLASS_OR_NULL_ARG(1, helper, ISpriteDrawHelper);
+    REQUIRE_CPP_OBJECT_OR_SUBCLASS_OR_NULL_ARG(1, helper, ISpriteDrawHelper);
 	DEBUG_DUMP_SCRIPT_OBJECT(ARGV[0], ISpriteDrawHelper)	
     self->setPostDrawHelper(helper);
 	NO_RETURN;
@@ -3308,8 +3471,8 @@ METHOD_IMPL(Sprite, SetPostDrawHelper)
 METHOD_IMPL(Sprite, ChangeFramesImage)
 	METHOD_SIGNATURE("", undefined, 2, ([object Image] oldImage, [object Image] newImage));
     REQUIRE_ARG_COUNT(2);
-    REQUIRE_NATIVE_OBJECT_ARG(1, oldImage, Image);
-    REQUIRE_NATIVE_OBJECT_ARG(2, newImage, Image);
+    REQUIRE_CPP_OBJECT_ARG(1, oldImage, Image);
+    REQUIRE_CPP_OBJECT_ARG(2, newImage, Image);
 	self->changeFramesImage(oldImage, newImage);
 	NO_RETURN;
 	END
@@ -3318,21 +3481,17 @@ METHOD_IMPL(Sprite, OffsetFrameCenters)
     REQUIRE_ARG_MIN_COUNT(2);
     REQUIRE_INT32_ARG(1, offsetX);
     REQUIRE_INT32_ARG(2, offsetY);
-    OPTIONAL_NATIVE_OBJECT_ARG(3, image, Image, 0);
+    OPTIONAL_CPP_OBJECT_ARG(3, image, Image, 0);
     OPTIONAL_INT32_ARG(4, startingFrame, Sprite::start_FromFirstFrame);
     OPTIONAL_INT32_ARG(5, numFrames, Sprite::all_Frames);
 	self->offsetFrameCenters(offsetX, offsetY, image, startingFrame, numFrames);
 	NO_RETURN;
 	END
 METHOD_IMPL(Sprite, GetFrameCenterOffset)
-	METHOD_SIGNATURE("", Offset, 2, ([object Image] image = null, [number int] frameNum = 0));
-    REQUIRE_ARG_MIN_COUNT(0);
-    OPTIONAL_NATIVE_OBJECT_ARG(1, image, Image, 0);
+	METHOD_SIGNATURE("", [object Offset], 2, ([object Image] image = null, [number int] frameNum = 0));
+    OPTIONAL_CPP_OBJECT_ARG(1, image, Image, 0);
     OPTIONAL_INT32_ARG(2, frameNum, 0);
-	int offsetX;
-	int offsetY;
-	self->getFrameCenterOffset(offsetX, offsetY, image, frameNum);
-	pdg::Offset offset(offsetX, offsetY);
+	pdg::Offset offset = self->getFrameCenterOffset(image, frameNum);
 	RETURN_OFFSET(offset);
 	END
 METHOD_IMPL(Sprite, SetOpacity)
@@ -3388,7 +3547,7 @@ METHOD_IMPL(Sprite, FadeOut)
 METHOD_IMPL(Sprite, IsBehind)
 	METHOD_SIGNATURE("", boolean, 1, ([object Sprite] sprite));
     REQUIRE_ARG_COUNT(1);
-    REQUIRE_NATIVE_OBJECT_ARG(1, sprite, Sprite);
+    REQUIRE_CPP_OBJECT_ARG(1, sprite, Sprite);
 	bool behind = self->isBehind(sprite);
 	RETURN_BOOL(behind);
 	END
@@ -3401,14 +3560,14 @@ METHOD_IMPL(Sprite, GetZOrder)
 METHOD_IMPL(Sprite, MoveBehind)
 	METHOD_SIGNATURE("", [object Sprite], 1, ([object Sprite] sprite));
     REQUIRE_ARG_COUNT(1);
-    REQUIRE_NATIVE_OBJECT_ARG(1, sprite, Sprite);
+    REQUIRE_CPP_OBJECT_ARG(1, sprite, Sprite);
 	self->moveBehind(sprite);
 	RETURN_THIS;
 	END
 METHOD_IMPL(Sprite, MoveInFrontOf)
 	METHOD_SIGNATURE("", [object Sprite], 1, ([object Sprite] sprite));
     REQUIRE_ARG_COUNT(1);
-    REQUIRE_NATIVE_OBJECT_ARG(1, sprite, Sprite);
+    REQUIRE_CPP_OBJECT_ARG(1, sprite, Sprite);
 	self->moveInFrontOf(sprite);
 	RETURN_THIS;
 	END
@@ -3426,7 +3585,6 @@ METHOD_IMPL(Sprite, MoveToBack)
 	END
 METHOD_IMPL(Sprite, EnableCollisions)
 	METHOD_SIGNATURE("", [object Sprite], 1, ([number int] collisionType = collide_AlphaChannel));
-    REQUIRE_ARG_MIN_COUNT(0);
     OPTIONAL_INT32_ARG(1, collisionType, Sprite::collide_AlphaChannel);
 	self->enableCollisions(collisionType);
 	RETURN_THIS;
@@ -3453,8 +3611,8 @@ METHOD_IMPL(Sprite, GetCollisionRadius)
 METHOD_IMPL(Sprite, UseCollisionMask)
 	METHOD_SIGNATURE("", undefined, 2, ([object Image] frameImage, [object Image] maskImage));
     REQUIRE_ARG_COUNT(2);
-    REQUIRE_NATIVE_OBJECT_ARG(1, frameImage, Image);
-    REQUIRE_NATIVE_OBJECT_ARG(2, maskImage, Image);
+    REQUIRE_CPP_OBJECT_ARG(1, frameImage, Image);
+    REQUIRE_CPP_OBJECT_ARG(2, maskImage, Image);
 	self->useCollisionMask(frameImage, maskImage);
 	NO_RETURN;
 	END
@@ -3463,7 +3621,7 @@ METHOD_IMPL(Sprite, SetCollisionHelper)
 	OBJECT_SAVE(self->mSpriteScriptObj, THIS);
     DEBUG_DUMP_SCRIPT_OBJECT(ARGV[0], ISpriteCollideHelper);
     REQUIRE_ARG_COUNT(1);
-	REQUIRE_NATIVE_OBJECT_OR_SUBCLASS_ARG(1, helper, ISpriteCollideHelper);
+	REQUIRE_CPP_OBJECT_OR_SUBCLASS_ARG(1, helper, ISpriteCollideHelper);
 	self->setCollisionHelper(helper);
 	NO_RETURN;
 	END
@@ -3482,32 +3640,29 @@ METHOD_IMPL(Sprite, GetElasticity)
 	END
 %#ifndef PDG_NO_GUI
 METHOD_IMPL(Sprite, SetWantsMouseOverEvents)
-	METHOD_SIGNATURE("", boolean, 1, (boolean wantsThem = true));
-    REQUIRE_ARG_MIN_COUNT(0);
+	METHOD_SIGNATURE("", [object Sprite], 1, (boolean wantsThem = true));
     OPTIONAL_BOOL_ARG(1, wantsThem, true);
-	bool wanted = self->setWantsMouseOverEvents(wantsThem);
-	RETURN_BOOL(wanted);
+	self->setWantsMouseOverEvents(wantsThem);
+	RETURN_THIS;
 	END
 METHOD_IMPL(Sprite, SetWantsClickEvents)
-	METHOD_SIGNATURE("", boolean, 1, (boolean wantsThem = true));
-    REQUIRE_ARG_MIN_COUNT(0);
+	METHOD_SIGNATURE("", [object Sprite], 1, (boolean wantsThem = true));
     OPTIONAL_BOOL_ARG(1, wantsThem, true);
-	bool wanted = self->setWantsClickEvents(wantsThem);
-	RETURN_BOOL(wanted);
+	self->setWantsClickEvents(wantsThem);
+	RETURN_THIS;
 	END
 METHOD_IMPL(Sprite, SetMouseDetectMode)
-	METHOD_SIGNATURE("", number, 1, ([number int] collisionType = collide_BoundingBox));
-    REQUIRE_ARG_MIN_COUNT(0);
+	METHOD_SIGNATURE("", [object Sprite], 1, ([number int] collisionType = collide_BoundingBox));
     OPTIONAL_INT32_ARG(1, collisionType, Sprite::collide_BoundingBox);
-	int oldMode = self->setMouseDetectMode(collisionType);
-	RETURN_INTEGER(oldMode);
+	self->setMouseDetectMode(collisionType);
+	RETURN_THIS;
 	END
 %#endif // !PDG_NO_GUI
 METHOD_IMPL(Sprite, GetLayer)
 	METHOD_SIGNATURE("get the layer that contains this sprite", [object SpriteLayer], 0, ());
     REQUIRE_ARG_COUNT(0);
 	SpriteLayer* layer = self->getLayer();
-	RETURN_NATIVE_OBJECT(layer, SpriteLayer);
+	RETURN_CPP_OBJECT(layer, SpriteLayer);
 	END
 %#ifdef PDG_USE_CHIPMUNK_PHYSICS
 METHOD_IMPL(Sprite, MakeStatic)
@@ -3539,53 +3694,53 @@ METHOD_IMPL(Sprite, PinJoint)
 	METHOD_SIGNATURE("", [object CpConstraint], 4, ([object Offset] anchor, [object Sprite] otherSprite, [object Offset] otherAnchor, number breakingForce = 0));
 	REQUIRE_ARG_MIN_COUNT(3);
 	REQUIRE_OFFSET_ARG(1, anchor);
-	REQUIRE_NATIVE_OBJECT_ARG(2, otherSprite, Sprite);
+	REQUIRE_CPP_OBJECT_ARG(2, otherSprite, Sprite);
 	REQUIRE_OFFSET_ARG(3, otherAnchor);
 	OPTIONAL_NUMBER_ARG(4, breakingForce, 0.0f);
 	cpConstraint* joint = self->pinJoint(anchor, otherSprite, otherAnchor, breakingForce);
 	cpConstraintSetUserData(joint, (void*)sPinJointStr);
-	RETURN_NEW_NATIVE_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
+	RETURN_NEW_CPP_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
 	END
 METHOD_IMPL(Sprite, SlideJoint)
 	METHOD_SIGNATURE("", [object CpConstraint], 6, ([object Offset] anchor, [object Sprite] otherSprite, [object Offset] otherAnchor, number minDist, number maxDist, number breakingForce = 0));
 	REQUIRE_ARG_MIN_COUNT(5);
 	REQUIRE_OFFSET_ARG(1, anchor);
-	REQUIRE_NATIVE_OBJECT_ARG(2, otherSprite, Sprite);
+	REQUIRE_CPP_OBJECT_ARG(2, otherSprite, Sprite);
 	REQUIRE_OFFSET_ARG(3, otherAnchor);
 	REQUIRE_NUMBER_ARG(4, minDist);
 	REQUIRE_NUMBER_ARG(5, maxDist);
 	OPTIONAL_NUMBER_ARG(6, breakingForce, 0.0f);
 	cpConstraint* joint = self->slideJoint(anchor, otherSprite, otherAnchor, minDist, maxDist, breakingForce);
 	cpConstraintSetUserData(joint, (void*)sSlideJointStr);
-	RETURN_NEW_NATIVE_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
+	RETURN_NEW_CPP_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
 	END
 METHOD_IMPL(Sprite, PivotJoint)
 	METHOD_SIGNATURE("", [object CpConstraint], 3, ([object Sprite] otherSprite, [object Point] pivot, number breakingForce = 0));
 	REQUIRE_ARG_MIN_COUNT(2);
-	REQUIRE_NATIVE_OBJECT_ARG(1, otherSprite, Sprite);
+	REQUIRE_CPP_OBJECT_ARG(1, otherSprite, Sprite);
 	REQUIRE_POINT_ARG(2, pivot);
 	OPTIONAL_NUMBER_ARG(3, breakingForce, 0.0f);
 	cpConstraint* joint = self->pivotJoint(otherSprite, pivot, breakingForce);
 	cpConstraintSetUserData(joint, (void*)sPivotJointStr);
-	RETURN_NEW_NATIVE_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
+	RETURN_NEW_CPP_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
 	END
 METHOD_IMPL(Sprite, GrooveJoint)
 	METHOD_SIGNATURE("", [object CpConstraint], 5, ([object Offset] grooveStart, [object Offset] grooveEnd, [object Sprite] otherSprite, [object Offset] otherAnchor, number breakingForce = 0));
 	REQUIRE_ARG_MIN_COUNT(4);
 	REQUIRE_OFFSET_ARG(1, grooveStart);
 	REQUIRE_OFFSET_ARG(2, grooveEnd);
-	REQUIRE_NATIVE_OBJECT_ARG(3, otherSprite, Sprite);
+	REQUIRE_CPP_OBJECT_ARG(3, otherSprite, Sprite);
 	REQUIRE_OFFSET_ARG(4, otherAnchor);
 	OPTIONAL_NUMBER_ARG(5, breakingForce, 0.0f);
 	cpConstraint* joint = self->grooveJoint(grooveStart, grooveEnd, otherSprite, otherAnchor, breakingForce);
 	cpConstraintSetUserData(joint, (void*)sGrooveJointStr);
-	RETURN_NEW_NATIVE_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
+	RETURN_NEW_CPP_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
 	END
 METHOD_IMPL(Sprite, SpringJoint)
 	METHOD_SIGNATURE("", [object CpConstraint], 7, ([object Offset] anchor, [object Sprite] otherSprite, [object Offset] otherAnchor, number restLength, number stiffness, number damping, number breakingForce = 0));
 	REQUIRE_ARG_MIN_COUNT(6);
 	REQUIRE_OFFSET_ARG(1, anchor);
-	REQUIRE_NATIVE_OBJECT_ARG(2, otherSprite, Sprite);
+	REQUIRE_CPP_OBJECT_ARG(2, otherSprite, Sprite);
 	REQUIRE_OFFSET_ARG(3, otherAnchor);
 	REQUIRE_NUMBER_ARG(4, restLength);
 	REQUIRE_NUMBER_ARG(5, stiffness);
@@ -3593,80 +3748,80 @@ METHOD_IMPL(Sprite, SpringJoint)
 	OPTIONAL_NUMBER_ARG(7, breakingForce, 0.0f);
 	cpConstraint* joint = self->springJoint(anchor, otherSprite, otherAnchor, restLength, stiffness, damping, breakingForce);
 	cpConstraintSetUserData(joint, (void*)sSpringJointStr);
-	RETURN_NEW_NATIVE_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
+	RETURN_NEW_CPP_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
 	END
 METHOD_IMPL(Sprite, RotarySpring)
 	METHOD_SIGNATURE("", [object CpConstraint], 5, ([object Sprite] otherSprite, number restAngle, number stiffness, number damping, number breakingForce = 0));
 	REQUIRE_ARG_MIN_COUNT(4);
-	REQUIRE_NATIVE_OBJECT_ARG(1, otherSprite, Sprite);
+	REQUIRE_CPP_OBJECT_ARG(1, otherSprite, Sprite);
 	REQUIRE_NUMBER_ARG(2, restAngle);
 	REQUIRE_NUMBER_ARG(3, stiffness);
 	REQUIRE_NUMBER_ARG(4, damping);
 	OPTIONAL_NUMBER_ARG(5, breakingForce, 0.0f);
 	cpConstraint* joint = self->rotarySpring(otherSprite, restAngle, stiffness, damping, breakingForce);
 	cpConstraintSetUserData(joint, (void*)sRotarySpringStr);
-	RETURN_NEW_NATIVE_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
+	RETURN_NEW_CPP_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
 	END
 METHOD_IMPL(Sprite, RotaryLimit)
 	METHOD_SIGNATURE("", [object CpConstraint], 4, ([object Sprite] otherSprite, number minAngle, number maxAngle, number breakingForce = 0));
 	REQUIRE_ARG_MIN_COUNT(3);
-	REQUIRE_NATIVE_OBJECT_ARG(1, otherSprite, Sprite);
+	REQUIRE_CPP_OBJECT_ARG(1, otherSprite, Sprite);
 	REQUIRE_NUMBER_ARG(2, minAngle);
 	REQUIRE_NUMBER_ARG(3, maxAngle);
 	OPTIONAL_NUMBER_ARG(4, breakingForce, 0.0f);
 	cpConstraint* joint = self->rotaryLimit(otherSprite, minAngle, maxAngle, breakingForce);
 	cpConstraintSetUserData(joint, (void*)sRotaryLimitStr);
-	RETURN_NEW_NATIVE_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
+	RETURN_NEW_CPP_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
 	END
 METHOD_IMPL(Sprite, Ratchet)
 	METHOD_SIGNATURE("", [object CpConstraint], 4, ([object Sprite] otherSprite, number rachetInterval, number phase, number breakingForce = 0));
 	REQUIRE_ARG_MIN_COUNT(2);
-	REQUIRE_NATIVE_OBJECT_ARG(1, otherSprite, Sprite);
+	REQUIRE_CPP_OBJECT_ARG(1, otherSprite, Sprite);
 	REQUIRE_NUMBER_ARG(2, rachetInterval);
 	OPTIONAL_NUMBER_ARG(3, phase, 0.0f);
 	OPTIONAL_NUMBER_ARG(4, breakingForce, 0.0f);
 	cpConstraint* joint = self->ratchet(otherSprite, rachetInterval, phase, breakingForce);
 	cpConstraintSetUserData(joint, (void*)sRatchetStr);
-	RETURN_NEW_NATIVE_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
+	RETURN_NEW_CPP_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
 	END
 METHOD_IMPL(Sprite, Gear)
 	METHOD_SIGNATURE("", [object CpConstraint], 4, ([object Sprite] otherSprite, number gearRatio, number initialAngle = 0, number breakingForce = 0));
 	REQUIRE_ARG_MIN_COUNT(2);
-	REQUIRE_NATIVE_OBJECT_ARG(1, otherSprite, Sprite);
+	REQUIRE_CPP_OBJECT_ARG(1, otherSprite, Sprite);
 	REQUIRE_NUMBER_ARG(2, gearRatio);
 	OPTIONAL_NUMBER_ARG(3, initialAngle, 0.0f);
 	OPTIONAL_NUMBER_ARG(4, breakingForce, 0.0f);
 	cpConstraint* joint = self->gear(otherSprite, gearRatio, initialAngle, breakingForce);
 	cpConstraintSetUserData(joint, (void*)sGearStr);
-	RETURN_NEW_NATIVE_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
+	RETURN_NEW_CPP_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
 	END
 METHOD_IMPL(Sprite, Motor)
 	METHOD_SIGNATURE("", [object CpConstraint], 3, ([object Sprite] otherSprite, number spin, number maxTorque = INFINITY));
 	REQUIRE_ARG_MIN_COUNT(2);
-	REQUIRE_NATIVE_OBJECT_ARG(1, otherSprite, Sprite);
+	REQUIRE_CPP_OBJECT_ARG(1, otherSprite, Sprite);
 	REQUIRE_NUMBER_ARG(2, spin);
 	OPTIONAL_NUMBER_ARG(3, maxTorque, std::numeric_limits<float>::infinity());
 	cpConstraint* joint = self->motor(otherSprite, spin, maxTorque);
 	cpConstraintSetUserData(joint, (void*)sMotorStr);
-	RETURN_NEW_NATIVE_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
+	RETURN_NEW_CPP_OBJECT(joint, cpConstraint);  // has no mcpConstraintScriptObj member
 	END
 METHOD_IMPL(Sprite, RemoveJoint)
 	METHOD_SIGNATURE("", undefined, 1, ([object CpConstraint] joint));
 	REQUIRE_ARG_COUNT(1);
-	REQUIRE_NATIVE_OBJECT_ARG(1, joint, cpConstraint);
+	REQUIRE_CPP_OBJECT_ARG(1, joint, cpConstraint);
 	self->removeJoint(joint);
 	NO_RETURN;
 	END
 METHOD_IMPL(Sprite, Disconnect)
-	METHOD_SIGNATURE("", undefined, 1, ([object Sprite] otherSprite));
-	OPTIONAL_NATIVE_OBJECT_ARG(1, otherSprite, Sprite, 0);
+	METHOD_SIGNATURE("", undefined, 0, ([object Sprite] otherSprite = ALL_SPRITES));
+	OPTIONAL_CPP_OBJECT_ARG(1, otherSprite, Sprite, 0);
 	self->disconnect(otherSprite);
 	NO_RETURN;
 	END
 METHOD_IMPL(Sprite, MakeJointBreakable)
 	METHOD_SIGNATURE("", undefined, 2, ([object CpConstraint] joint, number breakingForce));
 	REQUIRE_ARG_COUNT(2);
-	REQUIRE_NATIVE_OBJECT_ARG(1, joint, cpConstraint);
+	REQUIRE_CPP_OBJECT_ARG(1, joint, cpConstraint);
 	REQUIRE_NUMBER_ARG(2, breakingForce);
 	self->makeJointBreakable(joint, breakingForce);
 	NO_RETURN;
@@ -3674,7 +3829,7 @@ METHOD_IMPL(Sprite, MakeJointBreakable)
 METHOD_IMPL(Sprite, MakeJointUnbreakable)
 	METHOD_SIGNATURE("", undefined, 1, ([object CpConstraint] joint));
 	REQUIRE_ARG_COUNT(1);
-	REQUIRE_NATIVE_OBJECT_ARG(1, joint, cpConstraint);
+	REQUIRE_CPP_OBJECT_ARG(1, joint, cpConstraint);
 	self->makeJointUnbreakable(joint);
 	NO_RETURN;
 	END
@@ -3682,7 +3837,7 @@ METHOD_IMPL(Sprite, MakeJointUnbreakable)
 
 CLEANUP_IMPL(Sprite)
 
-NATIVE_CONSTRUCTOR_IMPL(Sprite)
+CPP_CONSTRUCTOR_IMPL(Sprite)
 	return new Sprite();
 	END
 
@@ -3754,12 +3909,12 @@ METHOD_IMPL(klass, GetSpritePort) CR \
 	METHOD_SIGNATURE("", [object Port], 0, ()); CR \
     REQUIRE_ARG_COUNT(0); CR \
 	Port* port = self->getSpritePort(); CR \
-	RETURN_NATIVE_OBJECT(port, Port); CR \
+	RETURN_CPP_OBJECT(port, Port); CR \
 	END CR \
 METHOD_IMPL(klass, SetSpritePort) CR \
 	METHOD_SIGNATURE("", undefined, 1, ([object Port] port)); CR \
     REQUIRE_ARG_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, port, Port); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, port, Port); CR \
 	self->setSpritePort(port); CR \
 	NO_RETURN; CR \
 	END CR \
@@ -3778,14 +3933,12 @@ METHOD_IMPL(klass, GetOrigin) CR \
 	END CR \
 METHOD_IMPL(klass, SetAutoCenter) CR \
 	METHOD_SIGNATURE("", undefined, 1, (boolean autoCenter = true)); CR \
-    REQUIRE_ARG_MIN_COUNT(0); CR \
     OPTIONAL_BOOL_ARG(1, autoCenter, true); CR \
 	self->setAutoCenter(autoCenter); CR \
 	NO_RETURN; CR \
 	END CR \
 METHOD_IMPL(klass, SetFixedMoveAxis) CR \
 	METHOD_SIGNATURE("", undefined, 1, (boolean fixedAxis = true)); CR \
-    REQUIRE_ARG_MIN_COUNT(0); CR \
     OPTIONAL_BOOL_ARG(1, fixedAxis, true); CR \
     self->setFixedMoveAxis(fixedAxis); CR \
 	NO_RETURN; CR \
@@ -3857,7 +4010,7 @@ METHOD_IMPL(klass, LayerToPortVector) CR \
 	RETURN( VECTOR2VAL(out) ); CR \
 	END CR \
 METHOD_IMPL(klass, LayerToPortRect) CR \
-	METHOD_SIGNATURE("", [object Rect], 1, ([object Rect] r)); CR \
+	METHOD_SIGNATURE("", [object RotatedRect], 1, ([object Rect] r)); CR \
     REQUIRE_ARG_COUNT(1); CR \
     REQUIRE_ROTATED_RECT_ARG(1, r); CR \
     RotatedRect out = self->layerToPort(r); CR \
@@ -3892,7 +4045,7 @@ METHOD_IMPL(klass, PortToLayerVector) CR \
 	RETURN( VECTOR2VAL(out) ); CR \
 	END CR \
 METHOD_IMPL(klass, PortToLayerRect) CR \
-	METHOD_SIGNATURE("", [object Rect], 1, ([object Rect] r)); CR \
+	METHOD_SIGNATURE("", [object RotatedRect], 1, ([object Rect] r)); CR \
     REQUIRE_ARG_COUNT(1); CR \
     REQUIRE_ROTATED_RECT_ARG(1, r); CR \
     RotatedRect out = self->portToLayer(r); CR \
@@ -3971,14 +4124,14 @@ METHOD_IMPL(klass, FadeOut) CR \
 METHOD_IMPL(klass, MoveBehind) CR \
 	METHOD_SIGNATURE("", undefined, 1, ([object SpriteLayer] layer)); CR \
     REQUIRE_ARG_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, layer, SpriteLayer); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, layer, SpriteLayer); CR \
 	self->moveBehind(layer); CR \
 	NO_RETURN; CR \
 	END CR \
 METHOD_IMPL(klass, MoveInFrontOf) CR \
 	METHOD_SIGNATURE("", undefined, 1, ([object SpriteLayer] layer)); CR \
     REQUIRE_ARG_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, layer, SpriteLayer); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, layer, SpriteLayer); CR \
 	self->moveInFrontOf(layer); CR \
 	NO_RETURN; CR \
 	END CR \
@@ -3995,9 +4148,9 @@ METHOD_IMPL(klass, MoveToBack) CR \
 	NO_RETURN; CR \
 	END CR \
 METHOD_IMPL(klass, MoveWith) CR \
-	METHOD_SIGNATURE("", , 1, ([object SpriteLayer] layer, number moveRatio = 1.0, number zoomRatio = 1.0 )); CR \
+	METHOD_SIGNATURE("", undefined, 1, ([object SpriteLayer] layer, number moveRatio = 1.0, number zoomRatio = 1.0 )); CR \
     REQUIRE_ARG_MIN_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, layer, SpriteLayer); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, layer, SpriteLayer); CR \
 	OPTIONAL_NUMBER_ARG(2, moveRatio, 1.0f); CR \
 	OPTIONAL_NUMBER_ARG(3, zoomRatio, 1.0f); CR \
 	self->moveWith(layer, moveRatio, zoomRatio); CR \
@@ -4006,8 +4159,8 @@ METHOD_IMPL(klass, MoveWith) CR \
 METHOD_IMPL(klass, IsSpriteBehind) CR \
 	METHOD_SIGNATURE("", boolean, 2, ([object Sprite] sprite, [object Sprite] otherSprite)); CR \
     REQUIRE_ARG_COUNT(2); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, sprite, Sprite); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(2, otherSprite, Sprite); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, sprite, Sprite); CR \
+    REQUIRE_CPP_OBJECT_ARG(2, otherSprite, Sprite); CR \
 	bool behind = self->isSpriteBehind(sprite, otherSprite); CR \
 	RETURN_BOOL(behind); CR \
 	END CR \
@@ -4020,7 +4173,7 @@ METHOD_IMPL(klass, GetZOrder) CR \
 METHOD_IMPL(klass, GetSpriteZOrder) CR \
 	METHOD_SIGNATURE("", [number int], 0, ([object Sprite] sprite)); CR \
     REQUIRE_ARG_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, sprite, Sprite); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, sprite, Sprite); CR \
 	int zorder = self->getSpriteZOrder(sprite); CR \
 	RETURN_INTEGER(zorder); CR \
 	END CR \
@@ -4029,33 +4182,33 @@ METHOD_IMPL(klass, FindSprite) CR \
     REQUIRE_ARG_COUNT(1); CR \
 	REQUIRE_INT32_ARG(1, id); CR \
 	Sprite* sprite = self->findSprite(id); CR \
-	RETURN_NATIVE_OBJECT(sprite, Sprite); CR \
+	RETURN_CPP_OBJECT(sprite, Sprite); CR \
 	END CR \
 METHOD_IMPL(klass, GetNthSprite) CR \
 	METHOD_SIGNATURE("", [object Sprite], 1, ([number int] index)); CR \
     REQUIRE_ARG_COUNT(1); CR \
 	REQUIRE_INT32_ARG(1, index); CR \
 	Sprite* sprite = self->getNthSprite(index); CR \
-	RETURN_NATIVE_OBJECT(sprite, Sprite); CR \
+	RETURN_CPP_OBJECT(sprite, Sprite); CR \
 	END CR \
 METHOD_IMPL(klass, HasSprite) CR \
 	METHOD_SIGNATURE("", boolean, 1, ([object Sprite] sprite)); CR \
     REQUIRE_ARG_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, sprite, Sprite); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, sprite, Sprite); CR \
 	bool found = self->hasSprite(sprite); CR \
 	RETURN_BOOL(found); CR \
 	END CR \
 METHOD_IMPL(klass, AddSprite) CR \
 	METHOD_SIGNATURE("", undefined, 1, ([object Sprite] newSprite)); CR \
     REQUIRE_ARG_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, newSprite, Sprite); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, newSprite, Sprite); CR \
 	self->addSprite(newSprite); CR \
 	NO_RETURN; CR \
 	END CR \
 METHOD_IMPL(klass, RemoveSprite) CR \
 	METHOD_SIGNATURE("", undefined, 1, ([object Sprite] oldSprite)); CR \
     REQUIRE_ARG_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, oldSprite, Sprite); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, oldSprite, Sprite); CR \
     self->removeSprite(oldSprite); CR \
 	NO_RETURN; CR \
 	END CR \
@@ -4080,14 +4233,14 @@ METHOD_IMPL(klass, DisableCollisions) CR \
 METHOD_IMPL(klass, EnableCollisionsWithLayer) CR \
 	METHOD_SIGNATURE("", undefined, 1, ([object SpriteLayer] otherLayer)); CR \
     REQUIRE_ARG_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, otherLayer, SpriteLayer); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, otherLayer, SpriteLayer); CR \
 	self->enableCollisionsWithLayer(otherLayer); CR \
 	NO_RETURN; CR \
 	END CR \
 METHOD_IMPL(klass, DisableCollisionsWithLayer) CR \
 	METHOD_SIGNATURE("", undefined, 1, ([object SpriteLayer] otherLayer)); CR \
     REQUIRE_ARG_COUNT(1); CR \
-    REQUIRE_NATIVE_OBJECT_ARG(1, otherLayer, SpriteLayer); CR \
+    REQUIRE_CPP_OBJECT_ARG(1, otherLayer, SpriteLayer); CR \
 	self->disableCollisionsWithLayer(otherLayer); CR \
 	NO_RETURN; CR \
 	END CR \
@@ -4095,7 +4248,7 @@ METHOD_IMPL(klass, CreateSprite) CR \
 	METHOD_SIGNATURE("", [object Sprite], 0, ()); CR \
     REQUIRE_ARG_COUNT(0); CR \
 	Sprite* sprite = self->createSprite(); CR \
-	RETURN_NATIVE_OBJECT(sprite, Sprite); CR \
+	RETURN_CPP_OBJECT(sprite, Sprite); CR \
 	END CR \
 
 #define SPRITE_LAYER_CHIPMUNK_IMPL(klass) CR \
@@ -4122,14 +4275,12 @@ METHOD_IMPL(klass, SetDamping) CR \
 	END CR \
 METHOD_IMPL(klass, SetStaticLayer) CR \
 	METHOD_SIGNATURE("", undefined, 1, (boolean isStatic = true)); CR \
-    REQUIRE_ARG_MIN_COUNT(0); CR \
     OPTIONAL_BOOL_ARG(1, isStatic, true); CR \
     self->setStaticLayer(isStatic); CR \
 	NO_RETURN; CR \
 	END CR \
 METHOD_IMPL(klass, SetUseChipmunkPhysics) CR \
 	METHOD_SIGNATURE("", undefined, 1, (boolean useIt = true)); CR \
-    REQUIRE_ARG_MIN_COUNT(0); CR \
     OPTIONAL_BOOL_ARG(1, useIt, true); CR \
     self->setUseChipmunkPhysics(useIt); CR \
 	NO_RETURN; CR \
@@ -4138,14 +4289,14 @@ METHOD_IMPL(klass, GetSpace) CR \
 	METHOD_SIGNATURE("", [object CpSpace], 0, ()); CR \
     REQUIRE_ARG_COUNT(0); CR \
 	cpSpace* space = self->getSpace(); CR \
-	RETURN_NEW_NATIVE_OBJECT(space, cpSpace); CR \
+	RETURN_NEW_CPP_OBJECT(space, cpSpace); CR \
 	END CR \
 
 
 WRAPPER_INITIALIZER_IMPL_CUSTOM(SpriteLayer, 
-  nativeObj->mEventEmitterScriptObj = obj; 
-  nativeObj->mAnimatedScriptObj = obj;
-  nativeObj->mSpriteLayerScriptObj = obj)
+  OBJECT_SAVE(cppObj->mEventEmitterScriptObj, obj); 
+  OBJECT_SAVE(cppObj->mAnimatedScriptObj, obj);
+  OBJECT_SAVE(cppObj->mSpriteLayerScriptObj, obj) )
     EXPORT_CLASS_SYMBOLS("SpriteLayer", SpriteLayer, , ,
     	// method section
 		HAS_EMITTER_METHODS(SpriteLayer)
@@ -4180,9 +4331,9 @@ SPRITE_LAYER_CHIPMUNK_IMPL(SpriteLayer)
 
 // METHOD_IMPL(SpriteLayer, CloneSprite)
 //    REQUIRE_ARG_COUNT(1);
-//    REQUIRE_NATIVE_OBJECT_ARG(1, originalSprite, Sprite);
+//    REQUIRE_CPP_OBJECT_ARG(1, originalSprite, Sprite);
 // 	  Sprite* newSprite = self->cloneSprite(originalSprite);
-//    RETURN_NATIVE_OBJECT(newSprite, Sprite);
+//    RETURN_CPP_OBJECT(newSprite, Sprite);
 // 	END
 METHOD_IMPL(SpriteLayer, CreateSpriteFromSCML)
 	METHOD_SIGNATURE("", [object Sprite], 1, (string inSCML, string inEntityName = null));
@@ -4194,7 +4345,7 @@ METHOD_IMPL(SpriteLayer, CreateSpriteFromSCML)
 		inEntityName = entityName;
 	}
 	Sprite* sprite = self->createSpriteFromSCML(inSCML, inEntityName);
-	RETURN_NEW_NATIVE_OBJECT(sprite, Sprite);
+	RETURN_NEW_CPP_OBJECT(sprite, Sprite);
 	END
 METHOD_IMPL(SpriteLayer, CreateSpriteFromSCMLFile)
 	METHOD_SIGNATURE("", [object Sprite], 1, (string inFileName, string inEntityName = null)); 
@@ -4206,19 +4357,19 @@ METHOD_IMPL(SpriteLayer, CreateSpriteFromSCMLFile)
 		inEntityName = entityName;
 	}
 	Sprite* sprite = self->createSpriteFromSCMLFile(inFileName, inEntityName);
-	RETURN_NEW_NATIVE_OBJECT(sprite, Sprite);
+	RETURN_NEW_CPP_OBJECT(sprite, Sprite);
 	END
 METHOD_IMPL(SpriteLayer, CreateSpriteFromSCMLEntity)
 	METHOD_SIGNATURE("", [object Sprite], 1, (string inEntityName)); 
 	REQUIRE_ARG_COUNT(1);
 	REQUIRE_STRING_ARG(1, inEntityName);
 	Sprite* sprite = self->createSpriteFromSCMLEntity(inEntityName);
-	RETURN_NEW_NATIVE_OBJECT(sprite, Sprite);
+	RETURN_NEW_CPP_OBJECT(sprite, Sprite);
 	END
 
 CLEANUP_IMPL(SpriteLayer)
 
-NATIVE_CONSTRUCTOR_IMPL(SpriteLayer)
+CPP_CONSTRUCTOR_IMPL(SpriteLayer)
   %#ifndef PDG_NO_GUI
 	Port* port = GraphicsManager::getSingletonInstance()->getMainPort();
 	return createSpriteLayer(port);
@@ -4229,48 +4380,46 @@ NATIVE_CONSTRUCTOR_IMPL(SpriteLayer)
 
 FUNCTION_IMPL(CreateSpriteLayer)
 	METHOD_SIGNATURE("", [object SpriteLayer], 1, ([object Port] port = null)); 
-    REQUIRE_ARG_MIN_COUNT(0);
   %#ifndef PDG_NO_GUI
-	OPTIONAL_NATIVE_OBJECT_ARG(1, port, Port, 0);
+	OPTIONAL_CPP_OBJECT_ARG(1, port, Port, 0);
  	SpriteLayer* layer = createSpriteLayer(port);
   %#else
  	SpriteLayer* layer = createSpriteLayer();
   %#endif
-    RETURN_NATIVE_OBJECT(layer, SpriteLayer);
+    RETURN_CPP_OBJECT(layer, SpriteLayer);
     END
 
 FUNCTION_IMPL(CreateSpriteLayerFromSCMLFile)
-	METHOD_SIGNATURE("", [object SpriteLayer], 1, (string layerSCMLFilename, bool addSprites = true, [object Port] port = null)); 
+	METHOD_SIGNATURE("", [object SpriteLayer], 1, (string layerSCMLFilename, boolean addSprites = true, [object Port] port = null)); 
     REQUIRE_ARG_MIN_COUNT(1);
 	REQUIRE_STRING_ARG(1, layerSCMLFilename);
 	OPTIONAL_BOOL_ARG(2, addSprites, true);
   %#ifndef PDG_NO_GUI
-	OPTIONAL_NATIVE_OBJECT_ARG(3, port, Port, 0);
+	OPTIONAL_CPP_OBJECT_ARG(3, port, Port, 0);
  	SpriteLayer* layer = createSpriteLayerFromSCMLFile(layerSCMLFilename, addSprites, port);
   %#else
  	SpriteLayer* layer = createSpriteLayerFromSCMLFile(layerSCMLFilename, addSprites);
   %#endif
-    RETURN_NATIVE_OBJECT(layer, SpriteLayer);
+    RETURN_CPP_OBJECT(layer, SpriteLayer);
     END
 
 FUNCTION_IMPL(CleanupSpriteLayer)
 	METHOD_SIGNATURE("", undefined, 1, ([object SpriteLayer] layer)); 
 	REQUIRE_ARG_COUNT(1);
-	REQUIRE_NATIVE_OBJECT_ARG(1, layer, SpriteLayer);
+	REQUIRE_CPP_OBJECT_ARG(1, layer, SpriteLayer);
 	cleanupSpriteLayer(layer);
 	NO_RETURN;
 	END
 
 FUNCTION_IMPL(CreateTileLayer)
 	METHOD_SIGNATURE("", [object TileLayer], 1, ([object Port] port = null)); 
-    REQUIRE_ARG_MIN_COUNT(0);
   %#ifndef PDG_NO_GUI
-	OPTIONAL_NATIVE_OBJECT_ARG(1, port, Port, 0);
+	OPTIONAL_CPP_OBJECT_ARG(1, port, Port, 0);
  	TileLayer* layer = createTileLayer(port);
   %#else
  	TileLayer* layer = createTileLayer();
   %#endif
-    RETURN_NATIVE_OBJECT(layer, TileLayer);
+    RETURN_CPP_OBJECT(layer, TileLayer);
     END
 
 
@@ -4283,10 +4432,10 @@ DECLARE_SYMBOL(tileType);
 DECLARE_SYMBOL(facing);
 
 WRAPPER_INITIALIZER_IMPL_CUSTOM(TileLayer, 
-  nativeObj->mEventEmitterScriptObj = obj; 
-  nativeObj->mAnimatedScriptObj = obj;
-  nativeObj->mSpriteLayerScriptObj = obj;
-  nativeObj->mTileLayerScriptObj = obj)
+  OBJECT_SAVE(cppObj->mEventEmitterScriptObj, obj); 
+  OBJECT_SAVE(cppObj->mAnimatedScriptObj, obj);
+  OBJECT_SAVE(cppObj->mSpriteLayerScriptObj, obj);
+  OBJECT_SAVE(cppObj->mTileLayerScriptObj, obj) )
     EXPORT_CLASS_SYMBOLS("TileLayer", TileLayer, , ,
     	// method section
 		HAS_EMITTER_METHODS(TileLayer)
@@ -4378,7 +4527,7 @@ METHOD_IMPL(TileLayer, DefineTileSet)
     REQUIRE_ARG_MIN_COUNT(3);
     REQUIRE_INT32_ARG(1, tileWidth);
     REQUIRE_INT32_ARG(2, tileHeight);
-    REQUIRE_NATIVE_OBJECT_ARG(3, tiles, Image);
+    REQUIRE_CPP_OBJECT_ARG(3, tiles, Image);
     OPTIONAL_BOOL_ARG(4, hasTransparency, true);
     OPTIONAL_BOOL_ARG(5, flipTiles, false);
 	self->defineTileSet(tileWidth, tileHeight, tiles, hasTransparency, flipTiles);
@@ -4415,7 +4564,7 @@ METHOD_IMPL(TileLayer, LoadMapData)
     	self->loadMapData(ptr, mapWidth, mapHeight, dstX, dstY);
 		std::free(ptr);
 	} else {
-    	REQUIRE_NATIVE_OBJECT_ARG(1, memBlock, MemBlock);
+    	REQUIRE_CPP_OBJECT_ARG(1, memBlock, MemBlock);
     	if (memBlock->bytes < ((size_t)mapWidth * (size_t)mapHeight)) {
     		THROW_RANGE_ERR("argument 1 (data) is insufficient, please check mapWidth and mapHeight against data size");
     	}
@@ -4446,13 +4595,13 @@ METHOD_IMPL(TileLayer, GetMapData)
 	uint8* ptr = (uint8*) std::malloc(bufferSize);
 	std::memcpy(ptr, dataPtr, bufferSize);
  	MemBlock* memBlock = new MemBlock((char*)ptr, bufferSize, true);
-	RETURN_NATIVE_OBJECT(memBlock, MemBlock);
+	RETURN_CPP_OBJECT(memBlock, MemBlock);
 	END
 METHOD_IMPL(TileLayer, GetTileSetImage)
 	METHOD_SIGNATURE("", [object Image], 0, ());
     REQUIRE_ARG_COUNT(0);
     Image* tiles = self->getTileSetImage();
-    RETURN_NATIVE_OBJECT(tiles, Image);
+    RETURN_CPP_OBJECT(tiles, Image);
 	END
 METHOD_IMPL(TileLayer, GetTileSize)
 	METHOD_SIGNATURE("", [object Point], 0, ());
@@ -4473,7 +4622,7 @@ METHOD_IMPL(TileLayer, SetTileTypeAt)
 METHOD_IMPL(TileLayer, CheckCollision)
 	METHOD_SIGNATURE("", number, 0, ([object Sprite] movingSprite, [number uint] alphaThreshold = 128, boolean shortCircuit = true));
     REQUIRE_ARG_MIN_COUNT(1);
-    REQUIRE_NATIVE_OBJECT_ARG(1, movingSprite, Sprite);
+    REQUIRE_CPP_OBJECT_ARG(1, movingSprite, Sprite);
     OPTIONAL_UINT32_ARG(2, alphaThreshold, 128);
     OPTIONAL_BOOL_ARG(3, shortCircuit, true);
     uint32 overlapPx = self->checkCollision(movingSprite, alphaThreshold, shortCircuit);
@@ -4482,7 +4631,7 @@ METHOD_IMPL(TileLayer, CheckCollision)
 
 CLEANUP_IMPL(TileLayer)
 
-NATIVE_CONSTRUCTOR_IMPL(TileLayer)
+CPP_CONSTRUCTOR_IMPL(TileLayer)
 	return 0; //new TileLayer();
 	END
 

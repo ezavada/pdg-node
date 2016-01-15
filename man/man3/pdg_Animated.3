@@ -1,4 +1,4 @@
-.TH "Animated" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.TH "Animated" 3 "Mon Oct 26 2015" "Version v0.9.5" "Pixel Dust Game Engine" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -79,7 +79,7 @@ Inherited by \fBSprite\fP, and \fBSpriteLayer\fP\&.
 .br
 .RI "\fIget the direction the object is moving \fP"
 .ti -1c
-.RI "\fBRect\fP \fBgetRotatedBounds\fP ()"
+.RI "\fBRotatedRect\fP \fBgetRotatedBounds\fP ()"
 .br
 .RI "\fIget the bounds with rotation \fP"
 .ti -1c
@@ -348,7 +348,12 @@ get the direction the object is moving
 .SS "getRotatedBounds ()"
 
 .PP
-get the bounds with rotation 
+get the bounds with rotation \fBReturns:\fP
+.RS 4
+\fBRotatedRect\fP 
+.RE
+.PP
+
 .SS "getRotation ()"
 
 .PP

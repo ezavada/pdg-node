@@ -31,6 +31,8 @@
 
 #include "pdg_project.h"
 
+#include <map>
+#include <cstdio>
 
 #ifndef PDG_NO_SERIALIZER_SANITY_CHECKS
 #define SERIALIZER_SANITY_CHECKS
@@ -43,14 +45,34 @@ namespace pdg {
 		tag_veryLongLen	= 0xFF,
 		tag_longLen		= 0xFE,
 		tag_smallestLenTag  = tag_longLen,
+		tag_pdgTaggedStream = 0x706467,	  // 'pdg'  -- a tag to identify a tagged pdg stream
 		tag_string      = 0x737472,   // 'str'
 		tag_mem			= 0x6d656d,   // 'mem'
 		tag_object		= 0x6f626a,   // 'obj'
 		tag_objectNil	= 0x6e696c,   // 'nil'  -- an nil object pointer
-		tag_objectRef   = 0x726566	  // 'ref'  -- an additional reference to an object that has already been streamed
+		tag_objectRef   = 0x726566,	  // 'ref'  -- an additional reference to an object that has already been streamed
+		tag_pointerRef  = 0x707472	  // 'ptr'  -- a ptr to a non streamable object
 	};
 	
-	
+
+    // maps object unique ids to the object pointers
+    typedef std::map<uint32, void*> ObjectRegistryT;
+    extern ObjectRegistryT gObjectRegistry;
+
+
+#ifdef PDG_DESERIALIZER_NO_THROW
+	// we can't throw, so we report errors but don't exit
+	#define STREAM_SAFETY_CHECK(_cond, _msg, _except, _cleanup) if (!(_cond)) { char buf[1024]; buf[0] = 0;\
+		std::sprintf(buf, "%s: %s at %s (%s:%d)\nOffset: %ld End: %ld", #_except, _msg, __FUNCTION__, __FILE__, __LINE__, (long)(p - mDataPtr), (long)(mDataEnd - mDataPtr)); \
+		DEBUG_PRINT(buf); } // don't do the cleanup since we aren't exiting
+#else
+	// we throw exceptions on errors
+	#define STREAM_SAFETY_CHECK(_cond, _msg, _except, _cleanup) if (!(_cond)) { char buf[1024]; buf[0] = 0;\
+		std::sprintf(buf, "%s: %s at %s (%s:%d)\nOffset: %ld End: %ld", #_except, _msg, __FUNCTION__, __FILE__, __LINE__, (long)(p - mDataPtr), (long)(mDataEnd - mDataPtr)); \
+		_cleanup; throw _except(buf); }
+#endif
+
+
 	
 } // end namespace pdg
 

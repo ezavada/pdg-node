@@ -1303,6 +1303,16 @@ public:
     
     bool getBoneTransform(Transform& result, int boneID);
     bool getObjectTransform(Transform& result, int objectID);
+
+protected:
+
+    typedef SCML_PAIR(int, int) FolderFile_t;
+    typedef SCML_PAIR(float, float) Pivot_t;
+    Pivot_t getImagePivots(int folderID, int fileID) const;
+
+private:
+
+    SCML_MAP(FolderFile_t, Pivot_t) m_pivots;
 };
 
 

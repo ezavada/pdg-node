@@ -12,6 +12,7 @@ float toFloat(const SCML_STRING& str);
 SCML_STRING toString(bool b);
 SCML_STRING toString(int n);
 SCML_STRING toString(float f, int precision = -1);
+SCML_STRING toLower(const SCML_STRING& str);
 
 
 bool xmlGetBoolAttr(TiXmlElement* elem, const SCML_STRING& attribute);
@@ -22,6 +23,7 @@ int xmlGetIntAttr(TiXmlElement* elem, const SCML_STRING& attribute);
 int xmlGetIntAttr(TiXmlElement* elem, const SCML_STRING& attribute, int default_value);
 float xmlGetFloatAttr(TiXmlElement* elem, const SCML_STRING& attribute);
 float xmlGetFloatAttr(TiXmlElement* elem, const SCML_STRING& attribute, float default_value);
+bool xmlAttrExists(TiXmlElement* elem, const SCML_STRING& attribute);
 
 #if defined(_MSC_VER) && !defined(MARMALADE)
     #define snprintf c99_snprintf

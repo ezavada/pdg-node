@@ -1,4 +1,4 @@
-.TH "NetConnection" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.TH "NetConnection" 3 "Mon Oct 26 2015" "Version v0.9.5" "Pixel Dust Game Engine" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -60,10 +60,6 @@ sends data between two network endpoints
 .RI "\fBsendDgram\fP (object message)"
 .br
 .RI "\fIsend a JavaScript object to the remote endpoint via UDP \fP"
-.ti -1c
-.RI "string \fBtoString\fP ()"
-.br
-.RI "\fIreturns '[object NetConnection]' \fP"
 .in -1c
 .SS "Public Attributes"
 
@@ -438,10 +434,6 @@ Only use this for native JavaScript objects\&. No PDG objects can be sent over t
 .RE
 .PP
 
-.SS "toString ()"
-
-.PP
-returns '[object NetConnection]' It's not very original, but at least it's honest\&. 
 .SH "Member Data Documentation"
 .PP 
 .SS "hasDgram"

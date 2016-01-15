@@ -63,7 +63,7 @@ namespace pdg {
 // ==========================================================================
 
 void 
-TimerManager::startTimer(long id, uint32 delay, bool oneShot, UserData* userData) {
+TimerManager::startTimer(long id, ms_delta delay, bool oneShot, UserData* userData) {
     // zero is a special value, don't allow it as a timer ID
     DEBUG_ASSERT( (id != 0), "TimerMgr::startTimer illegal timer id [0]" );
     if (id == 0) return;
@@ -102,7 +102,7 @@ TimerManager::startTimer(long id, uint32 delay, bool oneShot, UserData* userData
 // make sure a timer waits at an additional delay ms before next time it fires, regardless of current interval
 // if the timer is paused this simply adds additional time to it when it is unpaused, but leaves it paused
 void 
-TimerManager::delayTimer(long id, unsigned long delay) {
+TimerManager::delayTimer(long id, ms_delta delay) {
     TIMER_DEBUG_ONLY( OS::_DOUT("TimerMgr::delayTimer [%ld] delay [%ld]", id, delay); )
     if (firing.id == id) {
         TIMER_DEBUG_ONLY( OS::_DOUT("TimerMgr::delayTimer [%ld] already firing, save delay", id); )
@@ -125,7 +125,7 @@ TimerManager::delayTimer(long id, unsigned long delay) {
 // is left unchanged
 // if the timer is paused, this will unpause it
 void 
-TimerManager::delayTimerUntil(long id, uint32 msTime) {
+TimerManager::delayTimerUntil(long id, ms_time msTime) {
     TIMER_DEBUG_ONLY( OS::_DOUT("TimerMgr::delayTimerUntil [%ld] when [%ld]", id, msTime); )
     if (firing.id == id) {
         TIMER_DEBUG_ONLY( OS::_DOUT("TimerMgr::delayTimerUntil [%ld] already firing, save delay", id); )
@@ -152,7 +152,7 @@ void
 TimerManager::pause() {
     TIMER_DEBUG_ONLY( OS::_DOUT("TimerMgr::pause"); )
     Timer* t = timers;
-    uint32 msTime = OS::getMilliseconds();
+    ms_time msTime = OS::getMilliseconds();
     while (t) {
         if (!t->paused) {
             t->paused = true;
@@ -173,7 +173,7 @@ void
 TimerManager::unpause() {
     TIMER_DEBUG_ONLY( OS::_DOUT("TimerMgr::unpause"); )
     Timer* t = timers;
-    uint32 msTime = OS::getMilliseconds();
+    ms_time msTime = OS::getMilliseconds();
     while (t) {
         if (t->paused) {
             // convert from  milliseconds remaining to absolute ms time
@@ -200,7 +200,7 @@ void
 TimerManager::pauseTimer(long id) {
     TIMER_DEBUG_ONLY( OS::_DOUT("TimerMgr::pauseTimer [%ld]", id); )
     Timer* t = timers;
-    uint32 msTime = OS::getMilliseconds();
+    ms_time msTime = OS::getMilliseconds();
     while (t) {
         if ((t->id == id) && !t->paused) {
             // convert from  milliseconds remaining to absolute ms time
@@ -222,7 +222,7 @@ void
 TimerManager::unpauseTimer(long id) {
     TIMER_DEBUG_ONLY( OS::_DOUT("TimerMgr::pauseTimer [%ld]", id); )
     Timer* t = timers;
-    uint32 msTime = OS::getMilliseconds();
+    ms_time msTime = OS::getMilliseconds();
     while (t) {
         if ((t->id == id) && t->paused) {
             // convert from  milliseconds remaining to absolute ms time
@@ -253,7 +253,7 @@ bool TimerManager::isTimerPaused(long id) // check to see if a particular timer 
 	return retVal;
 }
 
-uint32 
+ms_time
 TimerManager::getWhenTimerFiresNext(long id) {
     // return the time (OS::getMilliseconds()) when this timer will fire next, returns timer_Never if it won't fire
     if (firing.id == id) {
@@ -342,7 +342,7 @@ TimerManager::cancelAllTimers() {
 void 
 TimerManager::checkTimers() {
     Timer* t = timers;
-    uint32 ms = OS::getMilliseconds();
+    ms_time ms = OS::getMilliseconds();
 //    TIMER_DEBUG_ONLY( OS::_DOUT("TimerMgr::checkTimers at ms [%ld]", ms); )
 	try {
 		while (t) {
@@ -362,7 +362,7 @@ TimerManager::checkTimers() {
 				}
 				firing = *t;
 				TIMER_DEBUG_ONLY( OS::_DOUT("TimerMgr::checkTimers firing timer [%ld]", ti.id); )
-				DEBUG_ONLY( uint32 behindMs = ms - t->fire; if (behindMs > 100) OS::_DOUT("TimerMgr::timer fired %ld ms late! Targeted for %u", behindMs, t->fire); )
+				DEBUG_ONLY( ms_delta behindMs = ms - t->fire; if (behindMs > 100) OS::_DOUT("TimerMgr::timer fired %ld ms late! Targeted for %u", behindMs, t->fire); )
 				// cache the next timer in case of deletion
 				// the deletion code can update the ptr to next if it deletes the next timer
 				next = t->next;
@@ -454,23 +454,23 @@ TimerManager::checkTimers() {
 //    TIMER_DEBUG_ONLY( OS::_DOUT("TimerMgr::checkTimers done"); )
 }
 
-uint32 
+ms_delta
 TimerManager::msTillNextFire() {
  // tells us how long it will be (in milliseconds) till the next timer fires
     Timer* t = timers;
-    uint32 ms = OS::getMilliseconds();
-    uint32 shortestTime = 0x7fffffff;
+    ms_time ms = OS::getMilliseconds();
+    ms_delta shortestTime = LONG_MAX;
     while (t) {
 		if (!t->paused && (ms >= t->fire)) {
             return 0;   // timer is overdue to fire
         }
-        uint32 diff = t->fire - ms;
+        ms_delta diff = t->fire - ms;
         if (diff < shortestTime) {
             shortestTime = diff;
         }
         t = t->next;
     }
-    DEBUG_ASSERT(shortestTime <= 0x7fffffff, "ERROR: TimerManager::msTillNextFire() returned possible negative number");
+    DEBUG_ASSERT(shortestTime <= LONG_MAX, "ERROR: TimerManager::msTillNextFire() returned possible negative number");
     return shortestTime;
 }
 

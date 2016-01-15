@@ -176,23 +176,32 @@ std::string os_makeCanonicalPath(const char* inFromPath, bool resolveSimLinks) {
 			if (*p == '\\') {
 				// found a backslash, see what follows it
 				if (p[1] == '\\') {
-					// another backslash, remove
-					std::strcpy(p, &p[1]);
+					// another slash, remove
+					char* q = p;
+					while(q[1]) {
+					    q[0] = q[1];
+					    q++;
+					}
+					*q = 0;
 				} else if (std::strncmp(p, "\\.\\", 3) == 0) {
 					// an empty segment, remove
-					std::strcpy(p, &p[2]);
+					char* q = p;
+					while(q[2]) {
+					    q[0] = q[2];
+					    q++;
+					}
+					*q = 0;
 				} else if (std::strncmp(p, "\\..\\", 4) == 0) {
 					// a backtrack, remove along with the prior directory segment
-					std::strcpy(lastSlash, &p[3]);
-					// now search backwards for prev segment
-					p = lastSlash;
-					while (p > workingBuf) {
-						p--;
-						if (*p == '\\') {
-							lastSlash = p;
-							break;
-						}
+					char* q = p+3;  // skip over the backtrack section
+					p = lastSlash+1; // go back to the start of the prior segment
+					while(q[1]) {   // copy everything from after the backtrack
+					    *p++ = q[1];  // into the prior segment
+					    q++;
 					}
+					*p = 0;
+					p = lastSlash+1;
+					// now search backwards for prev segment
 				} else {
 					// something else, so we are starting a new path segment
 					// save this as the new last slash
@@ -297,7 +306,7 @@ OS::renameFile(const char* inFileName, const char* inNewFileName)
 	return (WinAPI::rename(inFileName, inNewFileName) != 0);
 }
 
-unsigned long OS::getMilliseconds() {
+ms_time OS::getMilliseconds() {
     return WinAPI::GetTickCount();
 }
 

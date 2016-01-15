@@ -33,6 +33,8 @@
 #include "pdg/sys/os.h"
 #include "internals.h"
 
+#include <unistd.h>
+
 #include <iostream>
 #include <string>
 #include <cstdlib>

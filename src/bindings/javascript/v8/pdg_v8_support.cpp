@@ -41,13 +41,13 @@
 
 namespace pdg {
 
-static v8::Handle<v8::Value>  MakeNativeOffset(v8::Handle<v8::Value> val, pdg::Offset &o, bool canFail = false);
-static v8::Handle<v8::Value>  MakeNativePoint(v8::Handle<v8::Value> val, pdg::Point &p, bool canFail = false);
-//static v8::Handle<v8::Value>  MakeNativeVector(v8::Handle<v8::Value> val, pdg::Vector &v, bool canFail = false);
-static v8::Handle<v8::Value>  MakeNativeRect(v8::Handle<v8::Value> val, pdg::Rect &r, bool canFail = false);
-static v8::Handle<v8::Value>  MakeNativeRect(v8::Handle<v8::Value> val, pdg::RotatedRect &r, bool canFail = false);
-static v8::Handle<v8::Value>  MakeNativeQuad(v8::Handle<v8::Value> val, pdg::Quad &q, bool canFail = false);
-static v8::Handle<v8::Value>  MakeNativeColor(v8::Handle<v8::Value> val, pdg::Color &c, bool canFail = false);
+static v8::Local<v8::Value>  MakeCppOffset(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::Offset &o, bool canFail = false);
+static v8::Local<v8::Value>  MakeCppPoint(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::Point &p, bool canFail = false);
+//static v8::Local<v8::Value>  MakeCppVector(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::Vector &v, bool canFail = false);
+static v8::Local<v8::Value>  MakeCppRect(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::Rect &r, bool canFail = false);
+static v8::Local<v8::Value>  MakeCppRect(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::RotatedRect &r, bool canFail = false);
+static v8::Local<v8::Value>  MakeCppQuad(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::Quad &q, bool canFail = false);
+static v8::Local<v8::Value>  MakeCppColor(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::Color &c, bool canFail = false);
 
 #define X_Symbol _V8_STR("x")
 #define Y_Symbol _V8_STR("y")
@@ -79,7 +79,31 @@ v8::Persistent<v8::Object> gNetServerPrototype;
 v8::Persistent<v8::Object> gNetClientPrototype;
 v8::Persistent<v8::Object> gNetConnectionPrototype;
 
-v8::Handle<v8::Value> v8_ThrowArgCountException(int argc, int requiredCount, bool allowExtra) {
+const char* v8_GetFunctionName(v8::Local<v8::Function> func) {
+    if (func->IsNull()) return "NULL";
+    static std::string result_;
+    v8::String::Utf8Value funcNameStr(func->GetName()->ToString());
+    result_ = *funcNameStr;
+    return result_.c_str();
+}
+
+const char* v8_GetFunctionFileAndLine(v8::Local<v8::Function> func) {
+    if (func->IsNull()) return "??";
+    static std::ostringstream result_;
+    v8::String::Utf8Value resNameStr(func->GetScriptOrigin().ResourceName()->ToString());
+    result_.str("");  // clear the steam
+    result_ << *resNameStr << ":" << func->GetScriptLineNumber()+1;
+    return result_.str().c_str();
+}
+const char* v8_GetObjectClassName(v8::Local<v8::Object> obj) {
+    if (obj->IsNull()) return "NULL";
+    static std::string result_;
+    v8::String::Utf8Value nameStr(obj->GetConstructorName());
+    result_ = *nameStr;
+    return result_.c_str();
+}
+
+void v8_ThrowArgCountException(v8::Isolate* isolate, int argc, int requiredCount, bool allowExtra) {
 	std::ostringstream excpt_;
 	excpt_ << "argument count mismatch: expected ";
 	if (allowExtra) {
@@ -91,182 +115,198 @@ v8::Handle<v8::Value> v8_ThrowArgCountException(int argc, int requiredCount, boo
 	}
 	excpt_ << argc << " arguments.";
 	if (argc < requiredCount) {
-		return v8::ThrowException( v8::Exception::SyntaxError( v8::String::New(excpt_.str().c_str())) );
+		THROW_SYNTAX_ERR( excpt_.str().c_str() );
 	} else {
-		return v8::ThrowException( v8::Exception::Error( v8::String::New(excpt_.str().c_str())) );
+		THROW_ERR( excpt_.str().c_str() );
 	}
 }
 
-v8::Handle<v8::Value> v8_ThrowArgTypeException(int argn, const char* mustBeStr, v8::Value* valp) {
-	std::ostringstream excpt_;
-    excpt_ << "argument " << argn << " must be ";
+void v8_ThrowArgTypeException(v8::Isolate* isolate, int argn, const char* mustBeStr, v8::Value* valp) {
+	std::ostringstream excpt_s;
+    excpt_s << "argument " << argn << " must be ";
     if (valp && valp->IsUndefined()) {
-    	excpt_ << "an object of type " << mustBeStr << ", but got undefined. Did you pass in \""
+    	excpt_s << "an object of type " << mustBeStr << ", but got undefined. Did you pass in \""
     		<< mustBeStr << "()\" instead of \"new " << mustBeStr << "()\"?";
     } else {
-    	excpt_ << mustBeStr << ".";
+    	excpt_s << mustBeStr << ".";
     }
-	return v8::ThrowException( v8::Exception::TypeError( v8::String::New(excpt_.str().c_str())) );
+	THROW_TYPE_ERR( excpt_s.str().c_str() );
 }
 
 // these let us set a prototype that will be used when an object of a particulr JavaScript class is created
-void v8_SetOffsetPrototype(v8::Persistent<v8::Object> obj) {
-	gOffsetPrototype = obj;
+void v8_SetOffsetPrototype(v8::Local<v8::Object> obj) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	gOffsetPrototype.Reset(isolate, obj);
 }
 
-void v8_SetPointPrototype(v8::Persistent<v8::Object> obj) {
-	gPointPrototype = obj;
+void v8_SetPointPrototype(v8::Local<v8::Object> obj) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	gPointPrototype.Reset(isolate, obj);
 }
 
-void v8_SetVectorPrototype(v8::Persistent<v8::Object> obj) {
-	gVectorPrototype = obj;
+void v8_SetVectorPrototype(v8::Local<v8::Object> obj) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	gVectorPrototype.Reset(isolate, obj);
 }
 
-void v8_SetRectPrototype(v8::Persistent<v8::Object> obj) {
-	gRectPrototype = obj;
+void v8_SetRectPrototype(v8::Local<v8::Object> obj) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	gRectPrototype.Reset(isolate, obj);
 }
 
-void v8_SetRotatedRectPrototype(v8::Persistent<v8::Object> obj) {
-	gRotatedRectPrototype = obj;
+void v8_SetRotatedRectPrototype(v8::Local<v8::Object> obj) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	gRotatedRectPrototype.Reset(isolate, obj);
 }
 
-void v8_SetQuadPrototype(v8::Persistent<v8::Object> obj) {
-	gQuadPrototype = obj;
+void v8_SetQuadPrototype(v8::Local<v8::Object> obj) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	gQuadPrototype.Reset(isolate, obj);
 }
 
-void v8_SetColorPrototype(v8::Persistent<v8::Object> obj) {
-	gColorPrototype = obj;
+void v8_SetColorPrototype(v8::Local<v8::Object> obj) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	gColorPrototype.Reset(isolate, obj);
 }
 
-v8::Handle<v8::Object> v8_MakeJavascriptOffset(pdg::Offset& o) {
-  	v8::HandleScope scope;
-  	v8::Local<v8::Object> obj = v8::Object::New();
-  	if (!gOffsetPrototype.IsEmpty()) obj->SetPrototype(gOffsetPrototype);
+v8::Local<v8::Object> v8_MakeJavascriptOffset(v8::Isolate* isolate, pdg::Offset& o) {
+    v8::EscapableHandleScope scope(isolate);
+  	v8::Local<v8::Object> obj = v8::Object::New(isolate);
+    v8::Local<v8::Object> proto = v8::Local<v8::Object>::New(isolate, gOffsetPrototype);
+    if (!gOffsetPrototype.IsEmpty()) obj->SetPrototype(proto);
 	obj->Set(X_Symbol,NUM2VAL(o.x));
 	obj->Set(Y_Symbol,NUM2VAL(o.y));
-  	return scope.Close(obj);
+  	return scope.Escape(obj);
 }
 
-v8::Handle<v8::Object> v8_MakeJavascriptPoint(pdg::Point& p) {
-  	v8::HandleScope scope;
-  	v8::Local<v8::Object> obj = v8::Object::New();
-  	if (!gPointPrototype.IsEmpty()) obj->SetPrototype(gPointPrototype);
+v8::Local<v8::Object> v8_MakeJavascriptPoint(v8::Isolate* isolate, pdg::Point& p) {
+    v8::EscapableHandleScope scope(isolate);
+  	v8::Local<v8::Object> obj = v8::Object::New(isolate);
+    v8::Local<v8::Object> proto = v8::Local<v8::Object>::New(isolate, gPointPrototype);
+  	if (!gPointPrototype.IsEmpty()) obj->SetPrototype(proto);
 	obj->Set(X_Symbol,NUM2VAL(p.x));
 	obj->Set(Y_Symbol,NUM2VAL(p.y));
-  	return scope.Close(obj);
+  	return scope.Escape(obj);
 }
 
-v8::Handle<v8::Object> v8_MakeJavascriptVector(pdg::Vector& v) {
-  	v8::HandleScope scope;
-  	v8::Local<v8::Object> obj = v8::Object::New();
-  	if (!gVectorPrototype.IsEmpty()) obj->SetPrototype(gVectorPrototype);
+v8::Local<v8::Object> v8_MakeJavascriptVector(v8::Isolate* isolate, pdg::Vector& v) {
+    v8::EscapableHandleScope scope(isolate);
+  	v8::Local<v8::Object> obj = v8::Object::New(isolate);
+    v8::Local<v8::Object> proto = v8::Local<v8::Object>::New(isolate, gVectorPrototype);
+  	if (!gVectorPrototype.IsEmpty()) obj->SetPrototype(proto);
 	obj->Set(X_Symbol,NUM2VAL(v.x));
 	obj->Set(Y_Symbol,NUM2VAL(v.y));
-  	return scope.Close(obj);
+  	return scope.Escape(obj);
 }
 
-v8::Handle<v8::Object> v8_MakeJavascriptRect(pdg::Rect& r) {
-  	v8::HandleScope scope;
-  	v8::Local<v8::Object> obj = v8::Object::New();
-  	if (!gRectPrototype.IsEmpty()) obj->SetPrototype(gRectPrototype);
+v8::Local<v8::Object> v8_MakeJavascriptRect(v8::Isolate* isolate, pdg::Rect& r) {
+    v8::EscapableHandleScope scope(isolate);
+  	v8::Local<v8::Object> obj = v8::Object::New(isolate);
+    v8::Local<v8::Object> proto = v8::Local<v8::Object>::New(isolate, gRectPrototype);
+  	if (!gRectPrototype.IsEmpty()) obj->SetPrototype(proto);
 	obj->Set(Left_Symbol,NUM2VAL(r.left));
 	obj->Set(Top_Symbol,NUM2VAL(r.top));
 	obj->Set(Right_Symbol,NUM2VAL(r.right));
 	obj->Set(Bottom_Symbol,NUM2VAL(r.bottom));
-  	return scope.Close(obj);
+  	return scope.Escape(obj);
 }
 
-v8::Handle<v8::Object> v8_MakeJavascriptRect(pdg::RotatedRect& r) {
-  	v8::HandleScope scope;
-  	v8::Local<v8::Object> obj = v8::Object::New();
-  	if (!gRotatedRectPrototype.IsEmpty()) obj->SetPrototype(gRotatedRectPrototype);
+v8::Local<v8::Object> v8_MakeJavascriptRect(v8::Isolate* isolate, pdg::RotatedRect& r) {
+    v8::EscapableHandleScope scope(isolate);
+  	v8::Local<v8::Object> obj = v8::Object::New(isolate);
+    v8::Local<v8::Object> proto = v8::Local<v8::Object>::New(isolate, gRotatedRectPrototype);
+  	if (!gRotatedRectPrototype.IsEmpty()) obj->SetPrototype(proto);
 	obj->Set(Left_Symbol,NUM2VAL(r.left));
 	obj->Set(Top_Symbol,NUM2VAL(r.top));
 	obj->Set(Right_Symbol,NUM2VAL(r.right));
 	obj->Set(Bottom_Symbol,NUM2VAL(r.bottom));
 	obj->Set(Radians_Symbol,NUM2VAL(r.radians));
-	v8::Handle<v8::Object> r_p_ = v8_MakeJavascriptOffset(r.centerOffset);
+	v8::Local<v8::Object> r_p_ = v8_MakeJavascriptOffset(isolate, r.centerOffset);
 	obj->Set(CenterOffset_Symbol, r_p_);
-  	return scope.Close(obj);
+  	return scope.Escape(obj);
 }
 
-v8::Handle<v8::Object> v8_MakeJavascriptQuad(pdg::Quad& q) {
-  	v8::HandleScope scope;
-  	v8::Local<v8::Array> arr = v8::Array::New();
-  	v8::Local<v8::Object> obj = v8::Object::New();
-  	if (!gQuadPrototype.IsEmpty()) obj->SetPrototype(gQuadPrototype);
+v8::Local<v8::Object> v8_MakeJavascriptQuad(v8::Isolate* isolate, pdg::Quad& q) {
+    v8::EscapableHandleScope scope(isolate);
+  	v8::Local<v8::Array> arr = v8::Array::New(isolate);
+  	v8::Local<v8::Object> obj = v8::Object::New(isolate);
+    v8::Local<v8::Object> proto = v8::Local<v8::Object>::New(isolate, gQuadPrototype);
+  	if (!gQuadPrototype.IsEmpty()) obj->SetPrototype(proto);
   	for (int i = 0; i<4; i++) {
-		v8::Handle<v8::Object> q_p_ = v8_MakeJavascriptPoint(q.points[i]);
-		arr->Set(v8::Integer::New(i), q_p_);
+		v8::Local<v8::Object> q_p_ = v8_MakeJavascriptPoint(isolate, q.points[i]);
+		arr->Set(v8::Integer::New(isolate, i), q_p_);
 	}
 	obj->Set(Points_Symbol, arr);
-  	return scope.Close(obj);
+  	return scope.Escape(obj);
 }
 
-v8::Handle<v8::Object> v8_MakeJavascriptColor(pdg::Color& c) {
-  	v8::HandleScope scope;
-  	v8::Local<v8::Object> obj = v8::Object::New();
-  	if (!gColorPrototype.IsEmpty()) obj->SetPrototype(gColorPrototype);
+v8::Local<v8::Object> v8_MakeJavascriptColor(v8::Isolate* isolate, pdg::Color& c) {
+    v8::EscapableHandleScope scope(isolate);
+  	v8::Local<v8::Object> obj = v8::Object::New(isolate);
+    v8::Local<v8::Object> proto = v8::Local<v8::Object>::New(isolate, gColorPrototype);
+  	if (!gColorPrototype.IsEmpty()) obj->SetPrototype(proto);
 	obj->Set(Red_Symbol,NUM2VAL(c.red));
 	obj->Set(Green_Symbol,NUM2VAL(c.green));
 	obj->Set(Blue_Symbol,NUM2VAL(c.blue));
 	obj->Set(Alpha_Symbol,NUM2VAL(c.alpha));
-  	return scope.Close(obj);
+  	return scope.Escape(obj);
 }
 
-v8::Handle<v8::Value> MakeNativeOffset(v8::Handle<v8::Value> val, pdg::Offset& o, bool canFail) {
-  	v8::HandleScope scope;
+v8::Local<v8::Value> MakeCppOffset(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::Offset& o, bool canFail) {
+    v8::EscapableHandleScope scope(isolate);
 	if (val->IsArray()) {
-		v8::Handle<v8::Array> arr_ = v8::Handle<v8::Array>::Cast(val);
+		v8::Local<v8::Array> arr_ = v8::Local<v8::Array>::Cast(val);
 		if (arr_->Length() == 2) {
 			// convert 2 element array to point assuming x,y order
 			o.x = arr_->Get(0)->NumberValue();
 			o.y = arr_->Get(1)->NumberValue();
 		} else if (canFail) {
-			RETURN_FALSE;
+			return scope.Escape( BOOL2VAL(false) );
 		} else {
 			THROW_SYNTAX_ERR("Point from Array must be: 2 Numbers [x, y]");
 		}
 	} else if (val->IsObject()) {
 		// convert object with "x" and "y" values
-		v8::Handle<v8::Object> obj_ = val->ToObject();
+		v8::Local<v8::Object> obj_ = val->ToObject();
 		if (obj_->Has(X_Symbol) && obj_->Has(Y_Symbol)) {
 			o.x = obj_->Get(X_Symbol)->NumberValue();
 			o.y = obj_->Get(Y_Symbol)->NumberValue();
 		} else if (canFail) {
-			RETURN_FALSE;
+			return scope.Escape( BOOL2VAL(false) );
 		} else {
 			THROW_SYNTAX_ERR("Point from Object must be: {x:Number, y:Number}");
 		}
 	} else {
-		RETURN_FALSE;
+		return scope.Escape( BOOL2VAL(false) );
   	}
 //	SCRIPT_DEBUG_ONLY( OS::_DOUT( "Point: (x:%.1f, y:%.1f)", o.x, o.y); )
-  	RETURN_TRUE;
+	return scope.Escape( BOOL2VAL(true) );
 }
 
-v8::Handle<v8::Value> MakeNativePoint(v8::Handle<v8::Value> val, pdg::Point& p, bool canFail) {
-	return MakeNativeOffset(val, p, canFail);
+v8::Local<v8::Value> MakeCppPoint(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::Point& p, bool canFail) {
+	return MakeCppOffset(isolate, val, p, canFail);
 }
 
-// v8::Handle<v8::Value> MakeNativeVector(v8::Handle<v8::Value> val, pdg::Vector& v, bool canFail) {
-// 	return MakeNativeOffset(val, v, canFail);
+// v8::Local<v8::Value> MakeCppVector(v8::Local<v8::Value> val, pdg::Vector& v, bool canFail) {
+// 	return MakeCppOffset(val, v, canFail);
 // }
 // 
 
-v8::Handle<v8::Value> MakeNativeRect(v8::Handle<v8::Value> val, pdg::Rect& r, bool canFail) {
-  	v8::HandleScope scope;
+v8::Local<v8::Value> MakeCppRect(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::Rect& r, bool canFail) {
+    v8::EscapableHandleScope scope(isolate);
   	pdg::Point p;
 	if (val->IsArray()) {
-		v8::Handle<v8::Array> arr_ = v8::Handle<v8::Array>::Cast(val);
+		v8::Local<v8::Array> arr_ = v8::Local<v8::Array>::Cast(val);
 		if (arr_->Length() == 2) {
 			// convert 2 element array of points assuming leftTop, rightBottom order
-			v8::Handle<v8::Value> resVal = MakeNativePoint(arr_->Get(0), p, canFail);
+			v8::Local<v8::Value> resVal = MakeCppPoint(isolate, arr_->Get(0), p, canFail);
 			if (resVal->IsTrue()) {
 				r.left = p.x;
 				r.top = p.y;			
-				resVal = MakeNativePoint(arr_->Get(1), p, canFail);
-				if (!resVal->IsTrue()) RETURN(resVal);
+				resVal = MakeCppPoint(isolate, arr_->Get(1), p, canFail);
+				if (!resVal->IsTrue()) {
+				    return scope.Escape(resVal);
+				}
 				r.right = p.x;
 				r.bottom = p.y;
 			} else {
@@ -283,13 +323,13 @@ v8::Handle<v8::Value> MakeNativeRect(v8::Handle<v8::Value> val, pdg::Rect& r, bo
 			r.right = arr_->Get(2)->NumberValue();
 			r.bottom = arr_->Get(3)->NumberValue();
 		} else if (canFail) {
-			RETURN_FALSE;
+			return scope.Escape( BOOL2VAL(false) );
 		} else {
 			THROW_SYNTAX_ERR("Rect from Array must be: 2 points [topLeft, botRight], or "
 					"2 Numbers [width, height], or 4 Numbers [left, top, right, bottom]");
 		}
 	} else if (val->IsObject()) {
-		v8::Handle<v8::Object> obj_ = val->ToObject();
+		v8::Local<v8::Object> obj_ = val->ToObject();
 		if (obj_->Has(Top_Symbol) && obj_->Has(Left_Symbol) 
 		  && obj_->Has(Right_Symbol) && obj_->Has(Bottom_Symbol)) {
 			// convert object with "top" "left" "right" and "bottom" values
@@ -300,8 +340,10 @@ v8::Handle<v8::Value> MakeNativeRect(v8::Handle<v8::Value> val, pdg::Rect& r, bo
 		} else if (obj_->Has(Width_Symbol) && obj_->Has(Height_Symbol)) {
 			// convert object with "width" and "height" values (and optional "topleft")
 			if (obj_->Has(TopLeft_Symbol)) {
-				v8::Handle<v8::Value> resVal = MakeNativePoint(obj_->Get(TopLeft_Symbol), p, canFail);
-				if (!resVal->IsTrue()) RETURN(resVal);
+				v8::Local<v8::Value> resVal = MakeCppPoint(isolate, obj_->Get(TopLeft_Symbol), p, canFail);
+				if (!resVal->IsTrue()) {
+				    return scope.Escape(resVal);
+				}
 				r.left = p.x;
 				r.top = p.y;
 			} else {
@@ -312,16 +354,20 @@ v8::Handle<v8::Value> MakeNativeRect(v8::Handle<v8::Value> val, pdg::Rect& r, bo
 			r.setHeight( obj_->Get(Height_Symbol)->NumberValue() );
 		} else if (obj_->Has(TopLeft_Symbol) && obj_->Has(BottomRight_Symbol)) {
 			// convert object with "topleft" and "bottomright" values
-			v8::Handle<v8::Value> resVal = MakeNativePoint(obj_->Get(TopLeft_Symbol), p, canFail);
-			if (!resVal->IsTrue()) RETURN(resVal);
+			v8::Local<v8::Value> resVal = MakeCppPoint(isolate, obj_->Get(TopLeft_Symbol), p, canFail);
+			if (!resVal->IsTrue()) {
+				return scope.Escape(resVal);
+			}
 			r.left = p.x;
 			r.top = p.y;
-			resVal = MakeNativePoint(obj_->Get(BottomRight_Symbol), p, canFail);
-			if (!resVal->IsTrue()) RETURN(resVal);
+			resVal = MakeCppPoint(isolate, obj_->Get(BottomRight_Symbol), p, canFail);
+			if (!resVal->IsTrue()) {
+			    return scope.Escape(resVal);
+			}
 			r.right = p.x;
 			r.bottom = p.y;
 		} else if (canFail) {
-			RETURN_FALSE;
+			return scope.Escape( BOOL2VAL(false) );
 		} else {
 			THROW_SYNTAX_ERR("Rect from Object must be: \n"
 				"  { top:n, right:n, bottom:n, left:n [, radians:n] }, or \n"
@@ -329,34 +375,34 @@ v8::Handle<v8::Value> MakeNativeRect(v8::Handle<v8::Value> val, pdg::Rect& r, bo
 				"  { topleft: {x:n, y:n}, bottomright: {x:n, y:n} [, radians:n] }" );
 		}
 	} else {
-		RETURN_FALSE;
+		return scope.Escape( BOOL2VAL(false) );
 	}
 // 	SCRIPT_DEBUG_ONLY( OS::_DOUT( "Rect: (t:%.1f, l:%.1f, r:%.1f, b:%.1f)",
 // 			r.top, r.left, r.right, r.bottom ); )
-  	RETURN_TRUE;
+	return scope.Escape( BOOL2VAL(true) );
 }
 
-v8::Handle<v8::Value> MakeNativeRect(v8::Handle<v8::Value> val, pdg::RotatedRect& rr, bool canFail) {
-  	v8::HandleScope scope;
+v8::Local<v8::Value> MakeCppRect(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::RotatedRect& rr, bool canFail) {
+    v8::EscapableHandleScope scope(isolate);
   	pdg::Rect r;
-  	if (MakeNativeRect(val, r, canFail)->IsTrue()) {
+  	if (MakeCppRect(isolate, val, r, canFail)->IsTrue()) {
   		// always accept a rectangle as a Quad
   		rr = pdg::RotatedRect(r);
   		// check for optional rotation
   		if (val->IsObject()) {
-			v8::Handle<v8::Object> obj_ = val->ToObject();
+			v8::Local<v8::Object> obj_ = val->ToObject();
 			if (obj_->Has(Radians_Symbol)) {
 				float radians = obj_->Get(Radians_Symbol)->NumberValue();
 				rr.radians = radians;
 			}
 			pdg::Point centerPtOffset;
 			if (obj_->Has(CenterOffset_Symbol)) {
-				MakeNativePoint(obj_->Get(CenterOffset_Symbol), centerPtOffset, canFail);
+				MakeCppPoint(isolate, obj_->Get(CenterOffset_Symbol), centerPtOffset, canFail);
 			}
 			rr.centerOffset = centerPtOffset;
 		}
   	} else if (canFail) {
-  		RETURN_FALSE;
+		return scope.Escape( BOOL2VAL(false) );
   	} else {
 		THROW_SYNTAX_ERR("Rect from Object must be: \n"
 			"  { top:n, right:n, bottom:n, left:n [, radians:n] [, centeroffset: Point] }, or \n"
@@ -365,60 +411,62 @@ v8::Handle<v8::Value> MakeNativeRect(v8::Handle<v8::Value> val, pdg::RotatedRect
   	}
 // 	SCRIPT_DEBUG_ONLY( OS::_DOUT( "RotatedRect: (t:%.1f, l:%.1f, r:%.1f, b:%.1f, r:%.1f, co.x:%.1f, co.y:%.1f)",
 // 			rr.top, rr.left, rr.right, rr.bottom, rr.radians, rr.centerOffset.x, rr.centerOffset.y ); )
-  	RETURN_TRUE;
+	return scope.Escape( BOOL2VAL(true) );
 }
   	
-v8::Handle<v8::Value> MakeNativeQuad(v8::Handle<v8::Value> val, pdg::Quad& q, bool canFail) {
-  	v8::HandleScope scope;
+v8::Local<v8::Value> MakeCppQuad(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::Quad& q, bool canFail) {
+    v8::EscapableHandleScope scope(isolate);
   	pdg::Rect r;
-  	if (MakeNativeRect(val, r, canFail)->IsTrue()) {
+  	if (MakeCppRect(isolate, val, r, canFail)->IsTrue()) {
   		// always accept a rectangle as a Quad
   		q = pdg::Quad(r);
   		// check for optional rotation
   		if (val->IsObject()) {
-			v8::Handle<v8::Object> obj_ = val->ToObject();
+			v8::Local<v8::Object> obj_ = val->ToObject();
 			if (obj_->Has(Radians_Symbol)) {
 				float radians = obj_->Get(Radians_Symbol)->NumberValue();
 				pdg::Point centerPtOffset;
 				if (obj_->Has(CenterOffset_Symbol)) {
-					MakeNativePoint(obj_->Get(CenterOffset_Symbol), centerPtOffset, canFail);
+					MakeCppPoint(isolate, obj_->Get(CenterOffset_Symbol), centerPtOffset, canFail);
 				}
 				q.rotate(radians, centerPtOffset);
 			}
 		}
   	} else if (val->IsArray()) {
-		v8::Handle<v8::Array> arr_ = v8::Handle<v8::Array>::Cast(val);
+		v8::Local<v8::Array> arr_ = v8::Local<v8::Array>::Cast(val);
 		if (arr_->Length() == 4) {
 			// convert array of points into quad
-			v8::Handle<v8::Value> resVal;
+			v8::Local<v8::Value> resVal;
 			for (int i = 0; i < 4; i++) {
-				resVal = MakeNativePoint(arr_->Get(i), q.points[i], canFail);
-				if (!resVal->IsTrue()) RETURN(resVal);
+				resVal = MakeCppPoint(isolate, arr_->Get(i), q.points[i], canFail);
+				if (!resVal->IsTrue())  {
+				    return scope.Escape(resVal);
+				}
 			}
 		} else if (canFail) {
-			RETURN_FALSE;
+			return scope.Escape( BOOL2VAL(false) );
 		} else {
 			THROW_SYNTAX_ERR("Quad from Array must be: Array[4] of points");
 		}
 	} else {
 		// TODO: handle JavaScript pdg.Quad() object, ie:
 		// { points: [ { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 } ] }
-		RETURN_FALSE;
+		return scope.Escape( BOOL2VAL(false) );
 	}
 // 	SCRIPT_DEBUG_ONLY( OS::_DOUT( "Quad: (%.1f, %.1f), (%.1f, %.1f), (%.1f, %.1f), (%.1f, %.1f)",
 // 			q.points[0].x, q.points[0].y, q.points[1].x, q.points[1].y, 
 // 			q.points[2].x, q.points[2].y, q.points[3].x, q.points[3].y ); )
-  	RETURN_TRUE;
+	return scope.Escape( BOOL2VAL(true) );
 }
 
-v8::Handle<v8::Value> MakeNativeColor(v8::Handle<v8::Value> val, pdg::Color& c, bool canFail) {
-  	v8::HandleScope scope;
+v8::Local<v8::Value> MakeCppColor(v8::Isolate* isolate, v8::Local<v8::Value> val, pdg::Color& c, bool canFail) {
+    v8::EscapableHandleScope scope(isolate);
   	if (val->IsUint32()) {
 		// convert uint32 to color by breaking apart elements
 		c = val->Uint32Value();
   	} else if (val->IsArray()) {
 		// convert 3 or 4 element array to color assuming RGBA order
-		v8::Handle<v8::Array> arr_ = v8::Handle<v8::Array>::Cast(val);
+		v8::Local<v8::Array> arr_ = v8::Local<v8::Array>::Cast(val);
 		if (arr_->Length() == 3 || arr_->Length() == 4) {
 			c.red = arr_->Get(0)->NumberValue();
 			c.green = arr_->Get(1)->NumberValue();
@@ -429,7 +477,7 @@ v8::Handle<v8::Value> MakeNativeColor(v8::Handle<v8::Value> val, pdg::Color& c, 
 				c.alpha = 1.0f;
 			}
 		} else if (canFail) {
-			RETURN_FALSE;
+			return scope.Escape( BOOL2VAL(false) );
 		} else {
 			THROW_SYNTAX_ERR("Color from Array must be: 3 or 4 Numbers [red, green, blue] or "
 					"[red, green, blue, alpha]");
@@ -470,7 +518,7 @@ v8::Handle<v8::Value> MakeNativeColor(v8::Handle<v8::Value> val, pdg::Color& c, 
 			}
 			if (!found) {
 				if (canFail) {
-					RETURN_FALSE;
+			        return scope.Escape( BOOL2VAL(false) );
 				} else {
 					std::ostringstream msg;
 					msg << "Invalid color name \"" << str << "\". Valid names are:";
@@ -483,7 +531,7 @@ v8::Handle<v8::Value> MakeNativeColor(v8::Handle<v8::Value> val, pdg::Color& c, 
 		}
 	} else if (val->IsObject()) {
 		// convert object with "red" "green" "blue" and optional "alpha" values
-		v8::Handle<v8::Object> obj_ = val->ToObject();
+		v8::Local<v8::Object> obj_ = val->ToObject();
 		if (obj_->Has(Red_Symbol) && obj_->Has(Green_Symbol) 
 		  && obj_->Has(Blue_Symbol)) {
 			c.red = obj_->Get(Red_Symbol)->NumberValue();
@@ -495,109 +543,109 @@ v8::Handle<v8::Value> MakeNativeColor(v8::Handle<v8::Value> val, pdg::Color& c, 
 				c.alpha = 1.0f;
 			}
 		} else if (canFail) {
-			RETURN_FALSE;
+			return scope.Escape( BOOL2VAL(false) );
 		} else {
 			THROW_SYNTAX_ERR("Color from Object must be: { red:n, green:n, blue:n [, alpha:n] }" );
 		}
 	} else {
-		RETURN_FALSE;
+		return scope.Escape( BOOL2VAL(false) );
 	}
 // 	SCRIPT_DEBUG_ONLY( OS::_DOUT( "Color: (r:%.1f, g:%.1f, b:%.1f, a:%.1f)", 
 // 			c.red, c.green, c.blue, c.alpha ); )
-  	RETURN_TRUE;
+	return scope.Escape( BOOL2VAL(true) );
 }
 
-bool v8_ValueIsOffset(v8::Handle<v8::Value> val) {
+bool v8_ValueIsOffset(v8::Isolate* isolate, v8::Local<v8::Value> val) {
 	pdg::Offset o;
-	return MakeNativeOffset(val, o, true)->IsTrue();
+	return MakeCppOffset(isolate, val, o, true)->IsTrue();
 }
 
-bool v8_ValueIsPoint(v8::Handle<v8::Value> val) {
-	return v8_ValueIsOffset(val);
+bool v8_ValueIsPoint(v8::Isolate* isolate, v8::Local<v8::Value> val) {
+	return v8_ValueIsOffset(isolate, val);
 }
 
-bool v8_ValueIsVector(v8::Handle<v8::Value> val) {
-	return v8_ValueIsOffset(val);
+bool v8_ValueIsVector(v8::Isolate* isolate, v8::Local<v8::Value> val) {
+	return v8_ValueIsOffset(isolate, val);
 }
 
-bool v8_ValueIsRect(v8::Handle<v8::Value> val, bool arrayCheck) {
+bool v8_ValueIsRect(v8::Isolate* isolate, v8::Local<v8::Value> val, bool arrayCheck) {
 	pdg::Rect r;
-	return MakeNativeRect(val, r, true)->IsTrue();
+	return MakeCppRect(isolate, val, r, true)->IsTrue();
 }
 
-bool v8_ValueIsRotatedRect(v8::Handle<v8::Value> val) {
+bool v8_ValueIsRotatedRect(v8::Isolate* isolate, v8::Local<v8::Value> val) {
 	pdg::RotatedRect rr;
-	return MakeNativeRect(val, rr, true)->IsTrue();
+	return MakeCppRect(isolate, val, rr, true)->IsTrue();
 }
 
-bool v8_ValueIsQuad(v8::Handle<v8::Value> val) {
+bool v8_ValueIsQuad(v8::Isolate* isolate, v8::Local<v8::Value> val) {
 	pdg::Quad q;
-	return MakeNativeQuad(val, q, true)->IsTrue();
+	return MakeCppQuad(isolate, val, q, true)->IsTrue();
 }
 
-bool v8_ValueIsColor(v8::Handle<v8::Value> val) {
+bool v8_ValueIsColor(v8::Isolate* isolate, v8::Local<v8::Value> val) {
 	pdg::Color c;
-	return MakeNativeColor(val, c, true)->IsTrue();
+	return MakeCppColor(isolate, val, c, true)->IsTrue();
 }
 
 Offset  	
-v8_ValueToOffset(v8::Handle<v8::Value> val) {
+v8_ValueToOffset(v8::Isolate* isolate, v8::Local<v8::Value> val) {
 	pdg::Offset o;
-	MakeNativeOffset(val, o, true);
+	MakeCppOffset(isolate, val, o, true);
 	return o;
 }
 
 Point  		
-v8_ValueToPoint(v8::Handle<v8::Value> val) {
-	return v8_ValueToOffset(val);
+v8_ValueToPoint(v8::Isolate* isolate, v8::Local<v8::Value> val) {
+	return v8_ValueToOffset(isolate, val);
 }
 
 Vector  	
-v8_ValueToVector(v8::Handle<v8::Value> val) {
-	return v8_ValueToOffset(val);
+v8_ValueToVector(v8::Isolate* isolate, v8::Local<v8::Value> val) {
+	return v8_ValueToOffset(isolate, val);
 }
 
 Rect  		
-v8_ValueToRect(v8::Handle<v8::Value> val) {
+v8_ValueToRect(v8::Isolate* isolate, v8::Local<v8::Value> val) {
 	pdg::Rect r;
-	MakeNativeRect(val, r, true);
+	MakeCppRect(isolate, val, r, true);
 	return r;
 }
 
 RotatedRect 
-v8_ValueToRotatedRect(v8::Handle<v8::Value> val) {
+v8_ValueToRotatedRect(v8::Isolate* isolate, v8::Local<v8::Value> val) {
 	pdg::RotatedRect rr;
-	MakeNativeRect(val, rr, true);
+	MakeCppRect(isolate, val, rr, true);
 	return rr;
 }
 
 Quad  		
-v8_ValueToQuad(v8::Handle<v8::Value> val) {
+v8_ValueToQuad(v8::Isolate* isolate, v8::Local<v8::Value> val) {
 	pdg::Quad q;
-	MakeNativeQuad(val, q, true);
+	MakeCppQuad(isolate, val, q, true);
 	return q;
 }
 
 Color  		
-v8_ValueToColor(v8::Handle<v8::Value> val) {
+v8_ValueToColor(v8::Isolate* isolate, v8::Local<v8::Value> val) {
 	pdg::Color c;
-	MakeNativeColor(val, c, true);
+	MakeCppColor(isolate, val, c, true);
 	return c;
 }
 
-v8::Handle<v8::Object> v8_ObjectCreateEmpty(void* privateDataPtr) {
-  	v8::HandleScope scope;
+v8::Local<v8::Object> v8_ObjectCreateEmpty(v8::Isolate* isolate, void* privateDataPtr) {
+    v8::EscapableHandleScope scope(isolate);
   	v8::Local<v8::Object> obj;
   	if (privateDataPtr) {
-		v8::Handle<v8::ObjectTemplate> t = v8::ObjectTemplate::New(); 
+		v8::Local<v8::ObjectTemplate> t = v8::ObjectTemplate::New(isolate); 
         t->SetInternalFieldCount(1);
         obj = t->NewInstance();
         assert(obj->InternalFieldCount() > 0);
-  		obj->SetPointerInInternalField(0, privateDataPtr);
+  		obj->SetAlignedPointerInInternalField(0, privateDataPtr);
   	} else {
-  		obj = v8::Object::New();
+  		obj = v8::Object::New(isolate);
   	}
-  	return scope.Close(obj);
+	return scope.Escape( obj );
 }
 
 } // end namespace pdg

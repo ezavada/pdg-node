@@ -104,7 +104,7 @@ protected:
 #ifndef PDG_NO_GUI
 	virtual void drawLayer();
 #endif // ! PDG_NO_GUI
-	virtual void animateLayer(long msElapsed);
+	virtual void animateLayer(ms_delta msElapsed);
 
 	Image*  mTiles;
 	uint8*  mTileData;
@@ -122,7 +122,7 @@ protected:
 	bool	mUseFlipping;
 	bool	mFlipHoriz;
 	bool	mFlipVert;
-	uint32  mMipMode;
+	int     mMipMode;
 	float	mTileWorldRatioX;
 	float	mTileWorldRatioY;
 	float	mPixelWorldRatioX;

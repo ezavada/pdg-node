@@ -58,7 +58,7 @@
 #endif
 
 #ifdef PDG_USE_CHIPMUNK_PHYSICS
-#include "chipmunk.h"
+#include "chipmunk/chipmunk_private.h"
 #define CP_COLLIDE_TYPE_SPRITE 1111
 #define CP_COLLIDE_TYPE_WALL   1212
 #endif
@@ -141,8 +141,8 @@ public:
 		collide_Last = collide_AlphaChannel
 	};
 
-    // get the bounds for the current frame including rotation
-    RotatedRect	getFrameRotatedBounds(int frame);
+    // get the bounds for a frame including rotation, or current frame if no frameNum given
+    RotatedRect	getFrameRotatedBounds(int frameNum = -1);
 
     // sets current frame of Sprite to a given frame number
     Sprite& setFrame(int frame);
@@ -163,8 +163,11 @@ public:
 	void	stopFrameAnimation();
 	
 	// controls whether the sprite should generate action_AnimationLoop or action_AnimationEnd events, default is no
-	bool	setWantsAnimLoopEvents(bool wantsThem = true);
-	bool	setWantsAnimEndEvents(bool wantsThem = true);
+	bool	getWantsAnimLoopEvents() { return wantsAnimLoop; }
+	bool	getWantsAnimEndEvents() { return wantsAnimEnd; }
+
+	Sprite&	setWantsAnimLoopEvents(bool wantsThem = true);
+	Sprite&	setWantsAnimEndEvents(bool wantsThem = true);
 
     // adds an image that is used for one or more frames
     // since an image itself can have multiple frames, all frames of the image are added
@@ -208,16 +211,16 @@ public:
     void	offsetFrameCenters(int offsetX, int offsetY, Image* image = 0, 
     						int startingFrame = start_FromFirstFrame, int numFrames = all_Frames);
 	// fetch the offsets set above, but only for a single frame
-    void	getFrameCenterOffset(int &offsetX, int &offsetY, Image* image = 0, int frameNum = 0);
+    Offset	getFrameCenterOffset(Image* image = 0, int frameNum = 0);
 
 	// fading, with 1.0 being complete opaque and 0.0 being completely transparent
 	Sprite& setOpacity(float opacity);
 	float	getOpacity();
-	void	fadeTo(float targetOpacity, int32 msDuration, 
+	void	fadeTo(float targetOpacity, ms_delta msDuration, 
                             EasingFunc easing = linearTween);  // fadeComplete notification when done
-	void	fadeIn(int32 msDuration, 
+	void	fadeIn(ms_delta msDuration, 
                             EasingFunc easing = linearTween);  // fadeInComplete notification when done
-	void	fadeOut(int32 msDuration, 
+	void	fadeOut(ms_delta msDuration, 
                             EasingFunc easing = linearTween);  // fadeOutComplete notification when done
 
 	// arrange sprites within the layer
@@ -229,6 +232,7 @@ public:
 	bool	isBehind(Sprite* sprite);
 	
 	// collisions
+	bool getWantsCollideWallEvents() { return wantsWallCollide; }
 	Sprite& setWantsCollideWallEvents(bool wantsThem = true); // collisions for hitting bounds of sprite layer
 	Sprite& enableCollisions(int collisionType = collide_AlphaChannel);
 	Sprite& disableCollisions();
@@ -246,17 +250,21 @@ public:
 	float	getElasticity();
 
   #ifndef PDG_NO_GUI
+	bool    getWantsMouseOverEvents() { return wantsMouseOver; }
+	bool    getWantsClickEvents() { return wantsClicks; }
+	int     getMouseDetectMode() { return mMouseDetectMode; }
+	bool    getWantsOffscreenEvents() { return wantsOffscreen; }
 	// controls whether the sprite wants to get mouse events
-	bool    setWantsMouseOverEvents(bool wantsThem = true);
-	bool    setWantsClickEvents(bool wantsThem = true);
-	int     setMouseDetectMode(int collisionType = collide_BoundingBox); // how we detect when the mouse is over a sprite
-	bool    setWantsOffscreenEvents(bool wantsThem = true); // events for when sprite moves offscreen
+	Sprite& setWantsMouseOverEvents(bool wantsThem = true);
+	Sprite& setWantsClickEvents(bool wantsThem = true);
+	Sprite& setMouseDetectMode(int collisionType = collide_BoundingBox); // how we detect when the mouse is over a sprite
+	Sprite& setWantsOffscreenEvents(bool wantsThem = true); // events for when sprite moves offscreen
   #endif // ! PDG_NO_GUI
 
   #ifdef PDG_USE_CHIPMUNK_PHYSICS
 	// override of what is provided by Animated
-	virtual void	applyForce(const Vector& force, int32 msDuration = duration_Instantaneous);
-	virtual void	applyTorque(float forceSpin, int32 msDuration = duration_Instantaneous);
+	virtual void	applyForce(const Vector& force, ms_delta msDuration = duration_Instantaneous);
+	virtual void	applyTorque(float forceSpin, ms_delta msDuration = duration_Instantaneous);
 	virtual void	stopAllForces();  // removes all forces that were set by applyForce (but not friction)
     virtual Animated&    setVelocity(const Vector& deltaPerSec);
 	virtual Vector  getVelocity();
@@ -289,7 +297,7 @@ public:
     // this sprite becomes a static body that isn't affected by physics, though
     // non-static objects can collide with it. This would be used for walls or platforms.
     // This should be done before setting anything else about the sprite
-    // returns itself so you can call Sprite* sprite = layer->createSprite().makeStatic();
+    // returns itself so you can call Sprite* sprite = layer->createSprite()->makeStatic();
     Sprite&         makeStatic();
 
 	virtual Animated&	setMass(float mass);  // override
@@ -359,7 +367,6 @@ public:
     cpConstraint*   gear(Sprite* otherSprite, float gearRatio, float initialAngle = 0.0f, float breakingForce = 0.0f);
 
     // keep spin of another sprite at a constant rate compared to this one
-    // optional breaking force at which the joint (and and any other connections to that sprite) are broken
     // returns the cpConstraint pointer in case you want to do anything special with it
     
     cpConstraint*   motor(Sprite* otherSprite, float spin, float maxTorque = std::numeric_limits<float>::infinity());
@@ -437,7 +444,7 @@ protected:
     
 	// functions called from the layer
 	virtual void	draw();
-	virtual void	doAnimate(int msElapsed, bool layerDoCollisions);
+	virtual void	doAnimate(ms_delta msElapsed, bool layerDoCollisions);
     
  	int mNumFrames;
 
@@ -530,27 +537,24 @@ Sprite::setWantsCollideWallEvents(bool wantsThem) {
 	return *this;
 }
 
-inline bool	
+inline Sprite&	
 Sprite::setWantsAnimLoopEvents(bool wantsThem) { 
-	bool didWant = wantsAnimLoop; 
 	wantsAnimLoop = wantsThem; 
-	return didWant; 
+	return *this; 
 }
 
-inline bool	
+inline Sprite&	
 Sprite::setWantsAnimEndEvents(bool wantsThem) {
-	bool didWant = wantsAnimEnd; 
 	wantsAnimEnd = wantsThem; 
-	return didWant; 
+	return *this; 
 }
 
 #ifndef PDG_NO_GUI
-inline bool	
+inline Sprite&	
 Sprite::setWantsOffscreenEvents(bool wantsThem) {
-	bool didWant = wantsOffscreen; 
 	wantsOffscreen = wantsThem; 
 	if (wantsThem) recalcOnscreenAndInBounds();
-	return didWant; 
+	return *this; 
 }
 #endif // PDG_NO_GUI
 

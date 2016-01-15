@@ -152,7 +152,7 @@ namespace pdg {
                             sleepTime = AQUIRE_USEC_INTERVAL;   // sleep for a bit and see if we can get it later
                             waitMilliseconds -= AQUIRE_MILLISEC_INTERVAL;
                         }
-                        PosixAPI::usleep(sleepTime);  // note: don't call this with sleepTime >= 1,000,000 
+                        PosixAPI::usleep((useconds_t)sleepTime);  // note: don't call this with sleepTime >= 1,000,000
                     }
                 }
                 return true;   // we got the lock

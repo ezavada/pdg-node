@@ -4,8 +4,8 @@
 // utility class to pass buffers around between
 // script calls 
 //
-// Written by Ed Zavada, 2012-2013
-// Copyright (c) 2013, Dream Rock Studios, LLC
+// Written by Ed Zavada, 2012-2015
+// Copyright (c) 2015, Dream Rock Studios, LLC
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the
@@ -33,9 +33,12 @@
 
 #include "pdg_project.h"
 
+#ifdef PDG_COMPILING_FOR_SCRIPT_BINDINGS
 #include "pdg_script_bindings.h"
+#endif
 
 #include <cstdlib>
+#include <string>
 
 namespace pdg {
 
@@ -47,34 +50,15 @@ struct MemBlock {
 	bool	owned;
     MemBlock(char* p, size_t n, bool own);
     MemBlock(size_t n);
+    std::string& getData();
+    size_t  getDataSize();
+    unsigned char getByte(size_t i);
+    std::string& getBytes(size_t start, size_t len);
     ~MemBlock();
+  #ifdef PDG_COMPILING_FOR_SCRIPT_BINDINGS
 	SCRIPT_OBJECT_REF mMemBlockScriptObj;
+  #endif
 };
-
-inline
-MemBlock::MemBlock(char* p, size_t n, bool own) 
-	: ptr(p), bytes(n), owned(own) 
-{
-	INIT_SCRIPT_OBJECT(mMemBlockScriptObj);
-}
-
-inline
-MemBlock::MemBlock(size_t n) 
-	: ptr(0), bytes(n), owned(true) 
-{
-	INIT_SCRIPT_OBJECT(mMemBlockScriptObj);
-	ptr = (char*)std::malloc(bytes);
-}
-
-inline 
-MemBlock::~MemBlock() { 
-	if (ptr && owned) { 
-		std::free(ptr);
-		ptr = 0; 
-	}
-	CleanupMemBlockScriptObject(mMemBlockScriptObj);
-}
-
 
 
 } // end pdg namespace

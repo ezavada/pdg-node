@@ -1,4 +1,4 @@
-.TH "Deserializer" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.TH "Deserializer" 3 "Mon Oct 26 2015" "Version v0.9.5" "Pixel Dust Game Engine" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -92,6 +92,9 @@ deserialize data from a serialized data stream
 .RI "\fBRect\fP \fBdeserialize_rect\fP ()"
 .br
 .RI "\fIdeserialize a \fBRect\fP \fP"
+.ti -1c
+.RI "object \fBdeserialize_ref\fP ()"
+.br
 .ti -1c
 .RI "\fBRotatedRect\fP \fBdeserialize_rotr\fP ()"
 .br
@@ -514,6 +517,8 @@ a \fBRect\fP
 \fBSerializer\&.serialize_rect\fP 
 .RE
 .PP
+
+.SS "object deserialize_ref ()"
 
 .SS "deserialize_rotr ()"
 

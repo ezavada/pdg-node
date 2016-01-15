@@ -48,10 +48,9 @@
 #endif
 
 #ifdef PDG_USE_CHIPMUNK_PHYSICS
-typedef struct cpConstraint cpConstraint;
-typedef struct cpArbiter cpArbiter;
+  #include "chipmunk/chipmunk_private.h"
 #endif
-	
+
 
 //! \defgroup Events
 //! Collection of classes, types and constants used by the Event Manager
@@ -209,9 +208,9 @@ struct TimerInfo {
 	//! this id tells us which timer fired
     long            id;           
 	//! the current millisecond timestamp, as if you had called OS::getMilliseconds()
-    unsigned long   millisec;     
+    ms_time         millisec;
 	//! how long (excluding pause time) since last firing, or since started if first firing
-	uint32			msElapsed;
+	ms_delta		msElapsed;
 	//! the data associated with this timer, passed in by app when timer was created
     void*           userData;
 };
@@ -415,7 +414,7 @@ struct SpriteLayerInfo {
     //! which layer is doing the action
 	SpriteLayer*    actingLayer;
     //! the time stamp at which the action occurred
-	uint32          millisec;  
+	ms_time          millisec;
 };
 PDG_CLASS_TYPEDEF(SpriteLayerInfo)
 

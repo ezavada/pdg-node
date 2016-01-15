@@ -47,35 +47,39 @@
 
 namespace pdg {
 
-v8::Handle<v8::Value> v8_ThrowArgCountException(int argc, int requiredCount = 0, bool allowExtra = false);
-v8::Handle<v8::Value> v8_ThrowArgTypeException(int argn, const char* mustBeStr, v8::Value* valp = 0);
+const char* v8_GetFunctionName(v8::Local<v8::Function> func);
+const char* v8_GetFunctionFileAndLine(v8::Local<v8::Function> func);
+const char* v8_GetObjectClassName(v8::Local<v8::Object> obj);
 
-// these let us set a prototype that will be used when an object of a particulr JavaScript class is created
-void v8_SetOffsetPrototype(v8::Persistent<v8::Object> obj);
-void v8_SetPointPrototype(v8::Persistent<v8::Object> obj);
-void v8_SetVectorPrototype(v8::Persistent<v8::Object> obj);
-void v8_SetRectPrototype(v8::Persistent<v8::Object> obj);
-void v8_SetRotatedRectPrototype(v8::Persistent<v8::Object> obj);
-void v8_SetQuadPrototype(v8::Persistent<v8::Object> obj);
-void v8_SetColorPrototype(v8::Persistent<v8::Object> obj);
+void v8_ThrowArgCountException(v8::Isolate* isolate, int argc, int requiredCount = 0, bool allowExtra = false);
+void v8_ThrowArgTypeException(v8::Isolate* isolate, int argn, const char* mustBeStr, v8::Value* valp = 0);
 
-v8::Handle<v8::Object> v8_MakeJavascriptOffset(pdg::Offset& p);
-v8::Handle<v8::Object> v8_MakeJavascriptPoint(pdg::Point& p);
-v8::Handle<v8::Object> v8_MakeJavascriptVector(pdg::Vector& p);
-v8::Handle<v8::Object> v8_MakeJavascriptRect(pdg::Rect& r);
-v8::Handle<v8::Object> v8_MakeJavascriptRect(pdg::RotatedRect& r);
-v8::Handle<v8::Object> v8_MakeJavascriptQuad(pdg::Quad& q);
-v8::Handle<v8::Object> v8_MakeJavascriptColor(pdg::Color& c);
+// these let us set a prototype that will be used when an object of a particular JavaScript class is created
+void v8_SetOffsetPrototype(v8::Local<v8::Object> obj);
+void v8_SetPointPrototype(v8::Local<v8::Object> obj);
+void v8_SetVectorPrototype(v8::Local<v8::Object> obj);
+void v8_SetRectPrototype(v8::Local<v8::Object> obj);
+void v8_SetRotatedRectPrototype(v8::Local<v8::Object> obj);
+void v8_SetQuadPrototype(v8::Local<v8::Object> obj);
+void v8_SetColorPrototype(v8::Local<v8::Object> obj);
 
-Offset  	v8_ValueToOffset(v8::Handle<v8::Value> val);
-Point  		v8_ValueToPoint(v8::Handle<v8::Value> val);
-Vector  	v8_ValueToVector(v8::Handle<v8::Value> val);
-Rect  		v8_ValueToRect(v8::Handle<v8::Value> val);
-RotatedRect v8_ValueToRotatedRect(v8::Handle<v8::Value> val);
-Quad  		v8_ValueToQuad(v8::Handle<v8::Value> val);
-Color  		v8_ValueToColor(v8::Handle<v8::Value> val);
+v8::Local<v8::Object> v8_MakeJavascriptOffset(v8::Isolate* isolate, pdg::Offset& p);
+v8::Local<v8::Object> v8_MakeJavascriptPoint(v8::Isolate* isolate, pdg::Point& p);
+v8::Local<v8::Object> v8_MakeJavascriptVector(v8::Isolate* isolate, pdg::Vector& p);
+v8::Local<v8::Object> v8_MakeJavascriptRect(v8::Isolate* isolate, pdg::Rect& r);
+v8::Local<v8::Object> v8_MakeJavascriptRect(v8::Isolate* isolate, pdg::RotatedRect& r);
+v8::Local<v8::Object> v8_MakeJavascriptQuad(v8::Isolate* isolate, pdg::Quad& q);
+v8::Local<v8::Object> v8_MakeJavascriptColor(v8::Isolate* isolate, pdg::Color& c);
 
-v8::Handle<v8::Object> v8_ObjectCreateEmpty(void* privateDataPtr = 0);
+Offset  	v8_ValueToOffset(v8::Isolate* isolate, v8::Local<v8::Value> val);
+Point  		v8_ValueToPoint(v8::Isolate* isolate, v8::Local<v8::Value> val);
+Vector  	v8_ValueToVector(v8::Isolate* isolate, v8::Local<v8::Value> val);
+Rect  		v8_ValueToRect(v8::Isolate* isolate, v8::Local<v8::Value> val);
+RotatedRect v8_ValueToRotatedRect(v8::Isolate* isolate, v8::Local<v8::Value> val);
+Quad  		v8_ValueToQuad(v8::Isolate* isolate, v8::Local<v8::Value> val);
+Color  		v8_ValueToColor(v8::Isolate* isolate, v8::Local<v8::Value> val);
+
+v8::Local<v8::Object> v8_ObjectCreateEmpty(v8::Isolate* isolate, void* privateDataPtr = 0);
 
 /*bool V8_ValueIsObjectWithProperty(v8::Handle<v8::Value> objVal, JSStringRef propSymbol, v8::Handle<v8::Value>* exception);
 
@@ -97,13 +101,13 @@ char* v8_CreateStringWithContentsOfFile(const char* fileName, const char* openMo
 
 */
 
-bool v8_ValueIsOffset(v8::Handle<v8::Value> val);
-bool v8_ValueIsPoint(v8::Handle<v8::Value> val);
-bool v8_ValueIsVector(v8::Handle<v8::Value> val);
-bool v8_ValueIsRect(v8::Handle<v8::Value> val, bool arrayCheck = true);
-bool v8_ValueIsRotatedRect(v8::Handle<v8::Value> val);
-bool v8_ValueIsQuad(v8::Handle<v8::Value> val);
-bool v8_ValueIsColor(v8::Handle<v8::Value> val);
+bool v8_ValueIsOffset(v8::Isolate* isolate, v8::Local<v8::Value> val);
+bool v8_ValueIsPoint(v8::Isolate* isolate, v8::Local<v8::Value> val);
+bool v8_ValueIsVector(v8::Isolate* isolate, v8::Local<v8::Value> val);
+bool v8_ValueIsRect(v8::Isolate* isolate, v8::Local<v8::Value> val, bool arrayCheck = true);
+bool v8_ValueIsRotatedRect(v8::Isolate* isolate, v8::Local<v8::Value> val);
+bool v8_ValueIsQuad(v8::Isolate* isolate, v8::Local<v8::Value> val);
+bool v8_ValueIsColor(v8::Isolate* isolate, v8::Local<v8::Value> val);
 
 // This is here to avoid making these bindings node.js specific
 // the implementation resides elsewhere (pdg_node.cpp for a node.js 

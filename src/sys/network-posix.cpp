@@ -3146,9 +3146,9 @@ internally_handled_datagram(NMEndpointRef endpoint)
 static NMErr _wait_for_open_complete(NMEndpointRef Endpoint)
 {
 	int done = 0;
-	long entry_time;
-	long elapsed_time = 0;
-	long max_wait_time = 10 * MACHINE_TICKS_PER_SECOND;
+	ms_time entry_time;
+	ms_delta elapsed_time = 0;
+	ms_delta max_wait_time = 10 * MACHINE_TICKS_PER_SECOND;
 
 	DEBUG_ENTRY_EXIT("_wait_for_open_complete");
 

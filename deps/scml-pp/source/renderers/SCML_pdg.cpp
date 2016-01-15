@@ -166,7 +166,7 @@ void Entity::draw_internal(int folderID, int fileID, float x, float y, float ang
 
 	port->drawImage(img, rr);
 
-	port->frameRect(rr, pdg::Color(0.0f, 0.0f, 0.0f, 0.5f));
+//	port->frameRect(rr, pdg::Color(0.0f, 0.0f, 0.0f, 0.5f));
 	
   #endif // !PDG_NO_GUI
 }

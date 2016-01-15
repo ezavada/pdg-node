@@ -19,17 +19,18 @@
     "Spriter",
     "serialize",
     "serialization",
-    "SCML"
+    "SCML",
+    "Chipmunk Physics"
   ],
   "main": "lib/pdg.js",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "author": {
     "name": "Ed Zavada",
     "url": "http://www.ezavada.com/pdg/javascript/html/",
     "email": "ed.zavada@gmail.com"
   },
   "engines": {
-    "node": ">= 0.8.0"
+    "node": ">= 4.2.0"
   },
   "licenses": [
     {
@@ -50,10 +51,11 @@
   	"lib":"./lib"
   },
   "scripts": {
+    "xinstall": "make build",
     "test": "node test.js"
   },
   "devDependencies": {
-    "jasmine-node": ">=0",
+    "jasmine-node": ">=1.14",
     "node-gyp": ">=0.13"
   },
   "readmeFilename": "README.md",
@@ -63,20 +65,27 @@
       "email": "ed.zavada@gmail.com"
     },
     {
-      "name": "Ariel Butler"
+      "name": "Alan Davies",
+      "email": "adavies25@gmail.com"
     },
     {
-      "name": "Alan Davies"
+      "name": "Ariel Butler",
+      "email": "angstrom60@gmail.com"
     },
     {
-      "name": "Nick Laiacona"
+      "name": "Nick Laiacona",
+      "email": "nick@dreamrockstudios.com"
     },
     {
-      "name": "Justin Holmes"
+      "name": "Justin Holmes",
+      "email": "jmh2cv@virginia.edu"
     }
   ],
   "dependencies": {},
-  "optionalDependencies": {},
+  "optionalDependencies": {
+    "node-inspector": ">=0.7",
+    "net-repl": ">=0.1"
+  },
   "dist": {
   }
 }

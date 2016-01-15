@@ -132,7 +132,7 @@ namespace pdg {
 		 advanced past the string to the start of the next entity in the internal buffer.
 		 \return the length of the string in bytes
 		 */
-		virtual uint32 deserialize_str(char* outStr, uint32 strMaxLen);
+		virtual uint32 deserialize_str(char* outStr, size_t strMaxLen);
 
 		//! get length of a string value, as if it were deserialized
 		/*! internal pointer is NOT advanced. Use this to pre-flight allocation for longer strings
@@ -189,6 +189,7 @@ namespace pdg {
 	protected:
 		
 		virtual char* statusDump(int hiliteBytes = 0);
+		virtual void* deserialize_ptr();
 
 		uint8* mDataPtr;
 		uint8* mDataEnd;
@@ -196,6 +197,7 @@ namespace pdg {
 		uint32 mDataSize;
 		uint8  mLastBoolByte;
 		int mBoolBitOffset;
+		bool mUsingTags;
 		
 		std::vector<ISerializable*> mDeserializedInstances;
 	};

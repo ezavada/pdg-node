@@ -1,5 +1,7 @@
 #include "XML_Helpers.h"
 
+char* stripTrailingDecimalZeros(char* buf);
+
 // Visual Studio does not support snprintf properly.
 // This is from Valentin Milea on Stack Overflow.  http://stackoverflow.com/questions/2915672/snprintf-and-visual-studio-2010/8712996#8712996
 #if defined(_MSC_VER) && !defined(MARMALADE)

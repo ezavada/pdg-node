@@ -1,4 +1,4 @@
-/* Copyright (c) 2007 Scott Lembcke
+/* Copyright (c) 2013 Scott Lembcke and Howling Moon Software
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-#include "chipmunk_private.h"
+#include "chipmunk/chipmunk_private.h"
 #include "prime.h"
 
 typedef struct cpSpaceHashBin cpSpaceHashBin;
@@ -272,7 +272,7 @@ hashHandle(cpSpaceHash *hash, cpHandle *hand, cpBB bb)
 static void
 cpSpaceHashInsert(cpSpaceHash *hash, void *obj, cpHashValue hashid)
 {
-	cpHandle *hand = (cpHandle *)cpHashSetInsert(hash->handleSet, hashid, obj, hash, (cpHashSetTransFunc)handleSetTrans);
+	cpHandle *hand = (cpHandle *)cpHashSetInsert(hash->handleSet, hashid, obj, (cpHashSetTransFunc)handleSetTrans, hash);
 	hashHandle(hash, hand, hash->spatialIndex.bbfunc(obj));
 }
 

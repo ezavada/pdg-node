@@ -149,7 +149,7 @@ public:
 	static bool renameFile(const char* inFileName, const char* inNewFileName);
 	
 	// Get a millisecond time stamp
-    static unsigned long  getMilliseconds();
+    static ms_time  getMilliseconds();
 	
 	// Get the position of the mouse. 
 	// On a multi-touch interface, mouseNumber specifies which pointer/finger, in order they started touching

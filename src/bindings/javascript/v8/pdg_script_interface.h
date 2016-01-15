@@ -1,8 +1,8 @@
 // -----------------------------------------------
 // This file automatically generated from:
 //
-//    pdg/src/bindings/common/pdg_script_interface.h
-//    pdg/src/bindings/javascript/v8/pdg_script_macros.h
+//    work/pdg/src/bindings/common/pdg_script_interface.h
+//    work/pdg/src/bindings/javascript/v8/pdg_script_macros.h
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the
@@ -45,1080 +45,1105 @@
 namespace pdg
 {
 
-    MemBlock* New_MemBlock(const v8::Arguments& args);
+    MemBlock* New_MemBlock(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class MemBlockWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            MemBlock* getNativeObject()
+            MemBlock* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            MemBlock* refPtr_;
+            MemBlock* cppPtr_;
 
-            MemBlockWrap(const v8::Arguments& args) : refPtr_(NULL)
+            MemBlockWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_MemBlock(args);
+                cppPtr_ = New_MemBlock(args);
             }
 
             ~MemBlockWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(MemBlock* nativeObj);
-            MemBlockWrap(MemBlock* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, MemBlock* cppObj);
+            MemBlockWrap(MemBlock* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> GetData (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetDataSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetByte (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetBytes (const v8::Arguments& args);
+            static void GetData (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetDataSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetByte (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetBytes (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
-    ConfigManager* New_ConfigManager(const v8::Arguments& args);
+    ConfigManager* New_ConfigManager(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class ConfigManagerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            ConfigManager* getNativeObject()
+            ConfigManager* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            ConfigManager* refPtr_;
+            ConfigManager* cppPtr_;
 
-            ConfigManagerWrap(const v8::Arguments& args) : refPtr_(NULL)
+            ConfigManagerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_ConfigManager(args);
+                cppPtr_ = New_ConfigManager(args);
             }
 
             ~ConfigManagerWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
             static ConfigManager* getSingletonInstance();
         public:
-            static v8::Handle<v8::Object> GetScriptSingletonInstance();
+            static v8::Local<v8::Object> GetScriptSingletonInstance(v8::Isolate* isolate);
         protected:
             static v8::Persistent<v8::Object> instance_;
             static bool instanced_;
 
-            static v8::Handle<v8::Value> UseConfig (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetConfigString (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetConfigLong (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetConfigFloat (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetConfigBool (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetConfigString (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetConfigLong (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetConfigFloat (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetConfigBool (const v8::Arguments& args);
+            static void UseConfig (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetConfigString (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetConfigLong (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetConfigFloat (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetConfigBool (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetConfigString (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetConfigLong (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetConfigFloat (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetConfigBool (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
-    LogManager* New_LogManager(const v8::Arguments& args);
+    LogManager* New_LogManager(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class LogManagerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            LogManager* getNativeObject()
+            LogManager* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            LogManager* refPtr_;
+            LogManager* cppPtr_;
 
-            LogManagerWrap(const v8::Arguments& args) : refPtr_(NULL)
+            LogManagerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_LogManager(args);
+                cppPtr_ = New_LogManager(args);
             }
 
             ~LogManagerWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
             static LogManager* getSingletonInstance();
         public:
-            static v8::Handle<v8::Object> GetScriptSingletonInstance();
+            static v8::Local<v8::Object> GetScriptSingletonInstance(v8::Isolate* isolate);
         protected:
             static v8::Persistent<v8::Object> instance_;
             static bool instanced_;
 
-            static v8::Handle<v8::Value> GetLogLevel (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetLogLevel (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Initialize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> WriteLogEntry (const v8::Arguments& args);
-            static v8::Handle<v8::Value> BinaryDump (const v8::Arguments& args);
+            static void GetLogLevel (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetLogLevel (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Initialize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void WriteLogEntry (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void BinaryDump (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
-    IEventHandler* New_IEventHandler(const v8::Arguments& args);
+    IEventHandler* New_IEventHandler(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class IEventHandlerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            IEventHandler* getNativeObject()
+            IEventHandler* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            IEventHandler* refPtr_;
+            IEventHandler* cppPtr_;
 
-            IEventHandlerWrap(const v8::Arguments& args) : refPtr_(NULL)
+            IEventHandlerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_IEventHandler(args);
+                cppPtr_ = New_IEventHandler(args);
             }
 
             ~IEventHandlerWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(IEventHandler* nativeObj);
-            IEventHandlerWrap(IEventHandler* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, IEventHandler* cppObj);
+            IEventHandlerWrap(IEventHandler* obj) : cppPtr_(obj) {}
 
     };
 
-    EventEmitter* New_EventEmitter(const v8::Arguments& args);
+    EventEmitter* New_EventEmitter(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class EventEmitterWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            EventEmitter* getNativeObject()
+            EventEmitter* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            EventEmitter* refPtr_;
+            EventEmitter* cppPtr_;
 
-            EventEmitterWrap(const v8::Arguments& args) : refPtr_(NULL)
+            EventEmitterWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_EventEmitter(args);
+                cppPtr_ = New_EventEmitter(args);
             }
 
             ~EventEmitterWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(EventEmitter* nativeObj);
-            EventEmitterWrap(EventEmitter* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, EventEmitter* cppObj);
+            EventEmitterWrap(EventEmitter* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> AddHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Clear (const v8::Arguments& args);
-            static v8::Handle<v8::Value> BlockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> UnblockEvent (const v8::Arguments& args);
+            static void AddHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Clear (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void BlockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void UnblockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
 
     };
 
-    EventManager* New_EventManager(const v8::Arguments& args);
+    EventManager* New_EventManager(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class EventManagerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            EventManager* getNativeObject()
+            EventManager* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            EventManager* refPtr_;
+            EventManager* cppPtr_;
 
-            EventManagerWrap(const v8::Arguments& args) : refPtr_(NULL)
+            EventManagerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_EventManager(args);
+                cppPtr_ = New_EventManager(args);
             }
 
             ~EventManagerWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
             static EventManager* getSingletonInstance();
         public:
-            static v8::Handle<v8::Object> GetScriptSingletonInstance();
+            static v8::Local<v8::Object> GetScriptSingletonInstance(v8::Isolate* isolate);
         protected:
             static v8::Persistent<v8::Object> instance_;
             static bool instanced_;
 
-            static v8::Handle<v8::Value> AddHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Clear (const v8::Arguments& args);
-            static v8::Handle<v8::Value> BlockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> UnblockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> IsKeyDown (const v8::Arguments& args);
-            static v8::Handle<v8::Value> IsRawKeyDown (const v8::Arguments& args);
-            static v8::Handle<v8::Value> IsButtonDown (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetDeviceOrientation (const v8::Arguments& args);
+            static void AddHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Clear (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void BlockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void UnblockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void IsKeyDown (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void IsRawKeyDown (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void IsButtonDown (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetDeviceOrientation (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
-    ResourceManager* New_ResourceManager(const v8::Arguments& args);
+    ResourceManager* New_ResourceManager(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class ResourceManagerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            ResourceManager* getNativeObject()
+            ResourceManager* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            ResourceManager* refPtr_;
+            ResourceManager* cppPtr_;
 
-            ResourceManagerWrap(const v8::Arguments& args) : refPtr_(NULL)
+            ResourceManagerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_ResourceManager(args);
+                cppPtr_ = New_ResourceManager(args);
             }
 
             ~ResourceManagerWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
             static ResourceManager* getSingletonInstance();
         public:
-            static v8::Handle<v8::Object> GetScriptSingletonInstance();
+            static v8::Local<v8::Object> GetScriptSingletonInstance(v8::Isolate* isolate);
         protected:
             static v8::Persistent<v8::Object> instance_;
             static bool instanced_;
 
-            static v8::Handle<v8::Value> GetLanguage (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetLanguage (const v8::Arguments& args);
-            static v8::Handle<v8::Value> OpenResourceFile (const v8::Arguments& args);
-            static v8::Handle<v8::Value> CloseResourceFile (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetImage (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetImageStrip (const v8::Arguments& args);
+            static void GetLanguage (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetLanguage (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void OpenResourceFile (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void CloseResourceFile (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetImage (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetImageStrip (const v8::FunctionCallbackInfo<v8::Value>& args);
 #ifndef PDG_NO_SOUND
-            static v8::Handle<v8::Value> GetSound (const v8::Arguments& args);
+            static void GetSound (const v8::FunctionCallbackInfo<v8::Value>& args);
 #endif
-            static v8::Handle<v8::Value> GetString (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetResourceSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetResource (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetResourcePaths (const v8::Arguments& args);
+            static void GetString (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetResourceSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetResource (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetResourcePaths (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
-    Serializer* New_Serializer(const v8::Arguments& args);
+    Serializer* New_Serializer(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class SerializerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            Serializer* getNativeObject()
+            Serializer* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            Serializer* refPtr_;
+            Serializer* cppPtr_;
 
-            SerializerWrap(const v8::Arguments& args) : refPtr_(NULL)
+            SerializerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_Serializer(args);
+                cppPtr_ = New_Serializer(args);
             }
 
             ~SerializerWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(Serializer* nativeObj);
-            SerializerWrap(Serializer* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, Serializer* cppObj);
+            SerializerWrap(Serializer* obj) : cppPtr_(obj) {}
 
 #ifndef PDG_NO_64BIT
-            static v8::Handle<v8::Value> Serialize_8 (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_8u (const v8::Arguments& args);
+            static void Serialize_8 (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_8u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_8 (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_8u (const v8::FunctionCallbackInfo<v8::Value>& args);
 #endif
-            static v8::Handle<v8::Value> Serialize_d (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_f (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_4 (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_4u (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_3u (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_2 (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_2u (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_1 (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_1u (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_bool (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_uint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_color (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_offset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_point (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_vector (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_rect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_rotr (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_quad (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_str (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_mem (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize_obj (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SerializedSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetDataSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetDataPtr (const v8::Arguments& args);
+            static void Serialize_d (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_f (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_4 (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_4u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_3u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_2 (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_2u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_1 (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_1u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_bool (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_uint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_color (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_offset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_point (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_vector (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_rect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_rotr (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_quad (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_str (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_mem (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_obj (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize_ref (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SerializedSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_d (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_f (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_4 (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_4u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_3u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_2 (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_2u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_1 (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_1u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_bool (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_uint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_color (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_offset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_point (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_vector (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_rect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_rotr (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_quad (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_str (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_mem (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_obj (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Sizeof_ref (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetDataSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetDataPtr (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
-    Deserializer* New_Deserializer(const v8::Arguments& args);
+    Deserializer* New_Deserializer(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class DeserializerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            Deserializer* getNativeObject()
+            Deserializer* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            Deserializer* refPtr_;
+            Deserializer* cppPtr_;
 
-            DeserializerWrap(const v8::Arguments& args) : refPtr_(NULL)
+            DeserializerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_Deserializer(args);
+                cppPtr_ = New_Deserializer(args);
             }
 
             ~DeserializerWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(Deserializer* nativeObj);
-            DeserializerWrap(Deserializer* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, Deserializer* cppObj);
+            DeserializerWrap(Deserializer* obj) : cppPtr_(obj) {}
 
 #ifndef PDG_NO_64BIT
-            static v8::Handle<v8::Value> Deserialize_8 (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_8u (const v8::Arguments& args);
+            static void Deserialize_8 (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_8u (const v8::FunctionCallbackInfo<v8::Value>& args);
 #endif
-            static v8::Handle<v8::Value> Deserialize_d (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_f (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_4 (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_4u (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_3u (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_2 (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_2u (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_1 (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_1u (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_bool (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_uint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_color (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_offset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_point (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_vector (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_rect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_rotr (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_quad (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_str (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_strGetLen (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_mem (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_memGetLen (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize_obj (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetDataPtr (const v8::Arguments& args);
-
+            static void Deserialize_d (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_f (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_4 (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_4u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_3u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_2 (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_2u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_1 (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_1u (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_bool (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_uint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_color (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_offset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_point (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_vector (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_rect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_rotr (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_quad (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_str (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_strGetLen (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_mem (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_memGetLen (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_obj (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize_ref (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetDataPtr (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
-    ISerializable* New_ISerializable(const v8::Arguments& args);
+    ISerializable* New_ISerializable(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class ISerializableWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            ISerializable* getNativeObject()
+            ISerializable* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            ISerializable* refPtr_;
+            ISerializable* cppPtr_;
 
-            ISerializableWrap(const v8::Arguments& args) : refPtr_(NULL)
+            ISerializableWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_ISerializable(args);
+                cppPtr_ = New_ISerializable(args);
             }
 
             ~ISerializableWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(ISerializable* nativeObj);
-            ISerializableWrap(ISerializable* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, ISerializable* cppObj);
+            ISerializableWrap(ISerializable* obj) : cppPtr_(obj) {}
 
     };
 
-    Image* New_Image(const v8::Arguments& args);
+    Image* New_Image(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class ImageWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            Image* getNativeObject()
+            Image* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            Image* refPtr_;
+            Image* cppPtr_;
 
-            ImageWrap(const v8::Arguments& args) : refPtr_(NULL)
+            ImageWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_Image(args);
+                cppPtr_ = New_Image(args);
             }
 
             ~ImageWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(Image* nativeObj);
-            ImageWrap(Image* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, Image* cppObj);
+            ImageWrap(Image* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> GetTransparentColor (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetTransparentColor (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetOpacity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetOpacity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetHeight (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetImageBounds (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSubsection (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetEdgeClamping (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RetainData (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RetainAlpha (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PrepareToRasterize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetAlphaValue (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetPixel (const v8::Arguments& args);
+            static void GetTransparentColor (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetTransparentColor (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetOpacity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetOpacity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetHeight (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetImageBounds (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSubsection (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetEdgeClamping (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RetainData (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RetainAlpha (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PrepareToRasterize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetAlphaValue (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetPixel (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
-    ImageStrip* New_ImageStrip(const v8::Arguments& args);
+    ImageStrip* New_ImageStrip(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class ImageStripWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            ImageStrip* getNativeObject()
+            ImageStrip* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            ImageStrip* refPtr_;
+            ImageStrip* cppPtr_;
 
-            ImageStripWrap(const v8::Arguments& args) : refPtr_(NULL)
+            ImageStripWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_ImageStrip(args);
+                cppPtr_ = New_ImageStrip(args);
             }
 
             ~ImageStripWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(ImageStrip* nativeObj);
-            ImageStripWrap(ImageStrip* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, ImageStrip* cppObj);
+            ImageStripWrap(ImageStrip* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> GetTransparentColor (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetTransparentColor (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetOpacity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetOpacity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetHeight (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetImageBounds (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSubsection (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetEdgeClamping (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RetainData (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RetainAlpha (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PrepareToRasterize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetAlphaValue (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetPixel (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetFrameWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetFrameWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetNumFrames (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetNumFrames (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetFrame (const v8::Arguments& args);
+            static void GetTransparentColor (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetTransparentColor (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetOpacity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetOpacity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetHeight (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetImageBounds (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSubsection (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetEdgeClamping (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RetainData (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RetainAlpha (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PrepareToRasterize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetAlphaValue (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetPixel (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetFrameWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetFrameWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetNumFrames (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetNumFrames (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetFrame (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
 #ifndef PDG_NO_GUI
 
-    GraphicsManager* New_GraphicsManager(const v8::Arguments& args);
+    GraphicsManager* New_GraphicsManager(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class GraphicsManagerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            GraphicsManager* getNativeObject()
+            GraphicsManager* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            GraphicsManager* refPtr_;
+            GraphicsManager* cppPtr_;
 
-            GraphicsManagerWrap(const v8::Arguments& args) : refPtr_(NULL)
+            GraphicsManagerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_GraphicsManager(args);
+                cppPtr_ = New_GraphicsManager(args);
             }
 
             ~GraphicsManagerWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
             static GraphicsManager* getSingletonInstance();
         public:
-            static v8::Handle<v8::Object> GetScriptSingletonInstance();
+            static v8::Local<v8::Object> GetScriptSingletonInstance(v8::Isolate* isolate);
         protected:
             static v8::Persistent<v8::Object> instance_;
             static bool instanced_;
 
-            static v8::Handle<v8::Value> GetNumScreens (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetNumSupportedScreenModes (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetNthSupportedScreenMode (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCurrentScreenMode (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetScreenMode (const v8::Arguments& args);
-            static v8::Handle<v8::Value> CreateWindowPort (const v8::Arguments& args);
-            static v8::Handle<v8::Value> CreateFullScreenPort (const v8::Arguments& args);
-            static v8::Handle<v8::Value> CloseGraphicsPort (const v8::Arguments& args);
-            static v8::Handle<v8::Value> CreateFont (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMainPort (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SwitchToFullScreenMode (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SwitchToWindowMode (const v8::Arguments& args);
-            static v8::Handle<v8::Value> InFullScreenMode (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetFPS (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetTargetFPS (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetTargetFPS (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMouse (const v8::Arguments& args);
+            static void GetNumScreens (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetNumSupportedScreenModes (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetNthSupportedScreenMode (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCurrentScreenMode (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetScreenMode (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void CreateWindowPort (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void CreateFullScreenPort (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void CloseGraphicsPort (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void CreateFont (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMainPort (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SwitchToFullScreenMode (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SwitchToWindowMode (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void InFullScreenMode (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetFPS (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetTargetFPS (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetTargetFPS (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMouse (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
     class FontWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            Font* getNativeObject()
+            Font* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            Font* refPtr_;
+            Font* cppPtr_;
 
-            FontWrap(const v8::Arguments& args)
+            FontWrap(const v8::FunctionCallbackInfo<v8::Value>& args)
             {
-                refPtr_ = 0;
+                cppPtr_ = 0;
             }
 
             ~FontWrap()
             {
-                refPtr_ = 0;
+                cppPtr_ = 0;
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(Font* nativeObj);
-            FontWrap(Font* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, Font* cppObj);
+            FontWrap(Font* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> GetFontName (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetFontHeight (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetFontLeading (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetFontAscent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetFontDescent (const v8::Arguments& args);
+            static void GetFontName (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetFontHeight (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetFontLeading (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetFontAscent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetFontDescent (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
     class PortWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            Port* getNativeObject()
+            Port* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            Port* refPtr_;
+            Port* cppPtr_;
 
-            PortWrap(const v8::Arguments& args)
+            PortWrap(const v8::FunctionCallbackInfo<v8::Value>& args)
             {
-                refPtr_ = 0;
+                cppPtr_ = 0;
             }
 
             ~PortWrap()
             {
-                refPtr_ = 0;
+                cppPtr_ = 0;
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(Port* nativeObj);
-            PortWrap(Port* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, Port* cppObj);
+            PortWrap(Port* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> GetClipRect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetClipRect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCursor (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetCursor (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetDrawingArea (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FillRect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FrameRect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DrawLine (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FrameOval (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FillOval (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FrameCircle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FillCircle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FrameRoundRect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FillRoundRect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FillRectEx (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FrameRectEx (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DrawLineEx (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FillRectWithGradient (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DrawText (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DrawImage (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DrawTexture (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DrawTexturedSphere (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetTextWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCurrentFont (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetFont (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetFontForStyle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetFontScalingFactor (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartTrackingMouse (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopTrackingMouse (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ResetCursor (const v8::Arguments& args);
+            static void GetClipRect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetClipRect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCursor (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetCursor (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetDrawingArea (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FillRect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FrameRect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DrawLine (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FrameOval (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FillOval (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FrameCircle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FillCircle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FrameRoundRect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FillRoundRect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FillRectEx (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FrameRectEx (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DrawLineEx (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FillRectWithGradient (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DrawText (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DrawImage (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DrawTexture (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DrawTexturedSphere (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetTextWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCurrentFont (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetFont (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetFontForStyle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetFontScalingFactor (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartTrackingMouse (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopTrackingMouse (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ResetCursor (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 #endif
 
 #ifndef PDG_NO_SOUND
-    Sound* New_Sound(const v8::Arguments& args);
+    Sound* New_Sound(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class SoundWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            Sound* getNativeObject()
+            Sound* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            Sound* refPtr_;
+            Sound* cppPtr_;
 
-            SoundWrap(const v8::Arguments& args) : refPtr_(NULL)
+            SoundWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_Sound(args);
+                cppPtr_ = New_Sound(args);
             }
 
             ~SoundWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(Sound* nativeObj);
-            SoundWrap(Sound* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, Sound* cppObj);
+            SoundWrap(Sound* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> AddHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Clear (const v8::Arguments& args);
-            static v8::Handle<v8::Value> BlockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> UnblockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetVolume (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetVolume (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Play (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Start (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Stop (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Pause (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Resume (const v8::Arguments& args);
-            static v8::Handle<v8::Value> IsPaused (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetLooping (const v8::Arguments& args);
-            static v8::Handle<v8::Value> IsLooping (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetPitch (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ChangePitch (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetOffsetX (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ChangeOffsetX (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FadeOut (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FadeIn (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ChangeVolume (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Skip (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SkipTo (const v8::Arguments& args);
+            static void AddHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Clear (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void BlockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void UnblockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetVolume (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetVolume (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Play (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Start (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Stop (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Pause (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Resume (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void IsPaused (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetLooping (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void IsLooping (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetPitch (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ChangePitch (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetOffsetX (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ChangeOffsetX (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FadeOut (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FadeIn (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ChangeVolume (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Skip (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SkipTo (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
-    SoundManager* New_SoundManager(const v8::Arguments& args);
+    SoundManager* New_SoundManager(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class SoundManagerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            SoundManager* getNativeObject()
+            SoundManager* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            SoundManager* refPtr_;
+            SoundManager* cppPtr_;
 
-            SoundManagerWrap(const v8::Arguments& args) : refPtr_(NULL)
+            SoundManagerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_SoundManager(args);
+                cppPtr_ = New_SoundManager(args);
             }
 
             ~SoundManagerWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
             static SoundManager* getSingletonInstance();
         public:
-            static v8::Handle<v8::Object> GetScriptSingletonInstance();
+            static v8::Local<v8::Object> GetScriptSingletonInstance(v8::Isolate* isolate);
         protected:
             static v8::Persistent<v8::Object> instance_;
             static bool instanced_;
 
-            static v8::Handle<v8::Value> SetVolume (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMute (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Idle (const v8::Arguments& args);
+            static void SetVolume (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMute (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Idle (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 #endif
 
-    TimerManager* New_TimerManager(const v8::Arguments& args);
+    TimerManager* New_TimerManager(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class TimerManagerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            TimerManager* getNativeObject()
+            TimerManager* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            TimerManager* refPtr_;
+            TimerManager* cppPtr_;
 
-            TimerManagerWrap(const v8::Arguments& args) : refPtr_(NULL)
+            TimerManagerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_TimerManager(args);
+                cppPtr_ = New_TimerManager(args);
             }
 
             ~TimerManagerWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
             static TimerManager* getSingletonInstance();
         public:
-            static v8::Handle<v8::Object> GetScriptSingletonInstance();
+            static v8::Local<v8::Object> GetScriptSingletonInstance(v8::Isolate* isolate);
         protected:
             static v8::Persistent<v8::Object> instance_;
             static bool instanced_;
 
-            static v8::Handle<v8::Value> AddHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Clear (const v8::Arguments& args);
-            static v8::Handle<v8::Value> BlockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> UnblockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartTimer (const v8::Arguments& args);
-            static v8::Handle<v8::Value> CancelTimer (const v8::Arguments& args);
-            static v8::Handle<v8::Value> CancelAllTimers (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DelayTimer (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DelayTimerUntil (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Pause (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Unpause (const v8::Arguments& args);
-            static v8::Handle<v8::Value> IsPaused (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PauseTimer (const v8::Arguments& args);
-            static v8::Handle<v8::Value> UnpauseTimer (const v8::Arguments& args);
-            static v8::Handle<v8::Value> IsTimerPaused (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetWhenTimerFiresNext (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMilliseconds (const v8::Arguments& args);
+            static void AddHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Clear (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void BlockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void UnblockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartTimer (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void CancelTimer (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void CancelAllTimers (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DelayTimer (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DelayTimerUntil (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Pause (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Unpause (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void IsPaused (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PauseTimer (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void UnpauseTimer (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void IsTimerPaused (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWhenTimerFiresNext (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMilliseconds (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
     class FileManagerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
 
-            FileManagerWrap(const v8::Arguments& args) { }
+            FileManagerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) { }
 
             ~FileManagerWrap() { }
 
         public:
-            static v8::Handle<v8::Object> GetScriptSingletonInstance();
+            static v8::Local<v8::Object> GetScriptSingletonInstance(v8::Isolate* isolate);
         protected:
             static v8::Persistent<v8::Object> instance_;
             static bool instanced_;
 
-            static v8::Handle<v8::Value> FindFirst (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FindNext (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FindClose (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetApplicationDataDirectory (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetApplicationDirectory (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetApplicationResourceDirectory (const v8::Arguments& args);
+            static void FindFirst (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FindNext (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FindClose (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetApplicationDataDirectory (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetApplicationDirectory (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetApplicationResourceDirectory (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
-    IAnimationHelper* New_IAnimationHelper(const v8::Arguments& args);
+    IAnimationHelper* New_IAnimationHelper(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class IAnimationHelperWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            IAnimationHelper* getNativeObject()
+            IAnimationHelper* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            IAnimationHelper* refPtr_;
+            IAnimationHelper* cppPtr_;
 
-            IAnimationHelperWrap(const v8::Arguments& args) : refPtr_(NULL)
+            IAnimationHelperWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_IAnimationHelper(args);
+                cppPtr_ = New_IAnimationHelper(args);
             }
 
             ~IAnimationHelperWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(IAnimationHelper* nativeObj);
-            IAnimationHelperWrap(IAnimationHelper* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, IAnimationHelper* cppObj);
+            IAnimationHelperWrap(IAnimationHelper* obj) : cppPtr_(obj) {}
 
     };
 
-    Animated* New_Animated(const v8::Arguments& args);
+    Animated* New_Animated(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class AnimatedWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            Animated* getNativeObject()
+            Animated* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            Animated* refPtr_;
+            Animated* cppPtr_;
 
-            AnimatedWrap(const v8::Arguments& args) : refPtr_(NULL)
+            AnimatedWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_Animated(args);
+                cppPtr_ = New_Animated(args);
             }
 
             ~AnimatedWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(Animated* nativeObj);
-            AnimatedWrap(Animated* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, Animated* cppObj);
+            AnimatedWrap(Animated* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> GetLocation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetLocation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpeed (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpeed (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetVelocity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetVelocity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetHeight (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetHeight (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetRotation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetRotation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCenterOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetCenterOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpin (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpin (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMass (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMass (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMoveFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMoveFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpinFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpinFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSizeFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSizeFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetBoundingBox (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetRotatedBounds (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Move (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetVelocityInRadians (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMovementDirectionInRadians (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopMoving (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Accelerate (const v8::Arguments& args);
-            static v8::Handle<v8::Value> AccelerateTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Grow (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Stretch (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartGrowing (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopGrowing (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartStretching (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopStretching (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Resize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ResizeTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Rotate (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RotateTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopSpinning (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ChangeCenter (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ChangeCenterTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Wait (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ApplyForce (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ApplyTorque (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopAllForces (const v8::Arguments& args);
-            static v8::Handle<v8::Value> AddAnimationHelper (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveAnimationHelper (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ClearAnimationHelpers (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Animate (const v8::Arguments& args);
+            static void GetLocation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetLocation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpeed (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpeed (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetVelocity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetVelocity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetHeight (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetHeight (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetRotation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetRotation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCenterOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetCenterOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpin (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpin (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMass (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMass (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMoveFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMoveFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpinFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpinFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSizeFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSizeFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetBoundingBox (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetRotatedBounds (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Move (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetVelocityInRadians (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMovementDirectionInRadians (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopMoving (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Accelerate (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void AccelerateTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Grow (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Stretch (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartGrowing (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopGrowing (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartStretching (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopStretching (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Resize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ResizeTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Rotate (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RotateTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopSpinning (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ChangeCenter (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ChangeCenterTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Wait (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ApplyForce (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ApplyTorque (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopAllForces (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void AddAnimationHelper (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveAnimationHelper (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ClearAnimationHelpers (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Animate (const v8::FunctionCallbackInfo<v8::Value>& args);
 
     };
 
@@ -1126,775 +1151,779 @@ namespace pdg
     class cpArbiterWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            cpArbiter* getNativeObject()
+            cpArbiter* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            cpArbiter* refPtr_;
+            cpArbiter* cppPtr_;
 
-            cpArbiterWrap(const v8::Arguments& args)
+            cpArbiterWrap(const v8::FunctionCallbackInfo<v8::Value>& args)
             {
-                refPtr_ = 0;
+                cppPtr_ = 0;
             }
 
             ~cpArbiterWrap()
             {
-                refPtr_ = 0;
+                cppPtr_ = 0;
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(cpArbiter* nativeObj);
-            cpArbiterWrap(cpArbiter* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, cpArbiter* cppObj);
+            cpArbiterWrap(cpArbiter* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> IsFirstContact (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCount (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetNormal (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetPoint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetDepth (const v8::Arguments& args);
+            static void IsFirstContact (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCount (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetNormal (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetPointA (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetPointB (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetDepth (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
     class cpConstraintWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            cpConstraint* getNativeObject()
+            cpConstraint* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            cpConstraint* refPtr_;
+            cpConstraint* cppPtr_;
 
-            cpConstraintWrap(const v8::Arguments& args)
+            cpConstraintWrap(const v8::FunctionCallbackInfo<v8::Value>& args)
             {
-                refPtr_ = 0;
+                cppPtr_ = 0;
             }
 
             ~cpConstraintWrap()
             {
-                refPtr_ = 0;
+                cppPtr_ = 0;
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(cpConstraint* nativeObj);
-            cpConstraintWrap(cpConstraint* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, cpConstraint* cppObj);
+            cpConstraintWrap(cpConstraint* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> GetMaxForce (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMaxForce (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetErrorBias (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetErrorBias (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMaxBias (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMaxBias (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetAnchor (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetAnchor (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetOtherAnchor (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetOtherAnchor (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetPinDist (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetPinDist (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSlideMinDist (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSlideMinDist (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSlideMaxDist (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSlideMaxDist (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetGrooveStart (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetGrooveStart (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetGrooveEnd (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetGrooveEnd (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpringRestLength (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpringRestLength (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpringStiffness (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpringStiffness (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpringDamping (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpringDamping (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetRotarySpringRestAngle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetRotarySpringRestAngle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMinAngle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMinAngle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMaxAngle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMaxAngle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetRatchetAngle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetRatchetAngle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetRatchetPhase (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetRatchetPhase (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetRatchetInterval (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetRatchetInterval (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetGearRatio (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetGearRatio (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetGearInitialAngle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetGearInitialAngle (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMotorSpinRate (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMotorSpinRate (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetType (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ActivateBodies (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetImpulse (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSprite (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetOtherSprite (const v8::Arguments& args);
+            static void GetMaxForce (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMaxForce (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetErrorBias (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetErrorBias (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMaxBias (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMaxBias (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetAnchor (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetAnchor (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetOtherAnchor (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetOtherAnchor (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetPinDist (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetPinDist (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSlideMinDist (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSlideMinDist (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSlideMaxDist (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSlideMaxDist (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetGrooveStart (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetGrooveStart (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetGrooveEnd (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetGrooveEnd (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpringRestLength (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpringRestLength (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpringStiffness (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpringStiffness (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpringDamping (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpringDamping (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetRotarySpringRestAngle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetRotarySpringRestAngle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMinAngle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMinAngle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMaxAngle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMaxAngle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetRatchetAngle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetRatchetAngle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetRatchetPhase (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetRatchetPhase (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetRatchetInterval (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetRatchetInterval (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetGearRatio (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetGearRatio (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetGearInitialAngle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetGearInitialAngle (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMotorSpinRate (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMotorSpinRate (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetType (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ActivateBodies (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetImpulse (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetOtherSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
     class cpSpaceWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            cpSpace* getNativeObject()
+            cpSpace* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            cpSpace* refPtr_;
+            cpSpace* cppPtr_;
 
-            cpSpaceWrap(const v8::Arguments& args)
+            cpSpaceWrap(const v8::FunctionCallbackInfo<v8::Value>& args)
             {
-                refPtr_ = 0;
+                cppPtr_ = 0;
             }
 
             ~cpSpaceWrap()
             {
-                refPtr_ = 0;
+                cppPtr_ = 0;
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(cpSpace* nativeObj);
-            cpSpaceWrap(cpSpace* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, cpSpace* cppObj);
+            cpSpaceWrap(cpSpace* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> GetIdleSpeedThreshold (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetIdleSpeedThreshold (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSleepTimeThreshold (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSleepTimeThreshold (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCollisionSlop (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetCollisionSlop (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCollisionBias (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetCollisionBias (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCollisionPersistence (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetCollisionPersistence (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetEnableContactGraph (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetEnableContactGraph (const v8::Arguments& args);
-            static v8::Handle<v8::Value> UseSpatialHash (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ReindexStatic (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Step (const v8::Arguments& args);
+            static void GetIdleSpeedThreshold (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetIdleSpeedThreshold (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSleepTimeThreshold (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSleepTimeThreshold (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCollisionSlop (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetCollisionSlop (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCollisionBias (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetCollisionBias (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCollisionPersistence (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetCollisionPersistence (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void UseSpatialHash (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ReindexStatic (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Step (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 #endif
 
-    ISpriteCollideHelper* New_ISpriteCollideHelper(const v8::Arguments& args);
+    ISpriteCollideHelper* New_ISpriteCollideHelper(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class ISpriteCollideHelperWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            ISpriteCollideHelper* getNativeObject()
+            ISpriteCollideHelper* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            ISpriteCollideHelper* refPtr_;
+            ISpriteCollideHelper* cppPtr_;
 
-            ISpriteCollideHelperWrap(const v8::Arguments& args) : refPtr_(NULL)
+            ISpriteCollideHelperWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_ISpriteCollideHelper(args);
+                cppPtr_ = New_ISpriteCollideHelper(args);
             }
 
             ~ISpriteCollideHelperWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(ISpriteCollideHelper* nativeObj);
-            ISpriteCollideHelperWrap(ISpriteCollideHelper* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, ISpriteCollideHelper* cppObj);
+            ISpriteCollideHelperWrap(ISpriteCollideHelper* obj) : cppPtr_(obj) {}
 
     };
 
 #ifndef PDG_NO_GUI
-    ISpriteDrawHelper* New_ISpriteDrawHelper(const v8::Arguments& args);
+    ISpriteDrawHelper* New_ISpriteDrawHelper(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class ISpriteDrawHelperWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            ISpriteDrawHelper* getNativeObject()
+            ISpriteDrawHelper* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            ISpriteDrawHelper* refPtr_;
+            ISpriteDrawHelper* cppPtr_;
 
-            ISpriteDrawHelperWrap(const v8::Arguments& args) : refPtr_(NULL)
+            ISpriteDrawHelperWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_ISpriteDrawHelper(args);
+                cppPtr_ = New_ISpriteDrawHelper(args);
             }
 
             ~ISpriteDrawHelperWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(ISpriteDrawHelper* nativeObj);
-            ISpriteDrawHelperWrap(ISpriteDrawHelper* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, ISpriteDrawHelper* cppObj);
+            ISpriteDrawHelperWrap(ISpriteDrawHelper* obj) : cppPtr_(obj) {}
 
     };
 #endif
 
-    Sprite* New_Sprite(const v8::Arguments& args);
+    Sprite* New_Sprite(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class SpriteWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            Sprite* getNativeObject()
+            Sprite* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            Sprite* refPtr_;
+            Sprite* cppPtr_;
 
-            SpriteWrap(const v8::Arguments& args) : refPtr_(NULL)
+            SpriteWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_Sprite(args);
+                cppPtr_ = New_Sprite(args);
             }
 
             ~SpriteWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(Sprite* nativeObj);
-            SpriteWrap(Sprite* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, Sprite* cppObj);
+            SpriteWrap(Sprite* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> AddHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Clear (const v8::Arguments& args);
-            static v8::Handle<v8::Value> BlockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> UnblockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetLocation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetLocation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpeed (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpeed (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetVelocity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetVelocity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetHeight (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetHeight (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetRotation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetRotation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCenterOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetCenterOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpin (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpin (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMass (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMass (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMoveFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMoveFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpinFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpinFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSizeFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSizeFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetBoundingBox (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetRotatedBounds (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Move (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetVelocityInRadians (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMovementDirectionInRadians (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopMoving (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Accelerate (const v8::Arguments& args);
-            static v8::Handle<v8::Value> AccelerateTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Grow (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Stretch (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartGrowing (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopGrowing (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartStretching (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopStretching (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Resize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ResizeTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Rotate (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RotateTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopSpinning (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ChangeCenter (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ChangeCenterTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Wait (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ApplyForce (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ApplyTorque (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopAllForces (const v8::Arguments& args);
-            static v8::Handle<v8::Value> AddAnimationHelper (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveAnimationHelper (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ClearAnimationHelpers (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSerializedSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMyClassTag (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetWantsAnimLoopEvents (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetWantsAnimLoopEvents (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetWantsAnimEndEvents (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetWantsAnimEndEvents (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetOpacity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetOpacity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCollisionRadius (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetCollisionRadius (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetElasticity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetElasticity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetWantsCollideWallEvents (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetFrameRotatedBounds (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetFrame (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCurrentFrame (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetFrameCount (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartFrameAnimation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopFrameAnimation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> AddFramesImage (const v8::Arguments& args);
+            static void AddHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Clear (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void BlockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void UnblockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetLocation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetLocation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpeed (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpeed (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetVelocity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetVelocity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetHeight (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetHeight (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetRotation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetRotation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCenterOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetCenterOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpin (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpin (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMass (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMass (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMoveFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMoveFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpinFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpinFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSizeFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSizeFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetBoundingBox (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetRotatedBounds (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Move (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetVelocityInRadians (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMovementDirectionInRadians (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopMoving (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Accelerate (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void AccelerateTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Grow (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Stretch (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartGrowing (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopGrowing (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartStretching (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopStretching (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Resize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ResizeTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Rotate (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RotateTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopSpinning (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ChangeCenter (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ChangeCenterTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Wait (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ApplyForce (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ApplyTorque (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopAllForces (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void AddAnimationHelper (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveAnimationHelper (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ClearAnimationHelpers (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSerializedSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMyClassTag (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWantsAnimLoopEvents (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetWantsAnimLoopEvents (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWantsAnimEndEvents (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetWantsAnimEndEvents (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetOpacity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetOpacity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCollisionRadius (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetCollisionRadius (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetElasticity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetElasticity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWantsCollideWallEvents (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetWantsCollideWallEvents (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetFrameRotatedBounds (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetFrame (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCurrentFrame (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetFrameCount (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartFrameAnimation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopFrameAnimation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void AddFramesImage (const v8::FunctionCallbackInfo<v8::Value>& args);
 #ifdef PDG_SCML_SUPPORT
-            static v8::Handle<v8::Value> HasAnimation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartAnimation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetEntityScale (const v8::Arguments& args);
+            static void HasAnimation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartAnimation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetEntityScale (const v8::FunctionCallbackInfo<v8::Value>& args);
 #endif
 #ifndef PDG_NO_GUI
-            static v8::Handle<v8::Value> GetWantsMouseOverEvents (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetWantsMouseOverEvents (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetWantsClickEvents (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetWantsClickEvents (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMouseDetectMode (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMouseDetectMode (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetWantsOffscreenEvents (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetDrawHelper (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetPostDrawHelper (const v8::Arguments& args);
+            static void GetWantsMouseOverEvents (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetWantsMouseOverEvents (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWantsClickEvents (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetWantsClickEvents (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMouseDetectMode (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMouseDetectMode (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWantsOffscreenEvents (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetWantsOffscreenEvents (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetDrawHelper (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetPostDrawHelper (const v8::FunctionCallbackInfo<v8::Value>& args);
 #endif
-            static v8::Handle<v8::Value> ChangeFramesImage (const v8::Arguments& args);
-            static v8::Handle<v8::Value> OffsetFrameCenters (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetFrameCenterOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FadeTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FadeIn (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FadeOut (const v8::Arguments& args);
-            static v8::Handle<v8::Value> IsBehind (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetZOrder (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveBehind (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveInFrontOf (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveToFront (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveToBack (const v8::Arguments& args);
-            static v8::Handle<v8::Value> EnableCollisions (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DisableCollisions (const v8::Arguments& args);
-            static v8::Handle<v8::Value> UseCollisionMask (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetCollisionHelper (const v8::Arguments& args);;
-            static v8::Handle<v8::Value> SetUserData (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FreeUserData (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetLayer (const v8::Arguments& args);
+            static void ChangeFramesImage (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void OffsetFrameCenters (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetFrameCenterOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FadeTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FadeIn (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FadeOut (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void IsBehind (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetZOrder (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveBehind (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveInFrontOf (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveToFront (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveToBack (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void EnableCollisions (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DisableCollisions (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void UseCollisionMask (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetCollisionHelper (const v8::FunctionCallbackInfo<v8::Value>& args);;
+            static void SetUserData (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FreeUserData (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetLayer (const v8::FunctionCallbackInfo<v8::Value>& args);
 #ifdef PDG_USE_CHIPMUNK_PHYSICS
-            static v8::Handle<v8::Value> GetCollideGroup (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetCollideGroup (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MakeStatic (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PinJoint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SlideJoint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PivotJoint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GrooveJoint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SpringJoint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RotarySpring (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RotaryLimit (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Ratchet (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Gear (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Motor (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveJoint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Disconnect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MakeJointBreakable (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MakeJointUnbreakable (const v8::Arguments& args);
+            static void GetCollideGroup (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetCollideGroup (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MakeStatic (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PinJoint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SlideJoint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PivotJoint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GrooveJoint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SpringJoint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RotarySpring (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RotaryLimit (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Ratchet (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Gear (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Motor (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveJoint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Disconnect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MakeJointBreakable (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MakeJointUnbreakable (const v8::FunctionCallbackInfo<v8::Value>& args);
 #endif
     };
 
 #ifndef PDG_NO_GUI
 #endif
 
-    SpriteLayer* New_SpriteLayer(const v8::Arguments& args);
+    SpriteLayer* New_SpriteLayer(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class SpriteLayerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            SpriteLayer* getNativeObject()
+            SpriteLayer* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            SpriteLayer* refPtr_;
+            SpriteLayer* cppPtr_;
 
-            SpriteLayerWrap(const v8::Arguments& args) : refPtr_(NULL)
+            SpriteLayerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_SpriteLayer(args);
+                cppPtr_ = New_SpriteLayer(args);
             }
 
             ~SpriteLayerWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(SpriteLayer* nativeObj);
-            SpriteLayerWrap(SpriteLayer* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, SpriteLayer* cppObj);
+            SpriteLayerWrap(SpriteLayer* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> AddHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Clear (const v8::Arguments& args);
-            static v8::Handle<v8::Value> BlockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> UnblockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetLocation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetLocation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpeed (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpeed (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetVelocity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetVelocity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetHeight (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetHeight (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetRotation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetRotation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCenterOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetCenterOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpin (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpin (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMass (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMass (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMoveFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMoveFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpinFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpinFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSizeFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSizeFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetBoundingBox (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetRotatedBounds (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Move (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetVelocityInRadians (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMovementDirectionInRadians (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopMoving (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Accelerate (const v8::Arguments& args);
-            static v8::Handle<v8::Value> AccelerateTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Grow (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Stretch (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartGrowing (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopGrowing (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartStretching (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopStretching (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Resize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ResizeTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Rotate (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RotateTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopSpinning (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ChangeCenter (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ChangeCenterTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Wait (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ApplyForce (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ApplyTorque (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopAllForces (const v8::Arguments& args);
-            static v8::Handle<v8::Value> AddAnimationHelper (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveAnimationHelper (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ClearAnimationHelpers (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSerializedSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMyClassTag (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSerializationFlags (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartAnimations (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopAnimations (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Hide (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Show (const v8::Arguments& args);
-            static v8::Handle<v8::Value> IsHidden (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FadeIn (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FadeOut (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveBehind (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveInFrontOf (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveToFront (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveToBack (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetZOrder (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveWith (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FindSprite (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetNthSprite (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpriteZOrder (const v8::Arguments& args);
-            static v8::Handle<v8::Value> IsSpriteBehind (const v8::Arguments& args);
-            static v8::Handle<v8::Value> HasSprite (const v8::Arguments& args);
-            static v8::Handle<v8::Value> AddSprite (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveSprite (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveAllSprites (const v8::Arguments& args);
-            static v8::Handle<v8::Value> EnableCollisions (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DisableCollisions (const v8::Arguments& args);
-            static v8::Handle<v8::Value> EnableCollisionsWithLayer (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DisableCollisionsWithLayer (const v8::Arguments& args);
-            static v8::Handle<v8::Value> CreateSprite (const v8::Arguments& args);
+            static void AddHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Clear (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void BlockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void UnblockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetLocation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetLocation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpeed (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpeed (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetVelocity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetVelocity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetHeight (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetHeight (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetRotation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetRotation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCenterOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetCenterOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpin (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpin (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMass (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMass (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMoveFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMoveFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpinFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpinFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSizeFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSizeFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetBoundingBox (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetRotatedBounds (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Move (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetVelocityInRadians (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMovementDirectionInRadians (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopMoving (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Accelerate (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void AccelerateTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Grow (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Stretch (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartGrowing (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopGrowing (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartStretching (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopStretching (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Resize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ResizeTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Rotate (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RotateTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopSpinning (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ChangeCenter (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ChangeCenterTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Wait (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ApplyForce (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ApplyTorque (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopAllForces (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void AddAnimationHelper (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveAnimationHelper (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ClearAnimationHelpers (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSerializedSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMyClassTag (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSerializationFlags (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartAnimations (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopAnimations (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Hide (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Show (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void IsHidden (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FadeIn (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FadeOut (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveBehind (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveInFrontOf (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveToFront (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveToBack (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetZOrder (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveWith (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FindSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetNthSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpriteZOrder (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void IsSpriteBehind (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void HasSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void AddSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveAllSprites (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void EnableCollisions (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DisableCollisions (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void EnableCollisionsWithLayer (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DisableCollisionsWithLayer (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void CreateSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
 #ifndef PDG_NO_GUI
-            static v8::Handle<v8::Value> GetSpritePort (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpritePort (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetOrigin (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetOrigin (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetZoom (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetZoom (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Zoom (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ZoomTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetAutoCenter (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetFixedMoveAxis (const v8::Arguments& args);
-            static v8::Handle<v8::Value> LayerToPortPoint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> LayerToPortOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> LayerToPortVector (const v8::Arguments& args);
-            static v8::Handle<v8::Value> LayerToPortRect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> LayerToPortQuad (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PortToLayerPoint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PortToLayerOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PortToLayerVector (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PortToLayerRect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PortToLayerQuad (const v8::Arguments& args);
+            static void GetSpritePort (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpritePort (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetOrigin (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetOrigin (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetZoom (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetZoom (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Zoom (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ZoomTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetAutoCenter (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetFixedMoveAxis (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void LayerToPortPoint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void LayerToPortOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void LayerToPortVector (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void LayerToPortRect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void LayerToPortQuad (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PortToLayerPoint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PortToLayerOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PortToLayerVector (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PortToLayerRect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PortToLayerQuad (const v8::FunctionCallbackInfo<v8::Value>& args);
 #endif
 #ifdef PDG_USE_CHIPMUNK_PHYSICS
-            static v8::Handle<v8::Value> SetUseChipmunkPhysics (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetStaticLayer (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetGravity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetKeepGravityDownward (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetDamping (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpace (const v8::Arguments& args);
+            static void SetUseChipmunkPhysics (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetStaticLayer (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetGravity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetKeepGravityDownward (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetDamping (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpace (const v8::FunctionCallbackInfo<v8::Value>& args);
 #endif
 #ifdef PDG_SCML_SUPPORT
-            static v8::Handle<v8::Value> CreateSpriteFromSCML (const v8::Arguments& args);
-            static v8::Handle<v8::Value> CreateSpriteFromSCMLFile (const v8::Arguments& args);
-            static v8::Handle<v8::Value> CreateSpriteFromSCMLEntity (const v8::Arguments& args);
+            static void CreateSpriteFromSCML (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void CreateSpriteFromSCMLFile (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void CreateSpriteFromSCMLEntity (const v8::FunctionCallbackInfo<v8::Value>& args);
 #endif
     };
 
-    TileLayer* New_TileLayer(const v8::Arguments& args);
+    TileLayer* New_TileLayer(const v8::FunctionCallbackInfo<v8::Value>& args);
 
     class TileLayerWrap : public jswrap::ObjectWrap
     {
         public:
-            static void Init(v8::Handle<v8::Object> target);
-            static v8::Handle<v8::Value> New(const v8::Arguments& args);
+            static void Init(v8::Isolate* isolate, v8::Local<v8::Object> target);
+            static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
         protected:
             static v8::Persistent<v8::FunctionTemplate> constructorTpl_;
         public:
-            TileLayer* getNativeObject()
+            TileLayer* getCppObject()
             {
-                return refPtr_;
+                return cppPtr_;
             }
         protected:
-            TileLayer* refPtr_;
+            TileLayer* cppPtr_;
 
-            TileLayerWrap(const v8::Arguments& args) : refPtr_(NULL)
+            TileLayerWrap(const v8::FunctionCallbackInfo<v8::Value>& args) : cppPtr_(NULL)
             {
-                refPtr_ = New_TileLayer(args);
+                cppPtr_ = New_TileLayer(args);
             }
 
             ~TileLayerWrap()
             {
-                if (refPtr_)
+                if (cppPtr_)
                 {
-                    delete refPtr_;
-                    refPtr_ = NULL;
+                    delete cppPtr_;
+                    cppPtr_ = NULL;
                 }
             }
 
         public:
-            static v8::Handle<v8::Value> NewFromNative(TileLayer* nativeObj);
-            TileLayerWrap(TileLayer* obj) : refPtr_(obj) {}
+            static v8::Local<v8::Object> NewFromCpp(v8::Isolate* isolate, TileLayer* cppObj);
+            TileLayerWrap(TileLayer* obj) : cppPtr_(obj) {}
 
-            static v8::Handle<v8::Value> AddHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveHandler (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Clear (const v8::Arguments& args);
-            static v8::Handle<v8::Value> BlockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> UnblockEvent (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetLocation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetLocation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpeed (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpeed (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetVelocity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetVelocity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetWidth (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetHeight (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetHeight (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetRotation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetRotation (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetCenterOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetCenterOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpin (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpin (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMass (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMass (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMoveFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetMoveFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpinFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpinFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSizeFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSizeFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetBoundingBox (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetRotatedBounds (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Move (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetVelocityInRadians (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMovementDirectionInRadians (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopMoving (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Accelerate (const v8::Arguments& args);
-            static v8::Handle<v8::Value> AccelerateTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Grow (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Stretch (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartGrowing (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopGrowing (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartStretching (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopStretching (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Resize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ResizeTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Rotate (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RotateTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopSpinning (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ChangeCenter (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ChangeCenterTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Wait (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetFriction (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ApplyForce (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ApplyTorque (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopAllForces (const v8::Arguments& args);
-            static v8::Handle<v8::Value> AddAnimationHelper (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveAnimationHelper (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ClearAnimationHelpers (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSerializedSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Serialize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Deserialize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMyClassTag (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSerializationFlags (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StartAnimations (const v8::Arguments& args);
-            static v8::Handle<v8::Value> StopAnimations (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Hide (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Show (const v8::Arguments& args);
-            static v8::Handle<v8::Value> IsHidden (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FadeIn (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FadeOut (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveBehind (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveInFrontOf (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveToFront (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveToBack (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetZOrder (const v8::Arguments& args);
-            static v8::Handle<v8::Value> MoveWith (const v8::Arguments& args);
-            static v8::Handle<v8::Value> FindSprite (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetNthSprite (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpriteZOrder (const v8::Arguments& args);
-            static v8::Handle<v8::Value> IsSpriteBehind (const v8::Arguments& args);
-            static v8::Handle<v8::Value> HasSprite (const v8::Arguments& args);
-            static v8::Handle<v8::Value> AddSprite (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveSprite (const v8::Arguments& args);
-            static v8::Handle<v8::Value> RemoveAllSprites (const v8::Arguments& args);
-            static v8::Handle<v8::Value> EnableCollisions (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DisableCollisions (const v8::Arguments& args);
-            static v8::Handle<v8::Value> EnableCollisionsWithLayer (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DisableCollisionsWithLayer (const v8::Arguments& args);
-            static v8::Handle<v8::Value> CreateSprite (const v8::Arguments& args);
+            static void AddHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveHandler (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Clear (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void BlockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void UnblockEvent (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetLocation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetLocation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpeed (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpeed (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetVelocity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetVelocity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetWidth (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetHeight (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetHeight (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetRotation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetRotation (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetCenterOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetCenterOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpin (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpin (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMass (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMass (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMoveFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetMoveFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpinFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpinFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSizeFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSizeFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetBoundingBox (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetRotatedBounds (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Move (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetVelocityInRadians (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMovementDirectionInRadians (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopMoving (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Accelerate (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void AccelerateTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Grow (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Stretch (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartGrowing (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopGrowing (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartStretching (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopStretching (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Resize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ResizeTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Rotate (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RotateTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopSpinning (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ChangeCenter (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ChangeCenterTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Wait (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetFriction (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ApplyForce (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ApplyTorque (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopAllForces (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void AddAnimationHelper (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveAnimationHelper (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ClearAnimationHelpers (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSerializedSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Serialize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Deserialize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMyClassTag (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSerializationFlags (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StartAnimations (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void StopAnimations (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Hide (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Show (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void IsHidden (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FadeIn (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FadeOut (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveBehind (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveInFrontOf (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveToFront (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveToBack (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetZOrder (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void MoveWith (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void FindSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetNthSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpriteZOrder (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void IsSpriteBehind (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void HasSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void AddSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void RemoveAllSprites (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void EnableCollisions (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DisableCollisions (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void EnableCollisionsWithLayer (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DisableCollisionsWithLayer (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void CreateSprite (const v8::FunctionCallbackInfo<v8::Value>& args);
 #ifndef PDG_NO_GUI
-            static v8::Handle<v8::Value> GetSpritePort (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetSpritePort (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetOrigin (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetOrigin (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetZoom (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetZoom (const v8::Arguments& args);
-            static v8::Handle<v8::Value> Zoom (const v8::Arguments& args);
-            static v8::Handle<v8::Value> ZoomTo (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetAutoCenter (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetFixedMoveAxis (const v8::Arguments& args);
-            static v8::Handle<v8::Value> LayerToPortPoint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> LayerToPortOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> LayerToPortVector (const v8::Arguments& args);
-            static v8::Handle<v8::Value> LayerToPortRect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> LayerToPortQuad (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PortToLayerPoint (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PortToLayerOffset (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PortToLayerVector (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PortToLayerRect (const v8::Arguments& args);
-            static v8::Handle<v8::Value> PortToLayerQuad (const v8::Arguments& args);
+            static void GetSpritePort (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetSpritePort (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetOrigin (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetOrigin (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetZoom (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetZoom (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void Zoom (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void ZoomTo (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetAutoCenter (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetFixedMoveAxis (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void LayerToPortPoint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void LayerToPortOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void LayerToPortVector (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void LayerToPortRect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void LayerToPortQuad (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PortToLayerPoint (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PortToLayerOffset (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PortToLayerVector (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PortToLayerRect (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void PortToLayerQuad (const v8::FunctionCallbackInfo<v8::Value>& args);
 #endif
 #ifdef PDG_USE_CHIPMUNK_PHYSICS
-            static v8::Handle<v8::Value> SetUseChipmunkPhysics (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetStaticLayer (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetGravity (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetKeepGravityDownward (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetDamping (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetSpace (const v8::Arguments& args);
+            static void SetUseChipmunkPhysics (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetStaticLayer (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetGravity (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetKeepGravityDownward (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetDamping (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetSpace (const v8::FunctionCallbackInfo<v8::Value>& args);
 #endif
-            static v8::Handle<v8::Value> GetWorldSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetWorldSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetWorldBounds (const v8::Arguments& args);
-            static v8::Handle<v8::Value> DefineTileSet (const v8::Arguments& args);
-            static v8::Handle<v8::Value> LoadMapData (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetMapData (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetTileSetImage (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetTileSize (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetTileTypeAt (const v8::Arguments& args);
-            static v8::Handle<v8::Value> GetTileTypeAndFacingAt (const v8::Arguments& args);
-            static v8::Handle<v8::Value> SetTileTypeAt (const v8::Arguments& args);
-            static v8::Handle<v8::Value> CheckCollision (const v8::Arguments& args);
+            static void GetWorldSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetWorldSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetWorldBounds (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void DefineTileSet (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void LoadMapData (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetMapData (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetTileSetImage (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetTileSize (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetTileTypeAt (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void GetTileTypeAndFacingAt (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void SetTileTypeAt (const v8::FunctionCallbackInfo<v8::Value>& args);
+            static void CheckCollision (const v8::FunctionCallbackInfo<v8::Value>& args);
     };
 
-    extern v8::Handle<v8::Value> GetConfigManager(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> GetLogManager(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> GetEventManager(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> GetResourceManager(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> SetSerializationDebugMode(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> RegisterSerializableClass(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> GetGraphicsManager(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> GetSoundManager(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> GetFileManager(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> GetTimerManager(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> CreateSpriteLayer(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> CreateSpriteLayerFromSCMLFile(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> CleanupSpriteLayer(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> CreateTileLayer(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> Rand(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> GameCriticalRandom(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> Srand(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> RegisterEasingFunction(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> Idle(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> Run(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> Quit(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> IsQuitting(const v8::Arguments& args);
-    extern v8::Handle<v8::Value> FinishedScriptSetup(const v8::Arguments& args);
+    extern void GetConfigManager(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void GetLogManager(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void GetEventManager(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void GetResourceManager(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void SetSerializationDebugMode(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void RegisterSerializableClass(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void RegisterSerializableObject(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void GetGraphicsManager(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void GetSoundManager(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void GetFileManager(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void GetTimerManager(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void CreateSpriteLayer(const v8::FunctionCallbackInfo<v8::Value>& args);
+#ifdef PDG_SCML_SUPPORT
+    extern void CreateSpriteLayerFromSCMLFile(const v8::FunctionCallbackInfo<v8::Value>& args);
+#endif
+    extern void CleanupSpriteLayer(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void CreateTileLayer(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void Rand(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void GameCriticalRandom(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void Srand(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void RegisterEasingFunction(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void Idle(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void Run(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void Quit(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void IsQuitting(const v8::FunctionCallbackInfo<v8::Value>& args);
+    extern void FinishedScriptSetup(const v8::FunctionCallbackInfo<v8::Value>& args);
 
 }
 #endif

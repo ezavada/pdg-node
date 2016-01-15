@@ -28,13 +28,14 @@
 #include "pdg_project.h"
 
 #include <ctype.h>
+#include <stdlib.h>
 
 // NOTE: these implementations will only work 100% correctly with UTF8 strings
 // if the locale is set to Unicode UTF8. Otherwise they risk false positives
 // when tolower converts bytes of a multiple char as if they were single chars
 
 int stricmp(const char *s1, const char *s2);
-int strnicmp(const char *s1, const char *s2, int n);
+int strnicmp(const char *s1, const char *s2, size_t n);
 int strcasecmp(const char *s1, const char *s2);
 int strncasecmp(const char *s1, const char *s2, size_t n);
 
@@ -53,7 +54,7 @@ int stricmp(const char *s1, const char *s2)			/*- cc 010713 -*/
 
 /* Compare lexigraphically two strings up to a max length */
 
-int strnicmp(const char *s1, const char *s2, int n)		/*- cc 010605 -*/
+int strnicmp(const char *s1, const char *s2, size_t n)		/*- cc 010605 -*/
 {
     int i;
     char c1, c2;

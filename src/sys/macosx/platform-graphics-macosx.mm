@@ -36,7 +36,7 @@
 #include "pdg/sys/platform.h"
 #include "pdg/sys/os.h"
 #import "pdg/sys/events.h"
-
+#include "pdg/sys/graphicsmanager.h"
 
 #import "internals-macosx.h"
 #include "internals.h"

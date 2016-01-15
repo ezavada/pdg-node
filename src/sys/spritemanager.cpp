@@ -100,7 +100,7 @@ SpriteManager::ChipmunkSpriteCollisionPostSolveFunc(cpArbiter *arb, cpSpace *spa
     CP_ARBITER_GET_BODIES(arb, sprite1, sprite2);
     Sprite* s1 = static_cast<Sprite*>(cpBodyGetUserData(sprite1));
     Sprite* s2 = static_cast<Sprite*>(cpBodyGetUserData(sprite2));
-    cpVect norm = cpArbiterGetNormal(arb, 0);
+    cpVect norm = cpArbiterGetNormal(arb);
     cpVect imp = cpArbiterTotalImpulse(arb);
     Vector normal(norm.x, norm.y);
     Vector impulse(imp.x, imp.y);
@@ -207,18 +207,13 @@ SpriteManager::SpriteManager(EventManager* eventMgr, TimerManager* timerMgr):
 						 timer_Repeating, UserData::makeUserDataFromPointer(this, data_DoNothing) );
 #ifdef PDG_USE_CHIPMUNK_PHYSICS
     mSpace = cpSpaceNew();
-    cpSpaceAddCollisionHandler(mSpace, CP_COLLIDE_TYPE_SPRITE, CP_COLLIDE_TYPE_SPRITE,
-                               ChipmunkSpriteCollisionBeginFunc, // begin
-                               NULL, // preSolve
-                               ChipmunkSpriteCollisionPostSolveFunc, // postSolve,
-                               NULL, // separate,
-                               NULL); // *data
-    cpSpaceAddCollisionHandler(mSpace, CP_COLLIDE_TYPE_SPRITE, CP_COLLIDE_TYPE_WALL,
-                               ChipmunkWallCollisionBeginFunc, // begin
-                               NULL, // preSolve
-                               ChipmunkWallCollisionPostSolveFunc, // postSolve,
-                               NULL, // separate,
-                               NULL); // *data
+    cpCollisionHandler* spriteToSpriteHdlr = cpSpaceAddCollisionHandler(mSpace, CP_COLLIDE_TYPE_SPRITE, CP_COLLIDE_TYPE_SPRITE);
+    spriteToSpriteHdlr->beginFunc = ChipmunkSpriteCollisionBeginFunc;
+    spriteToSpriteHdlr->postSolveFunc = ChipmunkSpriteCollisionPostSolveFunc;
+
+    cpCollisionHandler* spriteToWallHdlr = cpSpaceAddCollisionHandler(mSpace, CP_COLLIDE_TYPE_SPRITE, CP_COLLIDE_TYPE_WALL);
+    spriteToWallHdlr->beginFunc = ChipmunkWallCollisionBeginFunc;
+    spriteToWallHdlr->postSolveFunc = ChipmunkWallCollisionPostSolveFunc;
 #endif
     
 }
@@ -241,7 +236,7 @@ bool SpriteManager::handleEvent(EventEmitter* inEmitter, long inEventType, void*
           #ifdef SPRITE_IGNORE_ANIMATION_TIMER_DRIFT
 			uint32 elapsedMs = SPRITE_TIMER_INTERVAL_MS; // this is how long we told it to take
           #else
-			uint32 elapsedMs = infoP->msElapsed;  // this is the actual time it took
+			ms_delta elapsedMs = infoP->msElapsed;  // this is the actual time it took
 			if (elapsedMs > 100) { 
 				// 1/10 of a second is more than timer drift. We were probably
 				// paused or in the debugger or something. So use the normal timer interval

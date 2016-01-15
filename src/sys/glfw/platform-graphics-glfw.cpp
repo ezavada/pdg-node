@@ -123,7 +123,7 @@ int platform_getPrimaryScreen() {
 
 void platform_getScreenSize(long* outWidth, long* outHeight, int screenNum) {
 	glfwInitIfNeeded();
-	if (screenNum >= GraphicsManager::screenNum_PrimaryScreen && screenNum < platform_getNumScreens()) {
+	if (screenNum >= screenNum_PrimaryScreen && screenNum < platform_getNumScreens()) {
 		GLFWmonitor* monitor = screenNumToGLFWmonitor(screenNum);
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);		
 		*outWidth = mode->width;
@@ -157,7 +157,7 @@ void platform_getMaxWindowSize(long* outWidth, long* outHeight, int screenNum) {
 	*outWidth = screenWidth - windFrameWidth;
 	*outHeight = screenHeight - windFrameHeight;
 	// adjust for menu bar/dock
-	if (screenNum == GraphicsManager::screenNum_PrimaryScreen 
+	if (screenNum == screenNum_PrimaryScreen 
 	  || screenNumToGLFWmonitor(screenNum) == glfwGetPrimaryMonitor()) {
 		*outWidth += primaryDeltaWidth;
 		*outHeight += primaryDeltaHeight;
@@ -178,7 +178,7 @@ void* platform_createWindow(long width, long height, long xPos, long yPos, int b
 }
 
 int platform_getNumSupportedScreenModes(int screenNum) {
-	if ((screenNum < GraphicsManager::screenNum_PrimaryScreen) || (screenNum >= platform_getNumScreens())) return 0;
+	if ((screenNum < screenNum_PrimaryScreen) || (screenNum >= platform_getNumScreens())) return 0;
 	int count = 1;
 	GLFWmonitor* monitor = screenNumToGLFWmonitor(screenNum);
 	glfwGetVideoModes(monitor, &count);
@@ -189,7 +189,7 @@ void platform_getNthSupportedScreenMode(int screenNum, int n, long* outWidth, lo
 	*outWidth = 0;
 	*outHeight = 0;
 	*outBpp = 0;
-	if ((screenNum < GraphicsManager::screenNum_PrimaryScreen) || (screenNum >= platform_getNumScreens())) return;
+	if ((screenNum < screenNum_PrimaryScreen) || (screenNum >= platform_getNumScreens())) return;
 	if (n < 0) return;
 	int count = 1;
 	GLFWmonitor* monitor = screenNumToGLFWmonitor(screenNum);
@@ -249,7 +249,7 @@ int platform_closestScreenTo(long width, long height, int bpp) {
     if (bpp == 0) bpp = 32;
     int numScreens = platform_getNumScreens();
     int ranking[PDG_MAX_DISPLAYS];
-    int highestRankedScreen = GraphicsManager::screenNum_PrimaryScreen; // worst case is we just use main screen
+    int highestRankedScreen = screenNum_PrimaryScreen; // worst case is we just use main screen
     int highestRank = 0;
     for (int i = 0; i <  numScreens; i++) {
         long h, w;
@@ -279,8 +279,8 @@ void platform_switchScreenResolution(int screenNum, long width, long height, int
 
 void* platform_createFullscreenWindow(long width, long height, int bpp, int screenNum) {
 	glfwInitIfNeeded();
-	if (screenNum < GraphicsManager::screenNum_PrimaryScreen && screenNum >= platform_getNumScreens()) {
-		screenNum = GraphicsManager::screenNum_PrimaryScreen;
+	if (screenNum < screenNum_PrimaryScreen && screenNum >= platform_getNumScreens()) {
+		screenNum = screenNum_PrimaryScreen;
 	}
     if (bpp == 0) bpp = platform_getCurrentScreenDepth(screenNum);
 	GLFWmonitor* monitor = screenNumToGLFWmonitor(screenNum);
@@ -340,7 +340,7 @@ bool platform_isFullScreen(void* windRef) {
 
 int platform_getCurrentScreenDepth(int screenNum) {
 	glfwInitIfNeeded();
-	if (screenNum >= GraphicsManager::screenNum_PrimaryScreen && screenNum < platform_getNumScreens()) {
+	if (screenNum >= screenNum_PrimaryScreen && screenNum < platform_getNumScreens()) {
 		GLFWmonitor* monitor = screenNumToGLFWmonitor(screenNum);
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 		return bppFromGLFWvidmode(mode);

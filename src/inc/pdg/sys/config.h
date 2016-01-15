@@ -152,7 +152,7 @@ public:
  //! @cond C++
     virtual ~ConfigManager() {}
  //! @endcond
- 
+
 protected:
 	static ConfigManager* createSingletonInstance();
 };

@@ -34,6 +34,7 @@
 #include "pdg/sys/global_types.h"
 #include "pdg/sys/color.h"
 #include "pdg/sys/coordinates.h"
+#include "pdg/sys/pdgexception.h"
 
 #ifndef PDG_SERIALIZE_NO_STD_STRING_SUPPORT
 #include <string>
@@ -52,8 +53,18 @@
   #define SERIALIZED(type, bytes)   if ( (--ISerializer::s_TraceDepth == 0) && ISerializer::s_DebugMode) { std::cout << "SER: "<< type << " " << statusDump(bytesFromMark()) << "\n";}
 #endif
 
+
 namespace pdg {
 	
+#ifndef PDG_DESERIALIZER_NO_THROW
+	class unknown_object : public PDGException {
+		public: unknown_object(const char* msg) : PDGException(msg) {}
+	};
+	#define MAY_THROW( __specs )
+#else
+	#define MAY_THROW( __specs )
+#endif
+
 	class ISerializable;
 
 	// ==============================================
@@ -209,36 +220,62 @@ namespace pdg {
 		 */
 		virtual void   serialize_obj(const ISerializable* obj) = 0;
 		
+		//! Serialize a reference to a non-serializable object
+		// You must have called IDeserializer::registerObject() to give the object a unique ID 
+		// before serializing it, otherwise an unknown_object exception will be thrown.
+		template<typename T> void serialize_ref(const T* obj) MAY_THROW( unknown_object );
+
 		// --------------------------------------------
 		// size checking methods for variable size
 		// --------------------------------------------
 
+#ifndef PDG_NO_64BIT
+		uint32 sizeof_8u(uint64 val) const  { return 8; }
+		uint32 sizeof_8 (int64 val) const   { return 8; }
+#endif
+        uint32 sizeof_4u(uint32 val) const  { return 4; }
+		uint32 sizeof_4 (int32 val) const   { return 4; }
+		uint32 sizeof_3u(uint32 val) const  { return 3; }
+		uint32 sizeof_2u(uint16 val) const  { return 2; }
+		uint32 sizeof_2 (int16 val) const   { return 2; }
+		uint32 sizeof_1u(uint8 val) const   { return 1; }
+		uint32 sizeof_1 (int8 val) const    { return 1; }
+		uint32 sizeof_f(float val) const    { return 4; }
+		uint32 sizeof_d(double val) const   { return 8; }
+
 		//! How many bytes are used to serialize a particular boolean value
-		virtual uint32 serializedSize(bool val) const = 0;
+		virtual uint32 sizeof_bool(bool val) const = 0;
 
 		//! How many bytes are used to serialize a particular unsigned integer value
-		virtual uint32 serializedSize(uint32 num) const = 0;
+		virtual uint32 sizeof_uint(uint32 num) const = 0;
 
 		//! How many bytes are used to serialize a particular pdg::Color value
-		virtual uint32 serializedSize(const Color& c) const = 0;
+		virtual uint32 sizeof_color(const Color& c) const = 0;
 
 		//! How many bytes are used to serialize a particular pdg::Offset, Point or Vector value
-		virtual uint32 serializedSize(const Offset& o) const = 0;
+		virtual uint32 sizeof_offset(const Offset& o) const = 0;
+		uint32         sizeof_vector(const Vector& v) const { return sizeof_offset(v); }
+		uint32         sizeof_point(const Point& p) const { return sizeof_offset(p); }
 
 		//! How many bytes are used to serialize a particular pdg::Rect value
-		virtual uint32 serializedSize(const Rect& r) const = 0;
+		virtual uint32 sizeof_rect(const Rect& r) const = 0;
 
 		//! How many bytes are used to serialize a particular pdg::RotatedRect value
-		virtual uint32 serializedSize(const RotatedRect& rr) const = 0;
+		virtual uint32 sizeof_rotr(const RotatedRect& rr) const = 0;
 
 		//! How many bytes are used to serialize a particular pdg::Quad value
-		virtual uint32 serializedSize(const Quad& q) const = 0;
+		virtual uint32 sizeof_quad(const Quad& q) const = 0;
 
 		//! How many bytes are used to serialize a particular string
-		virtual uint32 serializedSize(const char* str) const = 0;
+		virtual uint32 sizeof_str(const char* str) const = 0;
+
+	  #ifndef PDG_SERIALIZE_NO_STD_STRING_SUPPORT
+		//! How many bytes are used to serialize a particular std::string
+		uint32         sizeof_string(const std::string& str) const;
+	  #endif
 
 		//! How many bytes are used to serialize a particular block of memory
-		virtual uint32 serializedSize(const void* mem, uint32 memLen) const = 0;
+		virtual uint32 sizeof_mem(const void* mem, uint32 memLen) const = 0;
 
 		//! How many bytes are used to serialize a particular object, including tags and size data
 		/*! Since objects are only serialized once, it is critical that you call this on objects in the same 
@@ -247,13 +284,35 @@ namespace pdg {
 		    the number of bytes used to store a reference to the object, usually a much smaller number.
 			A NULL object pointer will always take a constant number of bytes needed for the null object tag
 		 */
-		virtual uint32 serializedSize(const ISerializable* obj) = 0;
+		virtual uint32 sizeof_obj(const ISerializable* obj) = 0;
+
+		template<typename T> uint32 sizeof_ref(const T* obj) const MAY_THROW( unknown_object );
+
+        //! Turn on or off the sync tags for this steam
+        // This which makes the steam slightly smaller and faster. This must be done
+        // before anything is written to the stream.
+        // They default to ON since they provide relatively inexpensive sanity checks. 
+        ISerializer& setSendTags(bool sendThem) { mSendTags = sendThem; return *this; }
 
 	protected:
 		virtual char* statusDump(int hiliteBytes = 0) = 0;
 		virtual void startMark() = 0;
 		virtual int bytesFromMark() = 0;
+		virtual void serialize_ptr(const void* ptr) = 0;
+		virtual uint32 sizeof_ptr(const void* ptr) const = 0;
+
+
+		bool mSendTags;
+		
+		ISerializer() : mSendTags(true) {}
 	};
+
+	template<typename T> void ISerializer::serialize_ref(const T* obj) {
+	    serialize_ptr(static_cast<const void*>(obj));
+	}
+	template<typename T> uint32 ISerializer::sizeof_ref(const T* obj) const {
+	    return sizeof_ptr(static_cast<const void*>(obj));
+	}
 
   #ifndef PDG_NO_64BIT
 	inline void    
@@ -328,6 +387,12 @@ namespace pdg {
 	ISerializer::serialize_string(const std::string& str) { 
 		serialize_str(str.c_str()); 
 	}
+
+	inline uint32 
+	ISerializer::sizeof_string(const std::string& str) const {
+		return sizeof_str(str.c_str()); 
+	}
+
   #endif
 
 } // end namespace pdg

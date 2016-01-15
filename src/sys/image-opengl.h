@@ -64,7 +64,7 @@ namespace pdg {
 
 		virtual void	prepareToRasterize();
 		
-		void	bindTexture(uint32 mipMode = GL_LINEAR);
+		void	bindTexture(GLint mipMode = GL_LINEAR);
 		
 		ImageOpenGL() 
  		     : ImageImpl(),  mTexture(0)

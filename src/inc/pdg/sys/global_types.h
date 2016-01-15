@@ -33,6 +33,12 @@
 
 #include "pdg_project.h"
 
+#ifdef __cplusplus
+   #include <climits>
+#else
+  #include <limits.h>
+#endif
+
 // -----------------------------------------------------------------------------------
 // some basic type definitions for sized types
 // -----------------------------------------------------------------------------------
@@ -59,15 +65,28 @@ typedef unsigned short 	    uint16;
 typedef signed short         int16;
 
 #if !defined( _UINT32 ) || defined( PDG_DECORATE_GLOBAL_TYPES )
-typedef unsigned long       uint32;
+  #if (ULONG_MAX > 4294967295) && (UINT_MAX == 4294967295)
+    // handle compilation on systems were unsigned long is 64 bit
+    typedef unsigned int    uint32;
+  #else
+    typedef unsigned long   uint32;
+  #endif
 #define _UINT32  // this keeps Apple headers from blowing up
 #endif
-typedef signed long          int32;
+#if (ULONG_MAX > 4294967295) && (UINT_MAX == 4294967295)
+// handle compilation on systems were long is 64 bit
+  typedef signed int         int32;
+#else
+  typedef signed long        int32;
+#endif
 
 #ifndef PDG_NO_64BIT
 typedef unsigned long long  uint64;
 typedef signed long long     int64;
 #endif
+
+typedef long    ms_delta;
+typedef long    ms_time;
 
 #ifdef __cplusplus
 namespace pdg {

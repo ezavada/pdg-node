@@ -31,7 +31,7 @@
 #define PDG_VERSION_H_INCLUDED
 
 #ifndef PDG_VERSION
-#define PDG_VERSION "0.9.4"
+#define PDG_VERSION "0.9.5"
 #endif
 
 #endif

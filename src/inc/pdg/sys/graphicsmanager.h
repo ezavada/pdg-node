@@ -49,6 +49,11 @@ namespace pdg {
 class Port;
 class Font;
 
+    enum {
+        screenNum_PrimaryScreen = -1,
+        screenNum_BestFitScreen = -2
+    };
+    
 // -----------------------------------------------------------------------------------
 //! Graphics Manager
 //! Used to create and track ports
@@ -57,11 +62,6 @@ class Font;
 class GraphicsManager : public Singleton<GraphicsManager> {
 friend class Singleton<GraphicsManager>;
 public:
-    enum {
-        screenNum_PrimaryScreen = -1,
-        screenNum_BestFitScreen = -2
-    };
-    
     struct ScreenMode {
     	long width;
     	long height;

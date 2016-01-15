@@ -60,7 +60,7 @@ namespace pdg {
         Semaphore()        { MacAPI::MPCreateSemaphore(1, 0, &mSemaphore); }
         ~Semaphore()       { MacAPI::MPDeleteSemaphore(mSemaphore); }
         void awaitSignal() { MacAPI::MPWaitOnSemaphore(mSemaphore, FOREVER); }
-        bool awaitSignal(int32 waitMilliseconds) { // return true if signal was set, false if timeout
+        bool awaitSignal(ms_delta waitMilliseconds) { // return true if signal was set, false if timeout
                 return (MacAPI::MPWaitOnSemaphore(mSemaphore, waitMilliseconds) == 0); // noErr
             }
         void signal()      { MacAPI::MPSignalSemaphore(mSemaphore); }
@@ -100,7 +100,7 @@ namespace pdg {
                     signaled = false; 
                     PosixAPI::pthread_mutex_unlock(&mMutex); 
                }
-        bool awaitSignal(int32 waitMilliseconds) { // returns true if signal was set, false if timed out
+        bool awaitSignal(ms_delta waitMilliseconds) { // returns true if signal was set, false if timed out
                     PosixAPI::pthread_mutex_lock(&mMutex); 
                     bool result = signaled;
                     if (!signaled) {
@@ -159,7 +159,7 @@ namespace pdg {
         Semaphore()         { mSemaphore = WinAPI::CreateSemaphore(0, 0, 1, 0); } // max count = 1, initial = 0
         ~Semaphore()        { WinAPI::CloseHandle(mSemaphore); }
         void awaitSignal()  { WinAPI::WaitForSingleObject(mSemaphore, INFINITE); } // wait until count > 0, count -= 1
-        bool awaitSignal(int32 waitMilliseconds) {  // returns true if signal was set, false if timeout
+        bool awaitSignal(ms_delta waitMilliseconds) {  // returns true if signal was set, false if timeout
                 return (WinAPI::WaitForSingleObject(mSemaphore, waitMilliseconds) == NO_ERROR);
             }
         void signal()       { WinAPI::ReleaseSemaphore(mSemaphore, 1, 0); } // add one to the count, up to max

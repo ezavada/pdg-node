@@ -32,7 +32,7 @@
 #define PDG_BUILDINFO_I_INCLUDED
 
 
-#define BUILDINFO_STR   "Build: ["__DATE__" "__TIME__"] Compiler: ["COMPILER_STR"] Target: ["PLATFORM_STR"]"
+#define BUILDINFO_STR   "Build: [" __DATE__ " " __TIME__ "] Compiler: [" COMPILER_STR "] Target: [" PLATFORM_STR "]"
 
 
 #endif // PDG_BUILDINFO_I_INCLUDED

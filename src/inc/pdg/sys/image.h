@@ -54,6 +54,17 @@ namespace pdg {
 class Port;
 #endif
 
+
+//! how images should fit into rectangles
+enum FitType {
+    fit_None,
+    fit_Height,             // match heights, don't change proportions
+    fit_Width,              // match widths, don't change proportions
+    fit_Inside,             // match height or width, but keep image entirely inside rect
+    fit_Fill,               // match both height and width, change proportions if needed
+    fit_FillKeepProportions // match height or width so that entire rect is filled with image, image size may be larger than rect
+};
+
 // -----------------------------------------------------------------------------------
 //! Image
 //! A bit image that can be blitted onto the screen
@@ -74,15 +85,6 @@ public:
 	//! if the image has multiple frames, it returns the bounds as the frame width, not the total width
 	virtual Rect getImageBounds();
 	virtual Rect getImageBounds( Point& at );
-
-    enum FitType {
-		fit_None,
-        fit_Height,             // match heights, don't change proportions
-        fit_Width,              // match widths, don't change proportions
-        fit_Inside,             // match height or width, but keep image entirely inside rect
-        fit_Fill,               // match both height and width, change proportions if needed
-        fit_FillKeepProportions // match height or width so that entire rect is filled with image, image size may be larger than rect
-    };
 
 	virtual long 	getHeight();
 	virtual long	getWidth();
@@ -145,6 +147,13 @@ public:
 
     static Image* createImageFromData(const char* imageName, char* imageData, long imageDataLen);
     static Image* createImageFromFile(const char* imageFileName);
+
+    enum ImageSerializationMode {
+        ser_Nothing,        // ignore images entirely
+        ser_ByReference,     // only serialize references to the images
+    };
+    static int    registerImageForSerialization(Image* img); // returns reference number
+    static bool   setImageSerializationMode(ImageSerializationMode mode);
 
 #ifdef PDG_COMPILING_FOR_SCRIPT_BINDINGS
 	SCRIPT_OBJECT_REF mImageScriptObj;

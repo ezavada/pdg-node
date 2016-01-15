@@ -42,33 +42,22 @@
 
 namespace pdg {
 
-// -----------------------------------------------------------------------------------
-//! Graphics
-//! A collection of static enumerations that are used when drawing
+//! text drawing and measurement
 //! \ingroup Graphics
-// -----------------------------------------------------------------------------------
 
-namespace Graphics {
+enum Style {
+    //! Basic Styles can be combined, ie: textStyle_Bold + textStyle_Italic + textStyle_Underline
+    textStyle_Plain = 0,
+    textStyle_Bold = 1,
+    textStyle_Italic = 2,
+    textStyle_Underline = 4,
 
-	//! text drawing and measurement
-	//! \ingroup Graphics
-
-	enum Style {
-		//! Basic Styles can be combined, ie: textStyle_Bold + textStyle_Italic + textStyle_Underline
-		textStyle_Plain = 0,
-		textStyle_Bold = 1,
-		textStyle_Italic = 2,
-		textStyle_Underline = 4,
-
-		//! next three are mutually exclusive, but can be combined with basic styles
-		textStyle_Centered = 16,
-		textStyle_LeftJustified = 0,
-		textStyle_RightJustified = 32
-
-	};
+    //! next three are mutually exclusive, but can be combined with basic styles
+    textStyle_Centered = 16,
+    textStyle_LeftJustified = 0,
+    textStyle_RightJustified = 32
 
 };
-
 
 // -----------------------------------------------------------------------------------
 //! Font
@@ -83,14 +72,14 @@ public:
 
     //! total height of the font, including leading between lines
 	//! adding this to the baseline gives the next baseline position
-    virtual float    getFontHeight(int size, uint32 style = Graphics::textStyle_Plain) = 0;
+    virtual float    getFontHeight(int size, uint32 style = textStyle_Plain) = 0;
 	//! the amount of space between two lines on the font, between the bottom of the decender of the
 	//! line above and the top of the ascender of the line below
-    virtual float    getFontLeading(int size, uint32 style = Graphics::textStyle_Plain) = 0;
+    virtual float    getFontLeading(int size, uint32 style = textStyle_Plain) = 0;
     //! the height from the baseline to the top of the tallest character in the font
-    virtual float    getFontAscent(int size, uint32 style = Graphics::textStyle_Plain) = 0;
+    virtual float    getFontAscent(int size, uint32 style = textStyle_Plain) = 0;
 	//! the height from the baseline to the bottom of the lowest descending character in the font
-    virtual float    getFontDescent(int size, uint32 style = Graphics::textStyle_Plain) = 0;
+    virtual float    getFontDescent(int size, uint32 style = textStyle_Plain) = 0;
 
 #ifdef PDG_COMPILING_FOR_SCRIPT_BINDINGS
 	SCRIPT_OBJECT_REF mFontScriptObj;

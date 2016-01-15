@@ -472,7 +472,7 @@ void pauseGame()
 		Rect screenDim(mainPort->getDrawingArea());
 		gHatchImage->drawTexture(screenDim);
 		Point textPt(screenDim.width()/2, screenDim.height()/2);
-		Graphics::Style style = (Graphics::Style)(Graphics::textStyle_Bold + Graphics::textStyle_Centered);
+		Style style = (Style)(textStyle_Bold + textStyle_Centered);
 		const int PAUSE_FONT_SIZE = 45;
 		int fontHeight = mainPort->getCurrentFont()->getFontHeight(PAUSE_FONT_SIZE, style);
 		mainPort->drawText(gPausedStr.c_str(), textPt, PAUSE_FONT_SIZE, style, Color(0xff, 0xff, 0xff));

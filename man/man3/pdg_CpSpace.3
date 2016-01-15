@@ -1,4 +1,4 @@
-.TH "CpSpace" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.TH "CpSpace" 3 "Mon Oct 26 2015" "Version v0.9.5" "Pixel Dust Game Engine" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -25,10 +25,6 @@ container for simulating objects (\fIChipmunk Physics Only\fP)
 .br
 .RI "\fIget allowed amount of overlap between shapes \fP"
 .ti -1c
-.RI "boolean \fBgetEnableContactGraph\fP ()"
-.br
-.RI "\fIget if contact graph is rebuilt during each step \fP"
-.ti -1c
 .RI "number \fBgetIdleSpeedThreshold\fP ()"
 .br
 .RI "\fIget speed threshold for a body to be considered idle \fP"
@@ -41,27 +37,23 @@ container for simulating objects (\fIChipmunk Physics Only\fP)
 .br
 .RI "\fIUpdate the collision detection info for the all static shapes in the space\&. \fP"
 .ti -1c
-.RI "cpSpace \fBsetCollisionBias\fP (number inCollisionBias)"
+.RI "\fBCpSpace\fP \fBsetCollisionBias\fP (number inCollisionBias)"
 .br
 .RI "\fIset the percentage of overlap between colliding bodies that is left unfixed after each step \fP"
 .ti -1c
-.RI "cpSpace \fBsetCollisionPersistence\fP (number inCollisionPersistence)"
+.RI "\fBCpSpace\fP \fBsetCollisionPersistence\fP (number inCollisionPersistence)"
 .br
 .RI "\fIset how many steps collision solutions are maintained to prevent jittering \fP"
 .ti -1c
-.RI "cpSpace \fBsetCollisionSlop\fP (number inCollisionSlop)"
+.RI "\fBCpSpace\fP \fBsetCollisionSlop\fP (number inCollisionSlop)"
 .br
 .RI "\fIset allowed amount of overlap between shapes \fP"
 .ti -1c
-.RI "cpSpace \fBsetEnableContactGraph\fP (boolean inEnableContactGraph)"
-.br
-.RI "\fIset if contact graph is rebuilt during each step \fP"
-.ti -1c
-.RI "cpSpace \fBsetIdleSpeedThreshold\fP (number inIdleSpeedThreshold)"
+.RI "\fBCpSpace\fP \fBsetIdleSpeedThreshold\fP (number inIdleSpeedThreshold)"
 .br
 .RI "\fIset speed threshold for a body to be considered idle \fP"
 .ti -1c
-.RI "cpSpace \fBsetSleepTimeThreshold\fP (number inSleepTimeThreshold)"
+.RI "\fBCpSpace\fP \fBsetSleepTimeThreshold\fP (number inSleepTimeThreshold)"
 .br
 .RI "\fIset time a group of bodies must remain idle in order to fall asleep \fP"
 .ti -1c
@@ -102,18 +94,6 @@ get how many steps collision solutions are maintained to prevent jittering
 
 .PP
 get allowed amount of overlap between shapes 
-.SS "getEnableContactGraph ()"
-
-.PP
-get if contact graph is rebuilt during each step From Chipmunk cpSpace comments: 
-.PP
-.nf
-Must be enabled to use the cpBodyEachArbiter() function. 
-Disabled by default for a small performance boost. 
-Enabled implicitly when the sleeping feature is enabled.
-.fi
-.PP
- 
 .SS "getIdleSpeedThreshold ()"
 
 .PP
@@ -164,18 +144,6 @@ Defaults to 3. There is probably never a reason to change this value.
 
 .PP
 set allowed amount of overlap between shapes Amount of encouraged penetration between colliding shapes\&. Used to reduce oscillating contacts and keep the collision cache warm\&. Defaults to 0\&.1\&. If you have poor simulation quality, increase this number as much as possible without allowing visible amounts of overlap\&. 
-.SS "setEnableContactGraph (booleaninEnableContactGraph)"
-
-.PP
-set if contact graph is rebuilt during each step From Chipmunk cpSpace comments: 
-.PP
-.nf
-Must be enabled to use the cpBodyEachArbiter() function. 
-Disabled by default for a small performance boost. 
-Enabled implicitly when the sleeping feature is enabled.
-.fi
-.PP
- 
 .SS "setIdleSpeedThreshold (numberinIdleSpeedThreshold)"
 
 .PP

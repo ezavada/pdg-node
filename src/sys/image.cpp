@@ -259,7 +259,7 @@ ImageImpl::initFromData(char* imageData, long imageDataLen, const char* filename
 }
 	
 void
-ImageImpl::initEmpty(int w, int h, uint8 inBitsPerPixel) {
+ImageImpl::initEmpty(long w, long h, uint8 inBitsPerPixel) {
     // set the output params
     width = w;
     height = h;
@@ -270,7 +270,7 @@ ImageImpl::initEmpty(int w, int h, uint8 inBitsPerPixel) {
 
 	pitch = row_size;
     
-    long bufsize =  row_size * h;
+    size_t bufsize =  row_size * h;
 	data = (uint8*) std::malloc(bufsize);
     dataSize = bufsize;
 }
@@ -314,7 +314,7 @@ Image::createImageFromFile(const char* imageFileName) {
 	std::ifstream file;
 	file.open(imageFileName, std::ios::binary);
 	file.seekg(0, std::ios::end);
-	int len = file.tellg();
+    long len = file.tellg();
 	if (len != -1) {
 		char* imageData = (char*) std::malloc(len);
 		if (imageData != NULL) {
@@ -811,7 +811,7 @@ zoom(ImageImpl *dst, ImageImpl *src, double (*filterf)(double), double fwidth)
 				if(j < 0) {
 					n = -j;
 				} else if(j >= src->xsize) {
-					n = (src->xsize - j) + src->xsize - 1;
+					n = (int)((src->xsize - j) + src->xsize - 1);
 				} else {
 					n = j;
 				}
@@ -838,7 +838,7 @@ zoom(ImageImpl *dst, ImageImpl *src, double (*filterf)(double), double fwidth)
 				if(j < 0) {
 					n = -j;
 				} else if(j >= src->xsize) {
-					n = (src->xsize - j) + src->xsize - 1;
+					n = (int)((src->xsize - j) + src->xsize - 1);
 				} else {
 					n = j;
 				}
@@ -947,7 +947,7 @@ zoom(ImageImpl *dst, ImageImpl *src, double (*filterf)(double), double fwidth)
 				if(j < 0) {
 					n = -j;
 				} else if(j >= tmp->ysize) {
-					n = (tmp->ysize - j) + tmp->ysize - 1;
+					n = (int)((tmp->ysize - j) + tmp->ysize - 1);
 				} else {
 					n = j;
 				}
@@ -975,7 +975,7 @@ zoom(ImageImpl *dst, ImageImpl *src, double (*filterf)(double), double fwidth)
 				if(j < 0) {
 					n = -j;
 				} else if(j >= tmp->ysize) {
-					n = (tmp->ysize - j) + tmp->ysize - 1;
+					n = (int)((tmp->ysize - j) + tmp->ysize - 1);
 				} else {
 					n = j;
 				}
@@ -989,7 +989,7 @@ zoom(ImageImpl *dst, ImageImpl *src, double (*filterf)(double), double fwidth)
 	}
 
 	/* apply filter to zoom vertically from tmp to dst */
-	uint32 bufsize = tmp->ysize * (tmp->bpp >> 3);
+	size_t bufsize = tmp->ysize * (tmp->bpp >> 3);
 	raster = (addr) std::malloc(bufsize);
     long dstHeight = dst->getHeight();
 	for(k = 0; k < dst->xsize; ++k) {

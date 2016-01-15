@@ -1,8 +1,5 @@
 //========================================================================
-// GLFW - An OpenGL library
-// Platform:    Any
-// API version: 3.0
-// WWW:         http://www.glfw.org/
+// GLFW 3.1 - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Marcus Geelnard
 // Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
@@ -36,14 +33,15 @@
 #include <stdarg.h>
 
 
+// The three global variables below comprise all global data in GLFW.
+// Any other global variable is a bug.
+
 // Global state shared between compilation units of GLFW
 // These are documented in internal.h
 //
 GLboolean _glfwInitialized = GL_FALSE;
 _GLFWlibrary _glfw;
 
-
-// The current error callback
 // This is outside of _glfw so it can be initialized and usable before
 // glfwInit is called, which lets that function report errors
 //
@@ -88,7 +86,7 @@ void _glfwInputError(int error, const char* format, ...)
 {
     if (_glfwErrorCallback)
     {
-        char buffer[16384];
+        char buffer[8192];
         const char* description;
 
         if (format)
@@ -131,13 +129,6 @@ GLFWAPI int glfwInit(void)
     }
 
     _glfw.monitors = _glfwPlatformGetMonitors(&_glfw.monitorCount);
-    if (_glfw.monitors == NULL)
-    {
-        _glfwErrorCallback(GLFW_PLATFORM_ERROR, "No monitors found");
-        _glfwPlatformTerminate();
-        return GL_FALSE;
-    }
-
     _glfwInitialized = GL_TRUE;
 
     // Not all window hints have zero as their default value
@@ -153,9 +144,13 @@ GLFWAPI void glfwTerminate(void)
     if (!_glfwInitialized)
         return;
 
-    // Close all remaining windows
+    memset(&_glfw.callbacks, 0, sizeof(_glfw.callbacks));
+
     while (_glfw.windowListHead)
         glfwDestroyWindow((GLFWwindow*) _glfw.windowListHead);
+
+    while (_glfw.cursorListHead)
+        glfwDestroyCursor((GLFWcursor*) _glfw.cursorListHead);
 
     for (i = 0;  i < _glfw.monitorCount;  i++)
     {
@@ -164,12 +159,13 @@ GLFWAPI void glfwTerminate(void)
             _glfwPlatformSetGammaRamp(monitor, &monitor->originalRamp);
     }
 
-    _glfwDestroyMonitors(_glfw.monitors, _glfw.monitorCount);
+    _glfwFreeMonitors(_glfw.monitors, _glfw.monitorCount);
     _glfw.monitors = NULL;
     _glfw.monitorCount = 0;
 
     _glfwPlatformTerminate();
 
+    memset(&_glfw, 0, sizeof(_glfw));
     _glfwInitialized = GL_FALSE;
 }
 
@@ -192,8 +188,7 @@ GLFWAPI const char* glfwGetVersionString(void)
 
 GLFWAPI GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun cbfun)
 {
-    GLFWerrorfun previous = _glfwErrorCallback;
-    _glfwErrorCallback = cbfun;
-    return previous;
+    _GLFW_SWAP_POINTERS(_glfwErrorCallback, cbfun);
+    return cbfun;
 }
 

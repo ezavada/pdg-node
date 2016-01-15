@@ -1,4 +1,4 @@
-.TH "Sprite" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.TH "Sprite" 3 "Mon Oct 26 2015" "Version v0.9.5" "Pixel Dust Game Engine" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,39 +17,51 @@ Inherits \fBAnimated\fP, \fBEventEmitter\fP, and \fBISerializable\fP\&.
 .ti -1c
 .RI "\fBaddFramesImage\fP (\fBImage\fP image, int startingFrame=\fBstart_FromFirstFrame\fP, int numFrames=\fBall_Frames\fP)"
 .br
+.RI "\fIadd one or more frames to the sprite from an \fBImage\fP or \fBImageStrip\fP \fP"
 .ti -1c
 .RI "\fBchangeFramesImage\fP (\fBImage\fP oldImage, \fBImage\fP newImage)"
 .br
+.RI "\fIreplace all references in the sprite to one image with another image \fP"
 .ti -1c
 .RI "\fBdeserialize\fP (\fBDeserializer\fP deserializer)"
 .br
+.RI "\fIupdate this sprite from the data in stream \fP"
 .ti -1c
 .RI "\fBSprite\fP \fBdisableCollisions\fP ()"
 .br
+.RI "\fIstop checking for collisions with this sprite \fP"
 .ti -1c
-.RI "\fBdisconnect\fP (\fBSprite\fP otherSprite)"
+.RI "\fBdisconnect\fP (\fBSprite\fP otherSprite=ALL_SPRITES)"
 .br
+.RI "\fIremove all connections (joints) to another sprite \fP"
 .ti -1c
 .RI "\fBSprite\fP \fBenableCollisions\fP (int collisionType=\fBcollide_AlphaChannel\fP)"
 .br
+.RI "\fIstart checking for collisions with this sprite \fP"
 .ti -1c
 .RI "\fBfadeIn\fP (int msDuration, int easing=\fBlinearTween\fP)"
 .br
+.RI "\fIfade in to full opacity over time \fP"
 .ti -1c
 .RI "\fBfadeOut\fP (int msDuration, int easing=\fBlinearTween\fP)"
 .br
+.RI "\fIfade out full transparency over time \fP"
 .ti -1c
 .RI "\fBfadeTo\fP (number targetOpacity, int msDuration, int easing=\fBlinearTween\fP)"
 .br
+.RI "\fIfade in to a specific opacity over time \fP"
 .ti -1c
 .RI "\fBCpConstraint\fP \fBgear\fP (\fBSprite\fP otherSprite, number gearRatio, number initialAngle=0, number breakingForce=0)"
 .br
+.RI "\fIjoin two sprites as if they were geared together (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "number \fBgetCollideGroup\fP ()"
 .br
+.RI "\fIsee which collide group this sprite is part of (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "number \fBgetCollisionRadius\fP ()"
 .br
+.RI "\fIget the collision radius for this sprite \fP"
 .ti -1c
 .RI "number \fBgetCurrentFrame\fP ()"
 .br
@@ -57,65 +69,104 @@ Inherits \fBAnimated\fP, \fBEventEmitter\fP, and \fBISerializable\fP\&.
 .ti -1c
 .RI "number \fBgetElasticity\fP ()"
 .br
+.RI "\fIget the elasticity for this sprite's collisions \fP"
 .ti -1c
 .RI "\fBOffset\fP \fBgetFrameCenterOffset\fP (\fBImage\fP image=null, int frameNum=0)"
 .br
-.RI "\fINOT IMPLEMENTED\&. \fP"
+.RI "\fIget the offset to the center-point from the true image center for a given frame \fP"
 .ti -1c
 .RI "number \fBgetFrameCount\fP ()"
 .br
+.RI "\fIget number of frames of animation for this sprite \fP"
 .ti -1c
-.RI "\fBRect\fP \fBgetFrameRotatedBounds\fP (int frame)"
+.RI "\fBRotatedRect\fP \fBgetFrameRotatedBounds\fP (int frameNum=-1)"
 .br
+.RI "\fIget the bounds of the sprite, including rotation, for a given frame, in layer coordinates\&. If no frameNum is passed in, or the frame is not present, the bounds of the current frame are returned\&. \fP"
 .ti -1c
 .RI "number \fBgetFriction\fP ()"
 .br
+.RI "\fIget the friction used for movement calculations for this sprite (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBSpriteLayer\fP \fBgetLayer\fP ()"
 .br
 .RI "\fIget the layer that contains this sprite \fP"
 .ti -1c
+.RI "number \fBgetMouseDetectMode\fP ()"
+.br
+.ti -1c
 .RI "number \fBgetMyClassTag\fP ()"
 .br
+.RI "\fIreturns class tag for \fBSprite\fP, used for serialization \fP"
 .ti -1c
 .RI "number \fBgetOpacity\fP ()"
 .br
+.RI "\fIget the level of opacity for this sprite \fP"
 .ti -1c
 .RI "uint \fBgetSerializedSize\fP (\fBSerializer\fP serializer)"
+.br
+.RI "\fIget the bytes needed to serialize the layer \fP"
+.ti -1c
+.RI "boolean \fBgetWantsAnimEndEvents\fP ()"
+.br
+.ti -1c
+.RI "boolean \fBgetWantsAnimLoopEvents\fP ()"
+.br
+.ti -1c
+.RI "boolean \fBgetWantsClickEvents\fP ()"
+.br
+.ti -1c
+.RI "boolean \fBgetWantsCollideWallEvents\fP ()"
+.br
+.ti -1c
+.RI "boolean \fBgetWantsMouseOverEvents\fP ()"
+.br
+.ti -1c
+.RI "boolean \fBgetWantsOffscreenEvents\fP ()"
 .br
 .ti -1c
 .RI "int \fBgetZOrder\fP ()"
 .br
+.RI "\fIget the z-order of this sprite in the layer it belongs to \fP"
 .ti -1c
 .RI "\fBCpConstraint\fP \fBgrooveJoint\fP (\fBOffset\fP grooveStart, \fBOffset\fP grooveEnd, \fBSprite\fP otherSprite, \fBOffset\fP otherAnchor, number breakingForce=0)"
 .br
+.RI "\fIjoin groove on this sprite to an anchor point on another (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "boolean \fBhasAnimation\fP (int animationId)"
 .br
+.RI "\fIcheck if a sprite has a particular SCML animation by ID \fP"
 .ti -1c
 .RI "boolean \fBhasAnimation\fP (string animationName)"
 .br
+.RI "\fIcheck if a sprite has a particular SCML animation by name \fP"
 .ti -1c
 .RI "boolean \fBisBehind\fP (\fBSprite\fP sprite)"
 .br
+.RI "\fIreturns true if this sprite will be drawn before the given sprite \fP"
 .ti -1c
 .RI "\fBmakeJointBreakable\fP (\fBCpConstraint\fP joint, number breakingForce)"
 .br
+.RI "\fIset or change force at which the joint between sprites will break (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBmakeJointUnbreakable\fP (\fBCpConstraint\fP joint)"
 .br
+.RI "\fImake the joint impossible to break (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBSprite\fP \fBmakeStatic\fP ()"
 .br
+.RI "\fImake this sprite unaffected by physics (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBCpConstraint\fP \fBmotor\fP (\fBSprite\fP otherSprite, number spin, number maxTorque=INFINITY)"
 .br
+.RI "\fIkeep spin of another sprite at a constant rate compared to this one (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBSprite\fP \fBmoveBehind\fP (\fBSprite\fP sprite)"
 .br
+.RI "\fImake this sprite be drawn before another sprite (visually behind) \fP"
 .ti -1c
 .RI "\fBSprite\fP \fBmoveInFrontOf\fP (\fBSprite\fP sprite)"
 .br
+.RI "\fImake this sprite be drawn just after another sprite (visually in front of) \fP"
 .ti -1c
 .RI "\fBSprite\fP \fBmoveToBack\fP ()"
 .br
@@ -127,87 +178,115 @@ Inherits \fBAnimated\fP, \fBEventEmitter\fP, and \fBISerializable\fP\&.
 .ti -1c
 .RI "\fBoffsetFrameCenters\fP (int offsetX, int offsetY, \fBImage\fP image=null, int startingFrame=\fBstart_FromFirstFrame\fP, int numFrames=\fBall_Frames\fP)"
 .br
+.RI "\fIchange the center of rotation for the sprite \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBon\fP (int eventCode, function func)"
 .br
+.RI "\fIset event handler for all different sprite events \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonAnimationEnd\fP (function func)"
 .br
+.RI "\fIset event handler for sprite animation end events \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonAnimationLoop\fP (function func)"
 .br
+.RI "\fIset event handler for sprite animation loop events \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonCollideSprite\fP (function func)"
 .br
+.RI "\fIset event handler for sprite-to-sprite collision events \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonCollideWall\fP (function func)"
 .br
+.RI "\fIset event handler for sprite-wall collision events \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonExitLayer\fP (function func)"
 .br
+.RI "\fIset event handler for sprite out of bounds event \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonFadeComplete\fP (function func)"
 .br
+.RI "\fIset event handler for sprite fade event \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonFadeInComplete\fP (function func)"
 .br
+.RI "\fIset event handler for sprite fade in event \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonFadeOutComplete\fP (function func)"
 .br
+.RI "\fIset event handler for sprite fade out event \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonMouseClick\fP (function func)"
 .br
+.RI "\fIset event handler for tap or mouse click in this sprite \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonMouseDown\fP (function func)"
 .br
+.RI "\fIset event handler for finger down or mouse down in this sprite \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonMouseEnter\fP (function func)"
 .br
+.RI "\fIset event handler for mouse pointer entering this sprite (\fINOT IMPLEMENTED\fP) \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonMouseLeave\fP (function func)"
 .br
+.RI "\fIset event handler for mouse pointer leaving this sprite (\fINOT IMPLEMENTED\fP) \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonMouseUp\fP (function func)"
 .br
+.RI "\fIset event handler for finger up or mouse up in this sprite \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonOffscreen\fP (function func)"
 .br
+.RI "\fIset event handler for sprite offscreen event \fP"
 .ti -1c
 .RI "\fBIEventHandler\fP \fBonOnscreen\fP (function func)"
 .br
+.RI "\fIset event handler for sprite onscreen event \fP"
 .ti -1c
 .RI "\fBCpConstraint\fP \fBpinJoint\fP (\fBOffset\fP anchor, \fBSprite\fP otherSprite, \fBOffset\fP otherAnchor, number breakingForce=0)"
 .br
+.RI "\fIpin sprites together at a particular anchor point (offset from center) on each (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBCpConstraint\fP \fBpivotJoint\fP (\fBSprite\fP otherSprite, \fBPoint\fP pivot, number breakingForce=0)"
 .br
+.RI "\fIjoin sprites together at a particular location in layer coordinates (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBCpConstraint\fP \fBratchet\fP (\fBSprite\fP otherSprite, number rachetInterval, number phase, number breakingForce=0)"
 .br
+.RI "\fIjoin two sprites rotation with a ratchet mechanism (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBremoveJoint\fP (\fBCpConstraint\fP joint)"
 .br
+.RI "\fIremove a joint between two sprites (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBCpConstraint\fP \fBrotaryLimit\fP (\fBSprite\fP otherSprite, number minAngle, number maxAngle, number breakingForce=0)"
 .br
+.RI "\fIlimit the angle another sprite can have relative to this one (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBCpConstraint\fP \fBrotarySpring\fP (\fBSprite\fP otherSprite, number restAngle, number stiffness, number damping, number breakingForce=0)"
 .br
+.RI "\fIkeep sprites at a particular angle relative to one another via a rotary spring (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBserialize\fP (\fBSerializer\fP serializer)"
 .br
+.RI "\fIserialize this sprite into a data stream \fP"
 .ti -1c
 .RI "\fBSprite\fP \fBsetCollideGroup\fP (int group)"
 .br
+.RI "\fIset the collide group this sprite is part of (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBsetCollisionHelper\fP (\fBISpriteCollideHelper\fP helper)"
 .br
+.RI "\fIset a helper to filter out some collisions for this sprite \fP"
 .ti -1c
 .RI "\fBSprite\fP \fBsetCollisionRadius\fP (number pixelRadius)"
 .br
+.RI "\fIset the radius of the collision boundary circle of the sprite \fP"
 .ti -1c
 .RI "\fBsetDrawHelper\fP (\fBISpriteDrawHelper\fP helper)"
 .br
+.RI "\fIset a pre-draw helper for custom sprite drawing \fP"
 .ti -1c
 .RI "\fBSprite\fP \fBsetElasticity\fP (number elasticity)"
 .br
@@ -218,7 +297,7 @@ Inherits \fBAnimated\fP, \fBEventEmitter\fP, and \fBISerializable\fP\&.
 .RI "\fBSprite\fP \fBsetFrame\fP (int frame)"
 .br
 .ti -1c
-.RI "number \fBsetMouseDetectMode\fP (int collisionType=\fBcollide_BoundingBox\fP)"
+.RI "\fBSprite\fP \fBsetMouseDetectMode\fP (int collisionType=\fBcollide_BoundingBox\fP)"
 .br
 .ti -1c
 .RI "\fBSprite\fP \fBsetOpacity\fP (number opacity)"
@@ -227,19 +306,19 @@ Inherits \fBAnimated\fP, \fBEventEmitter\fP, and \fBISerializable\fP\&.
 .RI "\fBsetPostDrawHelper\fP (\fBISpriteDrawHelper\fP helper)"
 .br
 .ti -1c
-.RI "boolean \fBsetWantsAnimEndEvents\fP (boolean wantsThem=true)"
+.RI "\fBSprite\fP \fBsetWantsAnimEndEvents\fP (boolean wantsThem=true)"
 .br
 .ti -1c
-.RI "boolean \fBsetWantsAnimLoopEvents\fP (boolean wantsThem=true)"
+.RI "\fBSprite\fP \fBsetWantsAnimLoopEvents\fP (boolean wantsThem=true)"
 .br
 .ti -1c
-.RI "boolean \fBsetWantsClickEvents\fP (boolean wantsThem=true)"
+.RI "\fBSprite\fP \fBsetWantsClickEvents\fP (boolean wantsThem=true)"
 .br
 .ti -1c
 .RI "\fBSprite\fP \fBsetWantsCollideWallEvents\fP (boolean wantsThem=true)"
 .br
 .ti -1c
-.RI "boolean \fBsetWantsMouseOverEvents\fP (boolean wantsThem=true)"
+.RI "\fBSprite\fP \fBsetWantsMouseOverEvents\fP (boolean wantsThem=true)"
 .br
 .ti -1c
 .RI "\fBSprite\fP \fBsetWantsOffscreenEvents\fP (boolean wantsThem=true)"
@@ -247,9 +326,11 @@ Inherits \fBAnimated\fP, \fBEventEmitter\fP, and \fBISerializable\fP\&.
 .ti -1c
 .RI "\fBCpConstraint\fP \fBslideJoint\fP (\fBOffset\fP anchor, \fBSprite\fP otherSprite, \fBOffset\fP otherAnchor, number minDist, number maxDist, number breakingForce=0)"
 .br
+.RI "\fIjoin sprites together via a slider between anchor points that has a min/max distance (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBCpConstraint\fP \fBspringJoint\fP (\fBOffset\fP anchor, \fBSprite\fP otherSprite, \fBOffset\fP otherAnchor, number restLength, number stiffness, number damping, number breakingForce=0)"
 .br
+.RI "\fIjoin sprites together via a spring between anchor points (\fIChipmunk Physics Only\fP) \fP"
 .ti -1c
 .RI "\fBstartAnimation\fP (int animationId)"
 .br
@@ -276,32 +357,202 @@ animated, moving image that is automatically moved, animated, and drawn
 \fBAPI Stability: 2 - Unstable\fP\&. The API is in the process of settling, but has not yet had sufficient real-world testing to be considered stable\&. Backwards-compatibility will be maintained if reasonable\&.
 .RE
 .PP
-Things that happen to a sprite that might require intervention, such as collisions completed animations, going offscreen, etc\&.\&.\&. will generate events 
+.SS "Events"
+.PP
+Things that happen to a sprite that might require intervention, such as collisions, completed animations, going offscreen, etc\&.\&.\&. will generate events\&. Events generated by sprites first go to any handlers attached directly to the \fBSprite\fP, then propagate up to the \fBSpriteLayer\fP and then the \fBEventManager\fP until they are handled\&.
+.PP
+\fBWarning:\fP
+.RS 4
+translating events to JavaScript and running them through numerous handlers is expensive\&. Try to put your handlers as early in the propagation chain as possible\&.
+.RE
+.PP
+.SS "Helpers"
+.PP
+You can add helper functions or classes to do specialized animation behavior, prefilter collisions, and add visual effects during drawing\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+setAnimationHelper() 
+.PP
+\fBsetDrawHelper()\fP 
+.PP
+\fBsetPostDrawHelper()\fP 
+.PP
+\fBsetCollisionHelper()\fP 
+.RE
+.PP
+
 .SH "Member Function Documentation"
 .PP 
 .SS "addFramesImage (\fBImage\fPimage, intstartingFrame = \fC\fBstart_FromFirstFrame\fP\fP, intnumFrames = \fC\fBall_Frames\fP\fP)"
 
+.PP
+add one or more frames to the sprite from an \fBImage\fP or \fBImageStrip\fP 
 .SS "changeFramesImage (\fBImage\fPoldImage, \fBImage\fPnewImage)"
 
+.PP
+replace all references in the sprite to one image with another image 
 .SS "deserialize (\fBDeserializer\fPdeserializer)"
 
-.SS "\fBSprite\fP disableCollisions ()"
+.PP
+update this sprite from the data in stream 
+.SS "disableCollisions ()"
 
-.SS "disconnect (\fBSprite\fPotherSprite)"
+.PP
+stop checking for collisions with this sprite 
+.SS "disconnect (\fBSprite\fPotherSprite = \fCALL_SPRITES\fP)"
 
-.SS "\fBSprite\fP enableCollisions (intcollisionType = \fC\fBcollide_AlphaChannel\fP\fP)"
+.PP
+remove all connections (joints) to another sprite If otherSprite is not passed in, it will remove all joints for this sprite, regardless of what sprite they are connected to\&. 
+.SS "enableCollisions (intcollisionType = \fC\fBcollide_AlphaChannel\fP\fP)"
+
+.PP
+start checking for collisions with this sprite Collision Types are:
+.PP
+.IP "\(bu" 2
+\fBcollide_None\fP -- actually calls \fBdisableCollisions()\fP
+.IP "\(bu" 2
+\fBcollide_Point\fP -- just collide with the centerpoint of the sprite\&. Very fast\&.
+.IP "\(bu" 2
+\fBcollide_BoundingBox\fP -- collide with the boundaries of the sprite (rotated if necessary)\&. Reasonably fast\&.
+.IP "\(bu" 2
+\fBcollide_CollisionRadius\fP -- collide with all points within a given radius of the sprite (best guess at radius based on sprite height and width is used unless \fBsetCollisionRadius()\fP is called\&. Very fast\&.
+.IP "\(bu" 2
+\fBcollide_AlphaChannel\fP -- per-pixel collision based on the alpha channel of the sprite's current frame\&. This is the most accurate, but also the slowest\&. Avoid it if another collision check gives acceptable results, especially with fast-moving items where the difference between a hit and near miss is not obviously visible to the player\&.
+.PP
+.PP
+\fBWarning:\fP
+.RS 4
+you must have called \fBImage\&.retainAlpha()\fP on the sprite's image(s) in order to use \fBcollide_AlphaChannel\fP 
+.RE
+.PP
 
 .SS "fadeIn (intmsDuration, inteasing = \fC\fBlinearTween\fP\fP)"
 
+.PP
+fade in to full opacity over time Generates an \fBeventType_SpriteAnimate\fP \fBaction_FadeInComplete\fP event when done\&.
+.PP
+\fBNote:\fP
+.RS 4
+if a previous call was made to \fBwait()\fP the fade animation will not start until the wait is complete 
+.PP
+.nf
+mySprite.fadeIn(1000);   // immediately start to fade in over the next second
+myOtherSprite.wait(2000).fadeIn(1000);  // wait 2 seconds, then fade in
+
+.fi
+.PP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBfadeOut()\fP 
+.PP
+\fBfadeTo()\fP 
+.PP
+\fBwait()\fP 
+.RE
+.PP
+
 .SS "fadeOut (intmsDuration, inteasing = \fC\fBlinearTween\fP\fP)"
+
+.PP
+fade out full transparency over time Generates an \fBeventType_SpriteAnimate\fP \fBaction_FadeOutComplete\fP event when done\&.
+.PP
+\fBNote:\fP
+.RS 4
+if a previous call was made to \fBwait()\fP the fade animation will not start until the wait is complete 
+.PP
+.nf
+mySprite.fadeOut(1000);   // immediately start to fade out over the next second
+myOtherSprite.wait(2000).fadeOut(1000);  // wait 2 seconds, then fade out
+
+.fi
+.PP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBfadeIn()\fP 
+.PP
+\fBfadeTo()\fP 
+.PP
+\fBwait()\fP 
+.RE
+.PP
 
 .SS "fadeTo (numbertargetOpacity, intmsDuration, inteasing = \fC\fBlinearTween\fP\fP)"
 
-.SS "\fBCpConstraint\fP gear (\fBSprite\fPotherSprite, numbergearRatio, numberinitialAngle = \fC0\fP, numberbreakingForce = \fC0\fP)"
+.PP
+fade in to a specific opacity over time Generates an \fBeventType_SpriteAnimate\fP \fBaction_FadeComplete\fP event when done\&.
+.PP
+\fBNote:\fP
+.RS 4
+if a previous call was made to \fBwait()\fP the fade animation will not start until the wait is complete 
+.PP
+.nf
+mySprite.fadeTo(0.5, 1000);   // immediately start to fade to 50% opacity over the next second
+myOtherSprite.wait(2000).fadeTo(0.5, 1000);  // wait 2 seconds, then fade to 50% opacity
 
-.SS "number getCollideGroup ()"
+.fi
+.PP
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBfadeIn()\fP 
+.PP
+\fBfadeOut()\fP 
+.PP
+\fBwait()\fP 
+.RE
+.PP
 
-.SS "number getCollisionRadius ()"
+.SS "gear (\fBSprite\fPotherSprite, numbergearRatio, numberinitialAngle = \fC0\fP, numberbreakingForce = \fC0\fP)"
+
+.PP
+join two sprites as if they were geared together (\fIChipmunk Physics Only\fP) Whenever this sprite spins, it will force the other to spin the same amount (adjusted by the gear ratio)\&.
+.PP
+If a breaking force is given, then the joint will break, generating a \fBSpriteBreakEvent\fP, if greater than that amount of rotational force (torque) is applied to the joint\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the cpConstraint for the Joint in case you want to do anything special with it
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+this only affects rotation, it does not join them in any other way, so they are still free to move around independently otherwise\&. 
+.RE
+.PP
+
+.SS "getCollideGroup ()"
+
+.PP
+see which collide group this sprite is part of (\fIChipmunk Physics Only\fP) Items in the same collide group do not collide with one another\&. Sprites that are connected with joints are automatically assigned to the same collide group\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetCollideGroup()\fP 
+.RE
+.PP
+
+.SS "getCollisionRadius ()"
+
+.PP
+get the collision radius for this sprite \fBSee Also:\fP
+.RS 4
+\fBsetCollisionRadius()\fP 
+.PP
+\fBenableCollisions()\fP 
+.RE
+.PP
 
 .SS "getCurrentFrame ()"
 
@@ -312,22 +563,62 @@ the frame index number (0 based)
 .RE
 .PP
 
-.SS "number getElasticity ()"
+.SS "getElasticity ()"
+
+.PP
+get the elasticity for this sprite's collisions \fBSee Also:\fP
+.RS 4
+\fBsetElasticity()\fP 
+.RE
+.PP
 
 .SS "getFrameCenterOffset (\fBImage\fPimage = \fCnull\fP, intframeNum = \fC0\fP)"
 
 .PP
-NOT IMPLEMENTED\&. 
-.SS "getFrameCount ()"
+get the offset to the center-point from the true image center for a given frame If image is passed in, then frameNum is for that the Nth frame of that image, otherwise frameNum indicates which frame for the sprite
+.PP
 \fBReturns:\fP
+.RS 4
+an \fBOffset\fP 
+.RE
+.PP
+
+.SS "getFrameCount ()"
+
+.PP
+get number of frames of animation for this sprite \fBReturns:\fP
 .RS 4
 total number of frames of animation for this sprite 
 .RE
 .PP
 
-.SS "getFrameRotatedBounds (intframe)"
+.SS "getFrameRotatedBounds (intframeNum = \fC-1\fP)"
 
-.SS "number getFriction ()"
+.PP
+get the bounds of the sprite, including rotation, for a given frame, in layer coordinates\&. If no frameNum is passed in, or the frame is not present, the bounds of the current frame are returned\&. \fBReturns:\fP
+.RS 4
+a \fBRotatedRect\fP with the bounds of the frame in layer coordinates, rotated to match the sprite
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+use \fBSpriteLayer\&.layerToPortRect()\fP to convert to drawing coordinates\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteLayer\&.layerToPortRect()\fP 
+.RE
+.PP
+
+.SS "getFriction ()"
+
+.PP
+get the friction used for movement calculations for this sprite (\fIChipmunk Physics Only\fP) \fBNote:\fP
+.RS 4
+Chipmunk Physics uses a single friction value, so this replaces \fBAnimated\fP's getMove/Spin/SizeFriction() which all just return 0 for \fBSprite\fP's in builds that are compiled with Chipmunk physics\&.
+.RE
+.PP
 
 .SS "getLayer ()"
 
@@ -338,97 +629,723 @@ the containing \fBSpriteLayer\fP
 .RE
 .PP
 
-.SS "number getMyClassTag ()"
+.SS "number getMouseDetectMode ()"
 
-.SS "number getOpacity ()"
+.SS "getMyClassTag ()"
 
-.SS "uint getSerializedSize (\fBSerializer\fPserializer)"
+.PP
+returns class tag for \fBSprite\fP, used for serialization 
+.SS "getOpacity ()"
 
-.SS "int getZOrder ()"
+.PP
+get the level of opacity for this sprite \fBReturns:\fP
+.RS 4
+opacity, 1\&.0 being complete opaque and 0\&.0 being completely transparent
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetOpacity()\fP 
+.PP
+\fBfadeIn()\fP 
+.PP
+\fBfadeOut()\fP 
+.PP
+\fBfadeTo()\fP 
+.RE
+.PP
 
-.SS "\fBCpConstraint\fP grooveJoint (\fBOffset\fPgrooveStart, \fBOffset\fPgrooveEnd, \fBSprite\fPotherSprite, \fBOffset\fPotherAnchor, numberbreakingForce = \fC0\fP)"
+.SS "getSerializedSize (\fBSerializer\fPserializer)"
 
-.SS "boolean hasAnimation (intanimationId)"
+.PP
+get the bytes needed to serialize the layer Takes into account the serialization mode of the layer it is in
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBSpriteLayer\&.setSerializationFlags()\fP 
+.RE
+.PP
 
-.SS "boolean hasAnimation (stringanimationName)"
+.SS "boolean getWantsAnimEndEvents ()"
 
-.SS "boolean isBehind (\fBSprite\fPsprite)"
+.SS "boolean getWantsAnimLoopEvents ()"
+
+.SS "boolean getWantsClickEvents ()"
+
+.SS "boolean getWantsCollideWallEvents ()"
+
+.SS "boolean getWantsMouseOverEvents ()"
+
+.SS "boolean getWantsOffscreenEvents ()"
+
+.SS "getZOrder ()"
+
+.PP
+get the z-order of this sprite in the layer it belongs to 0 means furthest back (drawn first)
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBisBehind()\fP 
+.PP
+\fBmoveToBack()\fP 
+.PP
+\fBmoveToFront()\fP 
+.PP
+\fBmoveBehind()\fP 
+.PP
+\fBmoveInFrontOf()\fP 
+.PP
+\fBSpriteLayer\&.getSpriteZOrder()\fP 
+.PP
+\fBSpriteLayer\&.getNthSprite()\fP 
+.RE
+.PP
+
+.SS "grooveJoint (\fBOffset\fPgrooveStart, \fBOffset\fPgrooveEnd, \fBSprite\fPotherSprite, \fBOffset\fPotherAnchor, numberbreakingForce = \fC0\fP)"
+
+.PP
+join groove on this sprite to an anchor point on another (\fIChipmunk Physics Only\fP) optional breaking force at which the joint (and and any other connections to that sprite) are broken
+.PP
+If a breaking force is given, then the joint will break, generating a \fBSpriteBreakEvent\fP, if greater than that amount of force is applied to the joint\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the cpConstraint for the Joint in case you want to do anything special with it 
+.RE
+.PP
+
+.SS "hasAnimation (intanimationId)"
+
+.PP
+check if a sprite has a particular SCML animation by ID 
+.SS "hasAnimation (stringanimationName)"
+
+.PP
+check if a sprite has a particular SCML animation by name 
+.SS "isBehind (\fBSprite\fPsprite)"
+
+.PP
+returns true if this sprite will be drawn before the given sprite \fBSee Also:\fP
+.RS 4
+\fBgetZOrder()\fP 
+.PP
+\fBSpriteLayer\&.isSpriteBehind()\fP 
+.RE
+.PP
 
 .SS "makeJointBreakable (\fBCpConstraint\fPjoint, numberbreakingForce)"
 
+.PP
+set or change force at which the joint between sprites will break (\fIChipmunk Physics Only\fP) \fBSee Also:\fP
+.RS 4
+\fBmakeJointUnbreakable()\fP 
+.PP
+\fBSpriteBreakEvent\fP 
+.RE
+.PP
+
 .SS "makeJointUnbreakable (\fBCpConstraint\fPjoint)"
 
-.SS "\fBSprite\fP makeStatic ()"
+.PP
+make the joint impossible to break (\fIChipmunk Physics Only\fP) \fBNote:\fP
+.RS 4
+sufficient force can still incorrectly stretch a joint, adjust contraint's error bias to fix\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBmakeJointBreakable()\fP 
+.PP
+\fBCpConstraint\&.setErrorBias()\fP 
+.RE
+.PP
 
-.SS "\fBCpConstraint\fP motor (\fBSprite\fPotherSprite, numberspin, numbermaxTorque = \fCINFINITY\fP)"
+.SS "makeStatic ()"
 
-.SS "\fBSprite\fP moveBehind (\fBSprite\fPsprite)"
+.PP
+make this sprite unaffected by physics (\fIChipmunk Physics Only\fP) This sprite becomes a static body that isn't affected by physics, though non-static objects can collide with it\&. This would be used for walls or platforms\&.
+.PP
+\fBWarning:\fP
+.RS 4
+This should be done before setting anything else about the sprite
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+itself so you can call it on creation
+.RE
+.PP
+.PP
+.nf
+var sprite = layer\&.createSprite()\&.makeStatic();
+.fi
+.PP
+ 
+.SS "motor (\fBSprite\fPotherSprite, numberspin, numbermaxTorque = \fCINFINITY\fP)"
 
-.SS "\fBSprite\fP moveInFrontOf (\fBSprite\fPsprite)"
+.PP
+keep spin of another sprite at a constant rate compared to this one (\fIChipmunk Physics Only\fP) \fBReturns:\fP
+.RS 4
+the cpConstraint in case you want to do anything special with it 
+.RE
+.PP
+
+.SS "moveBehind (\fBSprite\fPsprite)"
+
+.PP
+make this sprite be drawn before another sprite (visually behind) \fBSee Also:\fP
+.RS 4
+\fBmoveInFrontOf()\fP 
+.PP
+\fBisBehind()\fP 
+.PP
+\fBgetZOrder()\fP 
+.PP
+\fBmoveToBack()\fP 
+.PP
+\fBmoveToFront()\fP 
+.PP
+\fBSpriteLayer\&.getSpriteZOrder()\fP 
+.PP
+\fBSpriteLayer\&.getNthSprite()\fP 
+.RE
+.PP
+
+.SS "moveInFrontOf (\fBSprite\fPsprite)"
+
+.PP
+make this sprite be drawn just after another sprite (visually in front of) \fBSee Also:\fP
+.RS 4
+\fBmoveBehind()\fP 
+.PP
+\fBisBehind()\fP 
+.PP
+\fBgetZOrder()\fP 
+.PP
+\fBmoveToBack()\fP 
+.PP
+\fBmoveToFront()\fP 
+.PP
+\fBSpriteLayer\&.getSpriteZOrder()\fP 
+.PP
+\fBSpriteLayer\&.getNthSprite()\fP 
+.RE
+.PP
 
 .SS "moveToBack ()"
 
 .PP
-put this sprite behind all others in its layer 
+put this sprite behind all others in its layer \fBSee Also:\fP
+.RS 4
+\fBmoveToFront()\fP 
+.PP
+\fBgetZOrder()\fP 
+.PP
+\fBmoveBehind()\fP 
+.PP
+\fBmoveInFrontOf()\fP 
+.PP
+\fBSpriteLayer\&.getSpriteZOrder()\fP 
+.PP
+\fBSpriteLayer\&.getNthSprite()\fP 
+.RE
+.PP
+
 .SS "moveToFront ()"
 
 .PP
-put this sprite in front of all others in its layer 
+put this sprite in front of all others in its layer \fBSee Also:\fP
+.RS 4
+\fBmoveToBack()\fP 
+.PP
+\fBgetZOrder()\fP 
+.PP
+\fBmoveBehind()\fP 
+.PP
+\fBmoveInFrontOf()\fP 
+.PP
+\fBSpriteLayer\&.getSpriteZOrder()\fP 
+.PP
+\fBSpriteLayer\&.getNthSprite()\fP 
+.RE
+.PP
+
 .SS "offsetFrameCenters (intoffsetX, intoffsetY, \fBImage\fPimage = \fCnull\fP, intstartingFrame = \fC\fBstart_FromFirstFrame\fP\fP, intnumFrames = \fC\fBall_Frames\fP\fP)"
 
-.SS "\fBIEventHandler\fP on (inteventCode, functionfunc)"
+.PP
+change the center of rotation for the sprite Normally a sprite rotates around it's visual center, that is, the center-point of each frame of animation\&. This lets you shift that center of rotation, for all frames, on a per \fBImage\fP basis, or on a frame by frame basis\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIoffsetX\fP the horizontal offset from true center for the new center-point 
+.br
+\fIoffsetY\fP the vertical offset from the true center for the new center-point 
+.br
+\fIimage\fP if passed, only change the center points for frames using that image, and make frame numbers relative to the \fBImage\fP frames\&. 
+.br
+\fIstartingFrame\fP if passed, only change frames starting at a particular index in the frame list (or \fBImage\fP frame list if image also passed) 
+.br
+\fInumFrames\fP only change this many frames
+.RE
+.PP
+\fBWarning:\fP
+.RS 4
+This doesn't work to change the center-point of individual images or frames of an SCML sprite
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetFrameCenterOffset()\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onAnimationEnd (functionfunc)"
+.SS "on (inteventCode, functionfunc)"
 
-.SS "\fBIEventHandler\fP onAnimationLoop (functionfunc)"
+.PP
+set event handler for all different sprite events \fBSee Also:\fP
+.RS 4
+\fBIEventHandler\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onCollideSprite (functionfunc)"
+.SS "onAnimationEnd (functionfunc)"
 
-.SS "\fBIEventHandler\fP onCollideWall (functionfunc)"
+.PP
+set event handler for sprite animation end events These happen when this sprite finishes a particular frame animation sequence, but only if setWantsAnimEndEvents(true) was called
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetWantsAnimEndEvents()\fP 
+.PP
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onExitLayer (functionfunc)"
+.SS "onAnimationLoop (functionfunc)"
 
-.SS "\fBIEventHandler\fP onFadeComplete (functionfunc)"
+.PP
+set event handler for sprite animation loop events These happen when this sprite finishes a particular frame animation sequence and is restarting it because it is set to loop, but only if setWantsAnimLoopEvents(true) was called\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetWantsAnimLoopEvents()\fP 
+.PP
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onFadeInComplete (functionfunc)"
+.SS "onCollideSprite (functionfunc)"
 
-.SS "\fBIEventHandler\fP onFadeOutComplete (functionfunc)"
+.PP
+set event handler for sprite-to-sprite collision events The happens whenever this sprite collides with another sprite, but only if \fBenableCollisions()\fP or \fBsetCollisionRadius()\fP was called
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBenableCollisions()\fP 
+.PP
+\fBsetCollisionRadius()\fP 
+.PP
+\fBSpriteCollideEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onMouseClick (functionfunc)"
+.SS "onCollideWall (functionfunc)"
 
-.SS "\fBIEventHandler\fP onMouseDown (functionfunc)"
+.PP
+set event handler for sprite-wall collision events This happens whenever this sprite collides with the boundaries of the layer, but only if setWantsCollideWallEvents(true) was called\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetWantsCollideWallEvents()\fP 
+.PP
+\fBonExitLayer()\fP 
+.PP
+\fBSpriteCollideEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onMouseEnter (functionfunc)"
+.SS "onExitLayer (functionfunc)"
 
-.SS "\fBIEventHandler\fP onMouseLeave (functionfunc)"
+.PP
+set event handler for sprite out of bounds event These happen whenever this sprite moves completely outside the boundaries of the layer, but only if setWantsCollideWallEvents(true) was called\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetWantsCollideWallEvents()\fP 
+.PP
+\fBonOffscreen()\fP 
+.PP
+\fBonOnscreen()\fP 
+.PP
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onMouseUp (functionfunc)"
+.SS "onFadeComplete (functionfunc)"
 
-.SS "\fBIEventHandler\fP onOffscreen (functionfunc)"
+.PP
+set event handler for sprite fade event This happens whenever this sprite completes a fade over time done by \fBfadeTo()\fP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBfadeTo\fP 
+.PP
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
 
-.SS "\fBIEventHandler\fP onOnscreen (functionfunc)"
+.SS "onFadeInComplete (functionfunc)"
 
-.SS "\fBCpConstraint\fP pinJoint (\fBOffset\fPanchor, \fBSprite\fPotherSprite, \fBOffset\fPotherAnchor, numberbreakingForce = \fC0\fP)"
+.PP
+set event handler for sprite fade in event This happens whenever this sprite completes a fade in over time done by a call to \fBfadeIn()\fP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBfadeIn()\fP 
+.PP
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
 
-.SS "\fBCpConstraint\fP pivotJoint (\fBSprite\fPotherSprite, \fBPoint\fPpivot, numberbreakingForce = \fC0\fP)"
+.SS "onFadeOutComplete (functionfunc)"
 
-.SS "\fBCpConstraint\fP ratchet (\fBSprite\fPotherSprite, numberrachetInterval, numberphase, numberbreakingForce = \fC0\fP)"
+.PP
+set event handler for sprite fade out event This happens whenever this sprite completes a fade out over time done by a call to \fBfadeOut()\fP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBfadeOut()\fP 
+.PP
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
+
+.SS "onMouseClick (functionfunc)"
+
+.PP
+set event handler for tap or mouse click in this sprite Only works if you first call setWantsClickEvents(true)\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetWantsClickEvents()\fP 
+.PP
+\fBSpriteTouchEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
+
+.SS "onMouseDown (functionfunc)"
+
+.PP
+set event handler for finger down or mouse down in this sprite Only works if you first call setWantsClickEvents(true)\&.
+.PP
+\fBNote:\fP
+.RS 4
+if you are just looking for a click on a sprite-base button, see \fBonMouseClick()\fP, which handles the mouse down and mouse up events for you\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetWantsClickEvents()\fP 
+.PP
+\fBonMouseUp()\fP 
+.PP
+\fBonMouseClick()\fP 
+.PP
+\fBSpriteTouchEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
+
+.SS "onMouseEnter (functionfunc)"
+
+.PP
+set event handler for mouse pointer entering this sprite (\fINOT IMPLEMENTED\fP) Only works if you first call setWantsMouseOverEvents(true)\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetWantsMouseOverEvents()\fP 
+.PP
+\fBonMouseLeave()\fP 
+.PP
+\fBSpriteTouchEvent\fP 
+.PP
+\fBIEventHandler\fP
+.RE
+.PP
+
+.SS "onMouseLeave (functionfunc)"
+
+.PP
+set event handler for mouse pointer leaving this sprite (\fINOT IMPLEMENTED\fP) Only works if you first call setWantsMouseOverEvents(true)\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetWantsMouseOverEvents()\fP 
+.PP
+\fBonMouseEnter()\fP 
+.PP
+\fBSpriteTouchEvent\fP 
+.PP
+\fBIEventHandler\fP
+.RE
+.PP
+
+.SS "onMouseUp (functionfunc)"
+
+.PP
+set event handler for finger up or mouse up in this sprite Only works if you first call setWantsClickEvents(true)\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetWantsClickEvents()\fP 
+.PP
+\fBonMouseDown()\fP 
+.PP
+\fBSpriteTouchEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
+
+.SS "onOffscreen (functionfunc)"
+
+.PP
+set event handler for sprite offscreen event This happens whenever this sprite moves completely outside the visible area of the port the layer is being rendered in, but only if you first call setWantsOffscreenEvents(true)
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetWantsOffscreenEvents()\fP 
+.PP
+\fBonOnscreen()\fP 
+.PP
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
+
+.SS "onOnscreen (functionfunc)"
+
+.PP
+set event handler for sprite onscreen event This happens whenever this sprite moves into the visible area of the port the layer is being rendered into, but only if you first call setWantsOffscreenEvents(true)
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBsetWantsOffscreenEvents()\fP 
+.PP
+\fBonOffscreen()\fP 
+.PP
+\fBSpriteAnimateEvent\fP 
+.PP
+\fBIEventHandler\fP 
+.RE
+.PP
+
+.SS "pinJoint (\fBOffset\fPanchor, \fBSprite\fPotherSprite, \fBOffset\fPotherAnchor, numberbreakingForce = \fC0\fP)"
+
+.PP
+pin sprites together at a particular anchor point (offset from center) on each (\fIChipmunk Physics Only\fP) If a breaking force is given, then the joint will break, generating a \fBSpriteBreakEvent\fP, if greater than that amount of force is applied to the joint\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the cpConstraint for the Joint in case you want to do anything special with it 
+.RE
+.PP
+
+.SS "pivotJoint (\fBSprite\fPotherSprite, \fBPoint\fPpivot, numberbreakingForce = \fC0\fP)"
+
+.PP
+join sprites together at a particular location in layer coordinates (\fIChipmunk Physics Only\fP) If a breaking force is given, then the joint will break, generating a \fBSpriteBreakEvent\fP, if greater than that amount of force is applied to the joint\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the cpConstraint for the Joint in case you want to do anything special with it 
+.RE
+.PP
+
+.SS "ratchet (\fBSprite\fPotherSprite, numberrachetInterval, numberphase, numberbreakingForce = \fC0\fP)"
+
+.PP
+join two sprites rotation with a ratchet mechanism (\fIChipmunk Physics Only\fP) like a socket wrench\&. ratchetInterval is the distance between “clicks”, phase is the initial angular offset to use when deciding where the ratchet angles are\&.
+.PP
+If a breaking force is given, then the joint will break, generating a \fBSpriteBreakEvent\fP, if greater than that amount of rotational force (torque) is applied to the joint\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the cpConstraint for the Joint in case you want to do anything special with it 
+.RE
+.PP
 
 .SS "removeJoint (\fBCpConstraint\fPjoint)"
 
-.SS "\fBCpConstraint\fP rotaryLimit (\fBSprite\fPotherSprite, numberminAngle, numbermaxAngle, numberbreakingForce = \fC0\fP)"
+.PP
+remove a joint between two sprites (\fIChipmunk Physics Only\fP) 
+.SS "rotaryLimit (\fBSprite\fPotherSprite, numberminAngle, numbermaxAngle, numberbreakingForce = \fC0\fP)"
 
-.SS "\fBCpConstraint\fP rotarySpring (\fBSprite\fPotherSprite, numberrestAngle, numberstiffness, numberdamping, numberbreakingForce = \fC0\fP)"
+.PP
+limit the angle another sprite can have relative to this one (\fIChipmunk Physics Only\fP) If a breaking force is given, then the joint will break, generating a \fBSpriteBreakEvent\fP, if greater than that amount of rotational force (torque) is applied to the joint\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the cpConstraint for the Joint in case you want to do anything special with it 
+.RE
+.PP
+
+.SS "rotarySpring (\fBSprite\fPotherSprite, numberrestAngle, numberstiffness, numberdamping, numberbreakingForce = \fC0\fP)"
+
+.PP
+keep sprites at a particular angle relative to one another via a rotary spring (\fIChipmunk Physics Only\fP) If a breaking force is given, then the joint will break, generating a \fBSpriteBreakEvent\fP, if greater than that amount of rotational force (torque) is applied to the joint\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the cpConstraint for the Joint in case you want to do anything special with it 
+.RE
+.PP
 
 .SS "serialize (\fBSerializer\fPserializer)"
 
-.SS "\fBSprite\fP setCollideGroup (intgroup)"
+.PP
+serialize this sprite into a data stream \fBNote:\fP
+.RS 4
+uses the \fBSpriteLayer\fP's serialization mode to determine exactly what is serialized
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetSerializedSize()\fP 
+.PP
+\fBSpriteLayer\&.setSerializationFlags()\fP 
+.RE
+.PP
+
+.SS "setCollideGroup (intgroup)"
+
+.PP
+set the collide group this sprite is part of (\fIChipmunk Physics Only\fP) Items in the same collide group do not collide with one another\&. Sprites that are connected with joints are automatically assigned to the same collide group\&.
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBgetCollideGroup()\fP 
+.RE
+.PP
 
 .SS "setCollisionHelper (\fBISpriteCollideHelper\fPhelper)"
 
-.SS "\fBSprite\fP setCollisionRadius (numberpixelRadius)"
+.PP
+set a helper to filter out some collisions for this sprite Sets up a handler to do special case collision logic between two sprites\&. For example, you might want bullet sprites to collide with enemy sprites but not with one another\&. If a collide helper is installed, then on initial contact between two sprites the collide helper for the moving sprite will be called, and your helper can decide if the collision should happen or not\&.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIhelper\fP an \fBISpriteCollideHelper\fP instance that will filter some collisions\&.
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+You should use other techniques wherever possible to eliminate unnecessary collision helper callbacks, since these callbacks are relatively expensive\&. You should turn off collisions for sprites that never collide with anything; put sets of sprites that collide only with each other in separate layers; and use collision groups to set up groups of sprites that collide with other things but not each other\&.
+.RE
+.PP
+.PP
+.nf
+var myHelper = new pdg\&.ISpriteCollideHelper(function(sprite, withSprite) {
+                console\&.log('in my sprite collide helper for ' + sprite );
+                if (withSprite\&.id == 100) {
+                                return true;  // only collide with the player sprite (id 100)
+                }
+                return false;  // don't collide with anything else
+});
+mySprite\&.setCollisionHelper(myHelper);
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBISpriteCollideHelper\fP 
+.PP
+\fBsetCollisionHelper()\fP 
+.PP
+\fBenableCollisions()\fP 
+.PP
+\fBdisableCollisions()\fP 
+.PP
+\fBsetCollideGroup()\fP 
+.PP
+\fBSpriteLayer\&.enableCollisions()\fP 
+.PP
+\fBSpriteLayer\&.disableCollisions()\fP 
+.PP
+\fBSpriteLayer\&.enableCollisionsWithLayer()\fP 
+.PP
+\fBSpriteLayer\&.disableCollisionsWithLayer()\fP 
+.RE
+.PP
+
+.SS "setCollisionRadius (numberpixelRadius)"
+
+.PP
+set the radius of the collision boundary circle of the sprite The boundary circle is centered at the sprite's location\&.
+.PP
+\fBNote:\fP
+.RS 4
+Calling this enables collisions and sets the collision mode to collide_collisionRadius, so you don't need to call \fBenableCollisions()\fP\&.
+.RE
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBenableCollisions()\fP 
+.RE
+.PP
 
 .SS "setDrawHelper (\fBISpriteDrawHelper\fPhelper)"
+
+.PP
+set a pre-draw helper for custom sprite drawing Sets a helper to do extra drawing stuff for this \fBSprite\fP\&. This helper will be called before the \fBSprite\fP draws normally, and can block normal sprite drawing by returning false from the helper function\&.
+.PP
+If you want to do overlay effects, use the post-draw helper for that (see \fBsetPostDrawHelper\fP)
+.PP
+\fBParameters:\fP
+.RS 4
+\fIhelper\fP the pre-draw helper that you want use to add background effects or replace normal rendering of the sprite
+.RE
+.PP
+.PP
+.nf
+var myHelper = new pdg\&.ISpriteDrawHelper(function(sprite, port) {
+                console\&.log('in my sprite draw helper for ' + sprite );
+                var r = sprite\&.getLayer()\&.layerToPortRect(sprite\&.getFrameRotatedBounds());
+                port\&.fillRect(r, 'black');
+                port\&.frameRect(r, 'white');
+                return false;  // don't let sprite draw itself (ignored for post draw)
+});
+mySprite\&.setDrawHelper(myHelper);
+.fi
+.PP
+.PP
+\fBSee Also:\fP
+.RS 4
+\fBISpriteDrawHelper\fP 
+.PP
+\fBsetPostDrawHelper()\fP 
+.RE
+.PP
 
 .SS "\fBSprite\fP setElasticity (numberelasticity)"
 
@@ -436,27 +1353,45 @@ put this sprite in front of all others in its layer
 
 .SS "\fBSprite\fP setFrame (intframe)"
 
-.SS "number setMouseDetectMode (intcollisionType = \fC\fBcollide_BoundingBox\fP\fP)"
+.SS "\fBSprite\fP setMouseDetectMode (intcollisionType = \fC\fBcollide_BoundingBox\fP\fP)"
 
 .SS "\fBSprite\fP setOpacity (numberopacity)"
 
 .SS "setPostDrawHelper (\fBISpriteDrawHelper\fPhelper)"
 
-.SS "boolean setWantsAnimEndEvents (booleanwantsThem = \fCtrue\fP)"
+.SS "\fBSprite\fP setWantsAnimEndEvents (booleanwantsThem = \fCtrue\fP)"
 
-.SS "boolean setWantsAnimLoopEvents (booleanwantsThem = \fCtrue\fP)"
+.SS "\fBSprite\fP setWantsAnimLoopEvents (booleanwantsThem = \fCtrue\fP)"
 
-.SS "boolean setWantsClickEvents (booleanwantsThem = \fCtrue\fP)"
+.SS "\fBSprite\fP setWantsClickEvents (booleanwantsThem = \fCtrue\fP)"
 
 .SS "\fBSprite\fP setWantsCollideWallEvents (booleanwantsThem = \fCtrue\fP)"
 
-.SS "boolean setWantsMouseOverEvents (booleanwantsThem = \fCtrue\fP)"
+.SS "\fBSprite\fP setWantsMouseOverEvents (booleanwantsThem = \fCtrue\fP)"
 
 .SS "\fBSprite\fP setWantsOffscreenEvents (booleanwantsThem = \fCtrue\fP)"
 
-.SS "\fBCpConstraint\fP slideJoint (\fBOffset\fPanchor, \fBSprite\fPotherSprite, \fBOffset\fPotherAnchor, numberminDist, numbermaxDist, numberbreakingForce = \fC0\fP)"
+.SS "slideJoint (\fBOffset\fPanchor, \fBSprite\fPotherSprite, \fBOffset\fPotherAnchor, numberminDist, numbermaxDist, numberbreakingForce = \fC0\fP)"
 
-.SS "\fBCpConstraint\fP springJoint (\fBOffset\fPanchor, \fBSprite\fPotherSprite, \fBOffset\fPotherAnchor, numberrestLength, numberstiffness, numberdamping, numberbreakingForce = \fC0\fP)"
+.PP
+join sprites together via a slider between anchor points that has a min/max distance (\fIChipmunk Physics Only\fP) If a breaking force is given, then the joint will break, generating a \fBSpriteBreakEvent\fP, if greater than that amount of force is applied to the joint\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the cpConstraint for the Joint in case you want to do anything special with it 
+.RE
+.PP
+
+.SS "springJoint (\fBOffset\fPanchor, \fBSprite\fPotherSprite, \fBOffset\fPotherAnchor, numberrestLength, numberstiffness, numberdamping, numberbreakingForce = \fC0\fP)"
+
+.PP
+join sprites together via a spring between anchor points (\fIChipmunk Physics Only\fP) If a breaking force is given, then the joint will break, generating a \fBSpriteBreakEvent\fP, if greater than that amount of force is applied to the joint\&.
+.PP
+\fBReturns:\fP
+.RS 4
+the cpConstraint for the Joint in case you want to do anything special with it 
+.RE
+.PP
 
 .SS "startAnimation (intanimationId)"
 

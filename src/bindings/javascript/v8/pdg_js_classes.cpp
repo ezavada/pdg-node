@@ -64,6 +64,12 @@
 
 namespace pdg {
 
+extern bool s_IEventHandler_InNewFromCpp;
+extern bool s_ISerializable_InNewFromCpp;
+extern bool s_IAnimationHelper_InNewFromCpp;
+extern bool s_ISpriteCollideHelper_InNewFromCpp;
+extern bool s_ISpriteDrawHelper_InNewFromCpp;
+
 // ========================================================================================
 //MARK: Shared Global Declarations
 // ========================================================================================
@@ -82,7 +88,7 @@ static v8::Persistent<v8::Object> s_BindingTarget;
 
 FUNCTION_IMPL(GetConfigManager)
 	METHOD_SIGNATURE("", [object ConfigManager], 0, ()); 
-    RETURN( ConfigManagerWrap::GetScriptSingletonInstance() );
+    RETURN( ConfigManagerWrap::GetScriptSingletonInstance(isolate) );
     END
 
 // ========================================================================================
@@ -91,14 +97,14 @@ FUNCTION_IMPL(GetConfigManager)
 
 FUNCTION_IMPL(GetLogManager)
 	METHOD_SIGNATURE("", [object LogManager], 0, ()); 
-    RETURN( LogManagerWrap::GetScriptSingletonInstance() );
+    RETURN( LogManagerWrap::GetScriptSingletonInstance(isolate) );
 END
 
 // ========================================================================================
 //MARK: IEventHandler
 // ========================================================================================
 
-_V8_NATIVE_CONSTRUCTOR_IMPL(IEventHandler)
+CPP_CONSTRUCTOR_IMPL(IEventHandler)
 	if (args.Length() == 0) {
 		ScriptEventHandler* handler = new ScriptEventHandler();
 		handler->addRef();
@@ -106,8 +112,7 @@ _V8_NATIVE_CONSTRUCTOR_IMPL(IEventHandler)
 	} else if (args.Length() != 1 || !args[0]->IsFunction()) {
 		SAVE_SYNTAX_ERR("EventHandler must be created with a function argument (handlerFunc)");
 	}	
-	v8::Local<v8::Function> cbfunc = v8::Local<v8::Function>::Cast(args[0]);
-    v8::Persistent<v8::Function> callback = v8::Persistent<v8::Function>::New(cbfunc);	
+	v8::Local<v8::Function> callback = v8::Local<v8::Function>::Cast(args[0]);
 	ScriptEventHandler* handler = new ScriptEventHandler(callback);
 	handler->addRef();
 	return handler;
@@ -134,11 +139,10 @@ STATIC_METHOD_IMPL(EventManager, IsKeyDown)
 	END
 STATIC_METHOD_IMPL(EventManager, GetDeviceOrientation)
 	METHOD_SIGNATURE("NOT IMPLEMENTED", object, 0, (boolean absolute = false));
-    REQUIRE_ARG_MIN_COUNT(0);
     OPTIONAL_BOOL_ARG(1, absolute, false);
     float roll, pitch, yaw;
 	OS::getDeviceOrientation(roll, pitch, yaw, absolute); // not yet implemented in C++
-  	v8::Local<v8::Object> jsOrientation = v8::Object::New();
+  	v8::Local<v8::Object> jsOrientation = v8::Object::New(isolate);
 	jsOrientation->Set(STR2VAL("roll"),NUM2VAL(roll));
 	jsOrientation->Set(STR2VAL("pitch"),NUM2VAL(pitch));
 	jsOrientation->Set(STR2VAL("yaw"),NUM2VAL(yaw));
@@ -146,9 +150,9 @@ STATIC_METHOD_IMPL(EventManager, GetDeviceOrientation)
 	END
 FUNCTION_IMPL(GetEventManager)
 	METHOD_SIGNATURE("", [object EventManager], 0, ());
-    v8::Handle<v8::Object> jsInstance = EventManagerWrap::GetScriptSingletonInstance();
+    v8::Local<v8::Object> jsInstance = EventManagerWrap::GetScriptSingletonInstance(isolate);
     EventManager* evtMgr = EventManager::getSingletonInstance();
-    evtMgr->mEventEmitterScriptObj = v8::Persistent<v8::Object>::New(jsInstance);
+    evtMgr->mEventEmitterScriptObj.Reset(isolate, jsInstance);
     RETURN(jsInstance);
 	END
 
@@ -164,10 +168,9 @@ METHOD_IMPL(ResourceManager, GetImage)
 	if (img == NULL) {
 		RETURN_FALSE;
 	}
-    v8::Handle<v8::Value> obj = ImageWrap::NewFromNative(img);
+    v8::Local<v8::Object> obj = ImageWrap::NewFromCpp(isolate, img);
 	// add a name to the object so it's easier to keep track of
-    obj->ToObject()->Set(STR2VAL("name"), STR2VAL(imageName),
-    		static_cast<v8::PropertyAttribute>(v8::ReadOnly));
+    obj->Set(STR2VAL("name"), STR2VAL(imageName));
 	RETURN(obj);
 	END
 METHOD_IMPL(ResourceManager, GetImageStrip)
@@ -178,10 +181,10 @@ METHOD_IMPL(ResourceManager, GetImageStrip)
 	if (img == NULL) {
 		RETURN_FALSE;
 	}
-    v8::Handle<v8::Value> obj = ImageStripWrap::NewFromNative(img);
+    v8::Local<v8::Object> obj = ImageStripWrap::NewFromCpp(isolate, img);
 	// add a name to the object so it's easier to keep track of
-    obj->ToObject()->Set(STR2VAL("name"), STR2VAL(imageName),
-    		static_cast<v8::PropertyAttribute>(v8::ReadOnly));
+	// TODO: make read only property
+    obj->Set(STR2VAL("name"), STR2VAL(imageName));
 	RETURN(obj);
 	END
 %#ifndef PDG_NO_SOUND
@@ -193,10 +196,10 @@ METHOD_IMPL(ResourceManager, GetSound)
 	if (snd == NULL) {
 		RETURN_FALSE;
 	}
-    v8::Handle<v8::Value> obj = SoundWrap::NewFromNative(snd);
+    v8::Local<v8::Object> obj = SoundWrap::NewFromCpp(isolate, snd);
 	// add a name to the sound so it's easier to keep track of
-    obj->ToObject()->Set(STR2VAL("name"), STR2VAL(soundName),
-    		static_cast<v8::PropertyAttribute>(v8::ReadOnly));
+	// TODO: make read only property
+    obj->Set(STR2VAL("name"), STR2VAL(soundName) );
 	RETURN(obj);
 	END
 %#endif // !PDG_NO_SOUND
@@ -204,14 +207,14 @@ METHOD_IMPL(ResourceManager, GetSound)
 
 FUNCTION_IMPL(GetResourceManager)
 	METHOD_SIGNATURE("", [object ResourceManager], 0, ());
-    RETURN( ResourceManagerWrap::GetScriptSingletonInstance() );
+    RETURN( ResourceManagerWrap::GetScriptSingletonInstance(isolate) );
     END
 
 // ========================================================================================
 //MARK: ISerializable
 // ========================================================================================
 
-_V8_NATIVE_CONSTRUCTOR_IMPL(ISerializable)
+CPP_CONSTRUCTOR_IMPL(ISerializable)
 	if (args.Length() == 0) {
 		ScriptSerializable* serializable = new ScriptSerializable();
 		serializable->addRef();
@@ -222,14 +225,10 @@ _V8_NATIVE_CONSTRUCTOR_IMPL(ISerializable)
 			SAVE_SYNTAX_ERR("Serializable must be created with 4 function arguments "
 				"(getSerializedSizeFunc, serializeFunc, deserializeFunc, getMyClassTagFunc)");
 		}
-		v8::Local<v8::Function> cbfunc1 = v8::Local<v8::Function>::Cast(args[0]);
-		v8::Local<v8::Function> cbfunc2 = v8::Local<v8::Function>::Cast(args[1]);
-		v8::Local<v8::Function> cbfunc3 = v8::Local<v8::Function>::Cast(args[2]);
-		v8::Local<v8::Function> cbfunc4 = v8::Local<v8::Function>::Cast(args[3]);
-		v8::Persistent<v8::Function> getSerializedSizeFunc = v8::Persistent<v8::Function>::New(cbfunc1);	
-		v8::Persistent<v8::Function> serializeFunc = v8::Persistent<v8::Function>::New(cbfunc2);	
-		v8::Persistent<v8::Function> deserializeFunc = v8::Persistent<v8::Function>::New(cbfunc3);	
-		v8::Persistent<v8::Function> getMyClassTagFunc = v8::Persistent<v8::Function>::New(cbfunc4);	
+		v8::Local<v8::Function> getSerializedSizeFunc = v8::Local<v8::Function>::Cast(args[0]);
+		v8::Local<v8::Function> serializeFunc = v8::Local<v8::Function>::Cast(args[1]);
+		v8::Local<v8::Function> deserializeFunc = v8::Local<v8::Function>::Cast(args[2]);
+		v8::Local<v8::Function> getMyClassTagFunc = v8::Local<v8::Function>::Cast(args[3]);
 		ScriptSerializable* serializable = 
 			new ScriptSerializable(getSerializedSizeFunc, serializeFunc, 
 										deserializeFunc, getMyClassTagFunc);
@@ -243,11 +242,11 @@ _V8_NATIVE_CONSTRUCTOR_IMPL(ISerializable)
 // ========================================================================================
 
 METHOD_IMPL(Serializer, Serialize_obj)
-	self->mSerializerScriptObj = v8::Persistent<v8::Object>::New(args.This());  // correct for callbacks
+	self->mSerializerScriptObj.Reset(isolate, args.This());  // correct for callbacks
 	METHOD_SIGNATURE("", undefined, 1, ([object ISerializable] obj));
     REQUIRE_ARG_COUNT(1);
-	REQUIRE_NATIVE_OBJECT_OR_SUBCLASS_ARG(1, obj, ISerializable);
-	DEBUG_DUMP_SCRIPT_OBJECT(args[0], ISerializable)	
+	REQUIRE_CPP_OBJECT_OR_SUBCLASS_ARG(1, obj, ISerializable);
+	DEBUG_DUMP_SCRIPT_OBJECT(ARGV[0], ISerializable);
  	self->serialize_obj(obj);
 	NO_RETURN;
 	END
@@ -255,44 +254,43 @@ METHOD_IMPL(Serializer, SerializedSize)
 	METHOD_SIGNATURE("", number, 1, ({string|boolean|[number uint]|[object Color]|[object Offset]|[object Point]|[object Vector]|[object Rect]|[object RotatedRect]|[object Quad]|[object MemBlock]|[object ISerializable]} arg));
     REQUIRE_ARG_COUNT(1);
  	uint32 dataSize = 0;
-    if (args[0]->IsString()) {
-        v8::String::Utf8Value jsstr(args[0]->ToString());
-        const char* str = *jsstr;
-		dataSize = self->serializedSize(str);
+    if (VALUE_IS_STRING(ARGV[0])) {
+    	VALUE_TO_CSTRING(str, ARGV[0]);
+		dataSize = self->sizeof_str(str);
     } else if (VALUE_IS_BOOL(ARGV[0])) {
     	bool val = VAL2BOOL(ARGV[0]);
-    	dataSize = self->serializedSize(val);
+    	dataSize = self->sizeof_bool(val);
     } else if (VALUE_IS_NUMBER(ARGV[0])) {
     	uint32 val = VAL2UINT(ARGV[0]);
-    	dataSize = self->serializedSize(val);
+    	dataSize = self->sizeof_uint(val);
     } else if (VALUE_IS_COLOR(ARGV[0])) {
     	Color c = VAL2COLOR(ARGV[0]);
-    	dataSize = self->serializedSize(c);
+    	dataSize = self->sizeof_color(c);
     } else if (VALUE_IS_OFFSET(ARGV[0])) {
     	Offset o = VAL2OFFSET(ARGV[0]);
-    	dataSize = self->serializedSize(o);
+    	dataSize = self->sizeof_offset(o);
     } else if (VALUE_IS_RECT(ARGV[0])) {
     	Rect r = VAL2RECT(ARGV[0]);
-    	dataSize = self->serializedSize(r);
+    	dataSize = self->sizeof_rect(r);
     } else if (VALUE_IS_ROTRECT(ARGV[0])) {
     	RotatedRect rr = VAL2ROTRECT(ARGV[0]);
-    	dataSize = self->serializedSize(rr);
+    	dataSize = self->sizeof_rotr(rr);
     } else if (VALUE_IS_QUAD(ARGV[0])) {
     	Quad q = VAL2QUAD(ARGV[0]);
-    	dataSize = self->serializedSize(q);
+    	dataSize = self->sizeof_quad(q);
     } else if (args[0]->IsObject()) {
-		v8::Handle<v8::Object> obj = args[0]->ToObject();
+		v8::Local<v8::Object> obj = args[0]->ToObject();
 		MemBlockWrap* memBlock__ = ObjectWrap::Unwrap<MemBlockWrap>(obj);
     	if (memBlock__) {
-    		MemBlock* memBlock = memBlock__->getNativeObject();
-    		dataSize = self->serializedSize(memBlock->ptr, memBlock->bytes);
+    		MemBlock* memBlock = memBlock__->getCppObject();
+    		dataSize = self->sizeof_mem(memBlock->ptr, memBlock->bytes);
     	} else {
     		// perhaps it's an ISerializable?
-			EXTRACT_NATIVE_OBJECT_OR_SUBCLASS_ARG(1, serializable, ISerializable);
+			EXTRACT_CPP_OBJECT_OR_SUBCLASS_ARG(1, serializable, ISerializable);
 			if (serializable) {
 				DEBUG_DUMP_SCRIPT_OBJECT(self->mSerializerScriptObj, Serializer)
 				DEBUG_DUMP_SCRIPT_OBJECT(serializable->mISerializableScriptObj, ISerializable)
-    			dataSize = self->serializedSize(serializable);
+    			dataSize = self->sizeof_obj(serializable);
 			} else {
 				THROW_TYPE_ERR("argument 1 must be either an unsigned integer, "
 					"a string, a MemBlock object, an ISerializable object");
@@ -306,46 +304,23 @@ METHOD_IMPL(Serializer, SerializedSize)
 //MARK: Deserializer
 // ========================================================================================
 
-METHOD_IMPL(Deserializer, Deserialize_obj)
-	self->mDeserializerScriptObj = v8::Persistent<v8::Object>::New(args.This());  // correct for callbacks
-	METHOD_SIGNATURE("", [object ISerializable], 1, ());
-    REQUIRE_ARG_COUNT(0);
-  	try {
-		ISerializable* obj = self->deserialize_obj();
-		DEBUG_DUMP_SCRIPT_OBJECT(obj->mISerializableScriptObj, ISerializable)
-		RETURN_NATIVE_OBJECT(obj, ISerializable);
-	} catch(out_of_data& e) {
-    	THROW_ERR(e.what());
-	} catch(bad_tag& e) {
-    	THROW_ERR(e.what());
-	} catch(sync_error& e) {
-    	THROW_ERR(e.what());
-	} catch(unknown_object& e) {
-    	THROW_ERR(e.what());
-	}
-	END
-
-FUNCTION_IMPL(RegisterSerializableClass)
-	METHOD_SIGNATURE("", undefined, 1, (function klass));
-	REQUIRE_ARG_COUNT(1);
-	REQUIRE_FUNCTION_ARG(1, constructorFunc);
-	VALUE objVal = constructorFunc->CallAsConstructor(0, 0);
-	OBJECT obj = VAL2OBJ(objVal);
-	DEBUG_DUMP_SCRIPT_OBJECT(obj, ISerializable)
-    VALUE resVal;
-    v8::Handle<v8::Function> func;
-	if (obj->Has(STR2VAL("getMyClassTag"))) {
-    	func = v8::Handle<v8::Function>::Cast(obj->Get(STR2VAL("getMyClassTag")));
-	} else {
-		std::ostringstream msg;
-        msg << "argument 1: ISerializable subclass " << *obj->ToString() << " missing getMyClassTag() Function!!";
-		THROW_ERR(msg.str().c_str());
-	}
-    resVal = func->Call(obj, 0, 0);
-	uint32 classTag = VAL2UINT(resVal);
-	Deserializer::registerScriptClass(classTag, constructorFunc);
+FUNCTION_IMPL(RegisterSerializableObject)
+	METHOD_SIGNATURE("", undefined, 2, (object obj, [number uint] uniqueId));
+	REQUIRE_ARG_COUNT(2);
+	REQUIRE_OBJECT_ARG(1, obj);
+	REQUIRE_UINT32_ARG(2, uniqueId);
+	
+	// We need to keep a reference to the object, but we need to do it
+	// in a way that ensures that the JS engine knows it is still around
+	// In V8, that means a persistent reference of some kind
+	
+	// FIXME: not at all sure this is what we want to do.
+//	void* objPtr = static_cast<void*>(obj);
+	
+//	Deserializer::registerObject(objPtr, uniqueId);
     NO_RETURN;
     END
+
 
 
 %#ifndef PDG_NO_GUI
@@ -357,13 +332,12 @@ FUNCTION_IMPL(RegisterSerializableClass)
 METHOD_IMPL(GraphicsManager, GetCurrentScreenMode);
 	METHOD_SIGNATURE("returns object with width, height, depth and maxWindowRect for specified screen", 
 		object, 0, ([number int] screenNum = PRIMARY_SCREEN));
-    REQUIRE_ARG_MIN_COUNT(0);
-	OPTIONAL_INT32_ARG(1, screenNum, GraphicsManager::screenNum_PrimaryScreen);
+	OPTIONAL_INT32_ARG(1, screenNum, screenNum_PrimaryScreen);
 	pdg::Rect maxWindowRect;
 	pdg::GraphicsManager::ScreenMode mode;
 	mode = self->getCurrentScreenMode(screenNum, &maxWindowRect);
 	// make native object with these properties
-  	v8::Local<v8::Object> jsScreenMode = v8::Object::New();
+  	v8::Local<v8::Object> jsScreenMode = v8::Object::New(isolate);
 	jsScreenMode->Set(STR2VAL("width"),INT2VAL(mode.width));
 	jsScreenMode->Set(STR2VAL("height"),INT2VAL(mode.height));
 	jsScreenMode->Set(STR2VAL("depth"),INT2VAL(mode.bpp));
@@ -376,11 +350,11 @@ METHOD_IMPL(GraphicsManager, GetNthSupportedScreenMode);
 		object, 1, ([number int] n, [number int] screenNum = PRIMARY_SCREEN));
     REQUIRE_ARG_MIN_COUNT(1);
 	REQUIRE_INT32_ARG(1, n);
-	OPTIONAL_INT32_ARG(2, screenNum, GraphicsManager::screenNum_PrimaryScreen);
+	OPTIONAL_INT32_ARG(2, screenNum, screenNum_PrimaryScreen);
 	pdg::GraphicsManager::ScreenMode mode;
 	mode = self->getNthSupportedScreenMode(n, screenNum);
 	// make native object with these properties
-  	v8::Local<v8::Object> jsScreenMode = v8::Object::New();
+  	v8::Local<v8::Object> jsScreenMode = v8::Object::New(isolate);
 	jsScreenMode->Set(STR2VAL("width"),INT2VAL(mode.width));
 	jsScreenMode->Set(STR2VAL("height"),INT2VAL(mode.height));
 	jsScreenMode->Set(STR2VAL("depth"),INT2VAL(mode.bpp));
@@ -389,7 +363,7 @@ METHOD_IMPL(GraphicsManager, GetNthSupportedScreenMode);
 
 FUNCTION_IMPL(GetGraphicsManager)
 	METHOD_SIGNATURE("", [object GraphicsManager], 0, ()); 
-    RETURN( GraphicsManagerWrap::GetScriptSingletonInstance() );
+    RETURN( GraphicsManagerWrap::GetScriptSingletonInstance(isolate) );
     END
 
 
@@ -405,7 +379,7 @@ FUNCTION_IMPL(GetGraphicsManager)
 
 FUNCTION_IMPL(GetSoundManager)
 	METHOD_SIGNATURE("", [object SoundManager], 0, ()); 
-    RETURN( SoundManagerWrap::GetScriptSingletonInstance() );
+    RETURN( SoundManagerWrap::GetScriptSingletonInstance(isolate) );
     END
 
 
@@ -417,7 +391,7 @@ FUNCTION_IMPL(GetSoundManager)
 
 FUNCTION_IMPL(GetFileManager)
 	METHOD_SIGNATURE("", [object FileManager], 0, ()); 
-    RETURN( FileManagerWrap::GetScriptSingletonInstance() );
+    RETURN( FileManagerWrap::GetScriptSingletonInstance(isolate) );
     END
 
 
@@ -427,9 +401,9 @@ FUNCTION_IMPL(GetFileManager)
 
 FUNCTION_IMPL(GetTimerManager)
 	METHOD_SIGNATURE("", [object TimerManager], 0, ()); 
-    v8::Handle<v8::Object> jsInstance = TimerManagerWrap::GetScriptSingletonInstance();
+    v8::Local<v8::Object> jsInstance = TimerManagerWrap::GetScriptSingletonInstance(isolate);
     TimerManager* timMgr = TimerManager::getSingletonInstance();
-    timMgr->mEventEmitterScriptObj = v8::Persistent<v8::Object>::New(jsInstance);
+    timMgr->mEventEmitterScriptObj.Reset(isolate, jsInstance);
     RETURN(jsInstance);
     END
 
@@ -437,7 +411,7 @@ FUNCTION_IMPL(GetTimerManager)
 //MARK: IAnimationHelper
 // ========================================================================================
 
-_V8_NATIVE_CONSTRUCTOR_IMPL(IAnimationHelper)
+CPP_CONSTRUCTOR_IMPL(IAnimationHelper)
 	if (args.Length() == 0) {
 		ScriptAnimationHelper* helper = new ScriptAnimationHelper();
 		return helper;
@@ -445,8 +419,7 @@ _V8_NATIVE_CONSTRUCTOR_IMPL(IAnimationHelper)
 		SAVE_SYNTAX_ERR("AnimationHelper must be created with a function argument (handlerFunc)");
 		return 0;
 	}
-	v8::Local<v8::Function> cbfunc = v8::Local<v8::Function>::Cast(args[0]);
-    v8::Persistent<v8::Function> callback = v8::Persistent<v8::Function>::New(cbfunc);	
+	v8::Local<v8::Function> callback = v8::Local<v8::Function>::Cast(args[0]);
 	ScriptAnimationHelper* helper = new ScriptAnimationHelper(callback);
 	return helper;
 	END
@@ -462,7 +435,7 @@ static v8::Persistent<v8::Function> s_CustomScriptEasing[MAX_CUSTOM_EASINGS];
 //MARK: ISpriteCollideHelper
 // ========================================================================================
 
-_V8_NATIVE_CONSTRUCTOR_IMPL(ISpriteCollideHelper)
+CPP_CONSTRUCTOR_IMPL(ISpriteCollideHelper)
 	if (args.Length() == 0) {
 		ScriptSpriteCollideHelper* helper = new ScriptSpriteCollideHelper();
 		return helper;
@@ -470,8 +443,7 @@ _V8_NATIVE_CONSTRUCTOR_IMPL(ISpriteCollideHelper)
 		SAVE_SYNTAX_ERR("SpriteCollideHelper must be created with a function argument (allowCollisionFunc)");
 		return 0;
 	}	
-	v8::Local<v8::Function> cbfunc = v8::Local<v8::Function>::Cast(args[0]);
-    v8::Persistent<v8::Function> callback = v8::Persistent<v8::Function>::New(cbfunc);	
+	v8::Local<v8::Function> callback = v8::Local<v8::Function>::Cast(args[0]);
 	ScriptSpriteCollideHelper* helper = new ScriptSpriteCollideHelper(callback);
 	return helper;
 	END
@@ -482,7 +454,7 @@ _V8_NATIVE_CONSTRUCTOR_IMPL(ISpriteCollideHelper)
 //MARK: ISpriteDrawHelper
 // ========================================================================================
 
-_V8_NATIVE_CONSTRUCTOR_IMPL(ISpriteDrawHelper)
+CPP_CONSTRUCTOR_IMPL(ISpriteDrawHelper)
 	if (args.Length() == 0) {
 		ScriptSpriteDrawHelper* helper = new ScriptSpriteDrawHelper();
 		return helper;
@@ -490,8 +462,7 @@ _V8_NATIVE_CONSTRUCTOR_IMPL(ISpriteDrawHelper)
 		SAVE_SYNTAX_ERR("SpriteDrawHelper must be created with a function argument (drawFunc)");
 		return 0;
 	}	
-	v8::Local<v8::Function> cbfunc = v8::Local<v8::Function>::Cast(args[0]);
-    v8::Persistent<v8::Function> callback = v8::Persistent<v8::Function>::New(cbfunc);	
+	v8::Local<v8::Function> callback = v8::Local<v8::Function>::Cast(args[0]);
 	ScriptSpriteDrawHelper* helper = new ScriptSpriteDrawHelper(callback);
 	return helper;
 	END
@@ -504,21 +475,22 @@ _V8_NATIVE_CONSTRUCTOR_IMPL(ISpriteDrawHelper)
 // ========================================================================================
 
 ScriptSerializable::ScriptSerializable(
-		v8::Persistent<v8::Function> javascriptGetSerializedSizeFunc,
-		v8::Persistent<v8::Function> javascriptSerializeFunc,
-		v8::Persistent<v8::Function> javascriptDeserializeFunc,
-		v8::Persistent<v8::Function> javascriptGetMyClassTagFunc) 
+		v8::Local<v8::Function> javascriptGetSerializedSizeFunc,
+		v8::Local<v8::Function> javascriptSerializeFunc,
+		v8::Local<v8::Function> javascriptDeserializeFunc,
+		v8::Local<v8::Function> javascriptGetMyClassTagFunc) 
 {
-	mScriptGetSerializedSizeFunc = v8::Persistent<v8::Function>::New(javascriptGetSerializedSizeFunc);
-	mScriptSerializeFunc = v8::Persistent<v8::Function>::New(javascriptSerializeFunc);
-	mScriptDeserializeFunc = v8::Persistent<v8::Function>::New(javascriptDeserializeFunc);
-	mScriptGetMyClassTagFunc = v8::Persistent<v8::Function>::New(javascriptGetMyClassTagFunc);
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	mScriptGetSerializedSizeFunc.Reset(isolate, javascriptGetSerializedSizeFunc);
+	mScriptSerializeFunc.Reset(isolate, javascriptSerializeFunc);
+	mScriptDeserializeFunc.Reset(isolate, javascriptDeserializeFunc);
+	mScriptGetMyClassTagFunc.Reset(isolate, javascriptGetMyClassTagFunc);
 }
 
 uint32 	
 ScriptSerializable::getSerializedSize(ISerializer* serializer) const {
-  	v8::HandleScope scope;
-    v8::TryCatch try_catch;
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+    v8::TryCatch try_catch(isolate);
 
     v8::Local<v8::Value> argv[1];
     Serializer* ser = dynamic_cast<Serializer*>(serializer);
@@ -529,15 +501,16 @@ ScriptSerializable::getSerializedSize(ISerializer* serializer) const {
 	  )
     }
 
-    argv[0] = v8::Local<v8::Value>::New(ser->mSerializerScriptObj);
+    argv[0] = v8::Local<v8::Object>::New(isolate, ser->mSerializerScriptObj);
     v8::Local<v8::Value> resVal;
-    v8::Handle<v8::Function> func;
-    if (!mScriptGetSerializedSizeFunc.IsEmpty() && mScriptGetSerializedSizeFunc->IsFunction()) {
-		func = mScriptGetSerializedSizeFunc;
+    v8::Local<v8::Function> func;
+    v8::Local<v8::Object> obj_ = v8::Local<v8::Object>::New(isolate, mISerializableScriptObj);
+    if (!mScriptGetSerializedSizeFunc.IsEmpty()) {
+		func = v8::Local<v8::Function>::New(isolate, mScriptGetSerializedSizeFunc);
     } else {
-    	func = v8::Handle<v8::Function>::Cast(mISerializableScriptObj->Get(STR2VAL("getSerializedSize")));
+    	func = v8::Local<v8::Function>::Cast(obj_->Get(STR2VAL("getSerializedSize")));
 	}
-    resVal = func->Call(this->mISerializableScriptObj, 1, argv);
+    resVal = CALL_SCRIPT(func, obj_, 1, argv);
 
     if (try_catch.HasCaught()) {
 		DEBUG_ONLY( OS::_DOUT( "Script Fatal Exception calling getSerializedSize Function!!" ); )
@@ -546,11 +519,8 @@ ScriptSerializable::getSerializedSize(ISerializer* serializer) const {
     }
 	if (!resVal->IsUint32()) {
 	  DEBUG_ONLY(
-		v8::String::Utf8Value funcNameStr(func->GetName()->ToString());
-		v8::String::Utf8Value resNameStr(func->GetScriptOrigin().ResourceName()->ToString());
 		std::cerr << "result mismatch: return value from getSerializedSize Function must be an unsigned integer ("
-		    << *funcNameStr << " at " << *resNameStr << ":" 
-		    << func->GetScriptLineNumber()+1 << ")\n";
+                << FUNCTION_GET_NAME(func) << " at " << FUNCTION_GET_FILE_AND_LINE(func) << ")\n";
 		exit(1);
 	 )
 		return 0;
@@ -560,8 +530,8 @@ ScriptSerializable::getSerializedSize(ISerializer* serializer) const {
 
 void 	
 ScriptSerializable::serialize(ISerializer* serializer) const {
-  	v8::HandleScope scope;
-    v8::TryCatch try_catch;
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+    v8::TryCatch try_catch(isolate);
 
     v8::Local<v8::Value> argv[1];
     Serializer* ser = dynamic_cast<Serializer*>(serializer);
@@ -572,15 +542,16 @@ ScriptSerializable::serialize(ISerializer* serializer) const {
 	  )
     }
 
-    argv[0] = v8::Local<v8::Value>::New(ser->mSerializerScriptObj);
+    argv[0] = v8::Local<v8::Object>::New(isolate, ser->mSerializerScriptObj);
     v8::Local<v8::Value> resVal;
-    v8::Handle<v8::Function> func;
-    if (!mScriptSerializeFunc.IsEmpty() && mScriptSerializeFunc->IsFunction()) {
-		func = mScriptSerializeFunc;
+    v8::Local<v8::Function> func;
+    v8::Local<v8::Object> obj_ = v8::Local<v8::Object>::New(isolate, mISerializableScriptObj);
+    if (!mScriptSerializeFunc.IsEmpty()) {
+		func = v8::Local<v8::Function>::New(isolate, mScriptSerializeFunc);
     } else {
-    	func = v8::Handle<v8::Function>::Cast(mISerializableScriptObj->Get(STR2VAL("serialize")));
+    	func = v8::Local<v8::Function>::Cast(obj_->Get(STR2VAL("serialize")));
 	}
-    resVal = func->Call(this->mISerializableScriptObj, 1, argv);
+    resVal = CALL_SCRIPT(func, obj_, 1, argv);
 
     if (try_catch.HasCaught()) {
 		DEBUG_ONLY( OS::_DOUT( "Script Fatal Exception calling serialize Function!!" ); )
@@ -590,8 +561,8 @@ ScriptSerializable::serialize(ISerializer* serializer) const {
 
 void 	
 ScriptSerializable::deserialize(IDeserializer* deserializer) {
-  	v8::HandleScope scope;
-    v8::TryCatch try_catch;
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+    v8::TryCatch try_catch(isolate);
 
     v8::Local<v8::Value> argv[1];
     Deserializer* deser = dynamic_cast<Deserializer*>(deserializer);
@@ -601,15 +572,16 @@ ScriptSerializable::deserialize(IDeserializer* deserializer) {
 		exit(1);
 	  )
     }
-    argv[0] = v8::Local<v8::Value>::New(deser->mDeserializerScriptObj);
+    argv[0] = v8::Local<v8::Object>::New(isolate, deser->mDeserializerScriptObj);
     v8::Local<v8::Value> resVal;
-    v8::Handle<v8::Function> func;
-    if (!mScriptDeserializeFunc.IsEmpty() && mScriptDeserializeFunc->IsFunction()) {
-		func = mScriptDeserializeFunc;
+    v8::Local<v8::Function> func;
+    v8::Local<v8::Object> obj_ = v8::Local<v8::Object>::New(isolate, mISerializableScriptObj);
+    if (!mScriptDeserializeFunc.IsEmpty()) {
+		func = v8::Local<v8::Function>::New(isolate, mScriptDeserializeFunc);
     } else {
-    	func = v8::Handle<v8::Function>::Cast(mISerializableScriptObj->Get(STR2VAL("deserialize")));
+    	func = v8::Local<v8::Function>::Cast(obj_->Get(STR2VAL("deserialize")));
 	}
-    resVal = func->Call(this->mISerializableScriptObj, 1, argv);
+    resVal = CALL_SCRIPT(func, obj_, 1, argv);
 
     if (try_catch.HasCaught()) {
 		DEBUG_ONLY( OS::_DOUT( "Script Fatal Exception calling deserialize Function!!" ); )
@@ -619,24 +591,25 @@ ScriptSerializable::deserialize(IDeserializer* deserializer) {
 
 uint32 	
 ScriptSerializable::getMyClassTag() const {
-  	v8::HandleScope scope;
-    v8::TryCatch try_catch;
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+    v8::TryCatch try_catch(isolate);
 
     v8::Local<v8::Value> resVal;
-    v8::Handle<v8::Function> func;
-    if (!mScriptGetMyClassTagFunc.IsEmpty() && mScriptGetMyClassTagFunc->IsFunction()) {
-		func = mScriptGetMyClassTagFunc;
-    } else if (mISerializableScriptObj->Has(STR2VAL("getMyClassTag"))) {
-    	func = v8::Handle<v8::Function>::Cast(mISerializableScriptObj->Get(STR2VAL("getMyClassTag")));
+    v8::Local<v8::Function> func;
+    v8::Local<v8::Object> obj_ = v8::Local<v8::Object>::New(isolate, mISerializableScriptObj);
+    if (!mScriptGetMyClassTagFunc.IsEmpty()) {
+		func = v8::Local<v8::Function>::New(isolate, mScriptGetMyClassTagFunc);
+    } else if (obj_->Has(STR2VAL("getMyClassTag"))) {
+    	func = v8::Local<v8::Function>::Cast(obj_->Get(STR2VAL("getMyClassTag")));
 	} else {
 	  DEBUG_ONLY(
-		v8::String::Utf8Value objectNameStr(mISerializableScriptObj->ToString());
+		v8::String::Utf8Value objectNameStr(obj_->ToString());
 		std::cerr << "fatal: ISerializable object " << *objectNameStr << " missing getMyClassTag() Function!!";
 		exit(1);
 	  )
 		return 0;
 	}
-    resVal = func->Call(this->mISerializableScriptObj, 0, 0);
+    resVal = CALL_SCRIPT(func, obj_, 0, 0);
 
     if (try_catch.HasCaught()) {
 		DEBUG_ONLY( OS::_DOUT( "Script Fatal Exception calling getMyClassTag Function!!" ); )
@@ -645,11 +618,8 @@ ScriptSerializable::getMyClassTag() const {
     }
 	if (!resVal->IsUint32()) {
 	  DEBUG_ONLY(
-		v8::String::Utf8Value funcNameStr(func->GetName()->ToString());
-		v8::String::Utf8Value resNameStr(func->GetScriptOrigin().ResourceName()->ToString());
 		std::cerr << "result mismatch: return value from getMyClassTag Function must be an unsigned integer ("
-		    << *funcNameStr << " at " << *resNameStr << ":" 
-		    << func->GetScriptLineNumber()+1 << ")\n";
+                << FUNCTION_GET_NAME(func) << " at " << FUNCTION_GET_FILE_AND_LINE(func) << ")\n";
 		exit(1);
 	  )
 	    return 0;
@@ -661,14 +631,18 @@ ScriptSerializable::getMyClassTag() const {
 //MARK: Script Event Handler
 // ========================================================================================
 
-ScriptEventHandler::ScriptEventHandler(v8::Persistent<v8::Function> func) {
-	mScriptHandlerFunc = v8::Persistent<v8::Function>::New(func);
+ScriptEventHandler::ScriptEventHandler(FUNCTION_REF func) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	mScriptHandlerFunc.Reset(isolate, func);
 }
 
 bool ScriptEventHandler::handleEvent(EventEmitter* emitter, long inEventType, void* inEventData) throw() {
-  	v8::HandleScope scope;
-  	v8::Local<v8::Object> jsEvent = v8::Object::New();
-  	jsEvent->Set(STR2VAL("emitter"), emitter->mEventEmitterScriptObj);
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  	v8::Local<v8::Object> jsEvent = v8::Object::New(isolate);
+    v8::Local<v8::Object> emitter_ = v8::Local<v8::Object>::New(isolate, emitter->mEventEmitterScriptObj);
+    v8::Local<v8::Object> obj1_;
+    v8::Local<v8::Object> obj2_;
+  	jsEvent->Set(STR2VAL("emitter"), emitter_);
 	jsEvent->Set(STR2VAL("eventType"),INT2VAL(inEventType));
 	switch (inEventType) {
 		case pdg::eventType_Startup:
@@ -705,9 +679,11 @@ bool ScriptEventHandler::handleEvent(EventEmitter* emitter, long inEventType, vo
 			jsEvent->Set(STR2VAL("isRepeating"),BOOL2VAL(static_cast<KeyPressInfo*>(inEventData)->isRepeating));
 			break;
 		case pdg::eventType_SpriteTouch:
+            obj1_ = v8::Local<v8::Object>::New(isolate, static_cast<SpriteTouchInfo*>(inEventData)->touchedSprite->mSpriteScriptObj);
+            obj2_ = v8::Local<v8::Object>::New(isolate, static_cast<SpriteTouchInfo*>(inEventData)->inLayer->mSpriteLayerScriptObj);
 			jsEvent->Set(STR2VAL("touchType"),INT2VAL(static_cast<SpriteTouchInfo*>(inEventData)->touchType));
-			jsEvent->Set(STR2VAL("touchedSprite"),static_cast<SpriteTouchInfo*>(inEventData)->touchedSprite->mSpriteScriptObj);
-			jsEvent->Set(STR2VAL("inLayer"),static_cast<SpriteTouchInfo*>(inEventData)->inLayer->mSpriteLayerScriptObj);
+			jsEvent->Set(STR2VAL("touchedSprite"), obj1_);
+			jsEvent->Set(STR2VAL("inLayer"), obj2_);
 			// break; fall through
 		case pdg::eventType_MouseDown:
 		case pdg::eventType_MouseUp:
@@ -749,20 +725,23 @@ bool ScriptEventHandler::handleEvent(EventEmitter* emitter, long inEventType, vo
 %#endif // PDG_NO_NETWORK
 %#ifndef PDG_NO_SOUND
 		case pdg::eventType_SoundEvent:
+            obj1_ = v8::Local<v8::Object>::New(isolate, static_cast<SoundEventInfo*>(inEventData)->sound->mSoundScriptObj);
 			jsEvent->Set(STR2VAL("eventCode"),INT2VAL(static_cast<SoundEventInfo*>(inEventData)->eventCode));
-			jsEvent->Set(STR2VAL("sound"),static_cast<SoundEventInfo*>(inEventData)->sound->mSoundScriptObj);
+			jsEvent->Set(STR2VAL("sound"), obj1_);
 			break;
 %#endif // PDG_NO_SOUND
 %#ifndef PDG_NO_GUI
 		case pdg::eventType_PortResized:
-			jsEvent->Set(STR2VAL("port"),static_cast<PortResizeInfo*>(inEventData)->port->mPortScriptObj);
+            obj1_ = v8::Local<v8::Object>::New(isolate, static_cast<PortResizeInfo*>(inEventData)->port->mPortScriptObj);
+			jsEvent->Set(STR2VAL("port"), obj1_);
 			jsEvent->Set(STR2VAL("screenPos"), INT2VAL(static_cast<PortResizeInfo*>(inEventData)->screenPos));
 			jsEvent->Set(STR2VAL("oldScreenPos"), INT2VAL(static_cast<PortResizeInfo*>(inEventData)->oldScreenPos));
 			jsEvent->Set(STR2VAL("oldWidth"), INT2VAL(static_cast<PortResizeInfo*>(inEventData)->oldWidth));
 			jsEvent->Set(STR2VAL("oldHeight"), INT2VAL(static_cast<PortResizeInfo*>(inEventData)->oldHeight));
 			break;
 		case pdg::eventType_PortDraw:
-			jsEvent->Set(STR2VAL("port"),static_cast<PortDrawInfo*>(inEventData)->port->mPortScriptObj);
+            obj1_ = v8::Local<v8::Object>::New(isolate, static_cast<PortDrawInfo*>(inEventData)->port->mPortScriptObj);
+			jsEvent->Set(STR2VAL("port"), obj1_);
 			jsEvent->Set(STR2VAL("frameNum"), INT2VAL(static_cast<PortDrawInfo*>(inEventData)->frameNum));
 			break;
 %#endif // PDG_NO_GUI
@@ -770,7 +749,8 @@ bool ScriptEventHandler::handleEvent(EventEmitter* emitter, long inEventType, vo
 		case pdg::eventType_SpriteBreak:
 			if (inEventType == pdg::eventType_SpriteCollide) {
 				if (static_cast<SpriteCollideInfo*>(inEventData)->targetSprite) {
-					jsEvent->Set(STR2VAL("targetSprite"),static_cast<SpriteCollideInfo*>(inEventData)->targetSprite->mSpriteScriptObj);
+                    obj1_ = v8::Local<v8::Object>::New(isolate, static_cast<SpriteCollideInfo*>(inEventData)->targetSprite->mSpriteScriptObj);
+					jsEvent->Set(STR2VAL("targetSprite"), obj1_);
 				}
 				jsEvent->Set(STR2VAL("normal"), VECTOR2VAL(static_cast<SpriteCollideInfo*>(inEventData)->normal));
 				jsEvent->Set(STR2VAL("impulse"), VECTOR2VAL(static_cast<SpriteCollideInfo*>(inEventData)->impulse));
@@ -778,27 +758,31 @@ bool ScriptEventHandler::handleEvent(EventEmitter* emitter, long inEventType, vo
 				jsEvent->Set(STR2VAL("kineticEnergy"),NUM2VAL(static_cast<SpriteCollideInfo*>(inEventData)->kineticEnergy));
 			  %#ifdef PDG_USE_CHIPMUNK_PHYSICS
 			    if (static_cast<SpriteCollideInfo*>(inEventData)->arbiter) {
-					jsEvent->Set(STR2VAL("arbiter"), cpArbiterWrap::NewFromNative(static_cast<SpriteCollideInfo*>(inEventData)->arbiter));
+					jsEvent->Set(STR2VAL("arbiter"), cpArbiterWrap::NewFromCpp(isolate, static_cast<SpriteCollideInfo*>(inEventData)->arbiter));
 				}
 			  %#endif
  			} else {
 			  %#ifdef PDG_USE_CHIPMUNK_PHYSICS
-				jsEvent->Set(STR2VAL("targetSprite"),static_cast<SpriteJointBreakInfo*>(inEventData)->targetSprite->mSpriteScriptObj);
+                obj1_ = v8::Local<v8::Object>::New(isolate, static_cast<SpriteJointBreakInfo*>(inEventData)->targetSprite->mSpriteScriptObj);
+				jsEvent->Set(STR2VAL("targetSprite"), obj1_);
 				jsEvent->Set(STR2VAL("impulse"),NUM2VAL(static_cast<SpriteJointBreakInfo*>(inEventData)->impulse));
 				jsEvent->Set(STR2VAL("force"),NUM2VAL(static_cast<SpriteJointBreakInfo*>(inEventData)->force));
 				jsEvent->Set(STR2VAL("breakForce"),NUM2VAL(static_cast<SpriteJointBreakInfo*>(inEventData)->breakForce));
-				jsEvent->Set(STR2VAL("joint"), cpConstraintWrap::NewFromNative(static_cast<SpriteJointBreakInfo*>(inEventData)->joint));
+				jsEvent->Set(STR2VAL("joint"), cpConstraintWrap::NewFromCpp(isolate, static_cast<SpriteJointBreakInfo*>(inEventData)->joint));
 			  %#endif
  			}
 			// break; fall through
 		case pdg::eventType_SpriteAnimate:
+            obj1_ = v8::Local<v8::Object>::New(isolate, static_cast<SpriteAnimateInfo*>(inEventData)->actingSprite->mSpriteScriptObj);
+            obj2_ = v8::Local<v8::Object>::New(isolate, static_cast<SpriteAnimateInfo*>(inEventData)->inLayer->mSpriteLayerScriptObj);
 			jsEvent->Set(STR2VAL("action"),INT2VAL(static_cast<SpriteAnimateInfo*>(inEventData)->action));
-			jsEvent->Set(STR2VAL("actingSprite"),static_cast<SpriteAnimateInfo*>(inEventData)->actingSprite->mSpriteScriptObj);
-			jsEvent->Set(STR2VAL("inLayer"),static_cast<SpriteAnimateInfo*>(inEventData)->inLayer->mSpriteLayerScriptObj);
+			jsEvent->Set(STR2VAL("actingSprite"), obj1_);
+			jsEvent->Set(STR2VAL("inLayer"), obj2_);
 			break;
 		case pdg::eventType_SpriteLayer:
+            obj1_ = v8::Local<v8::Object>::New(isolate, static_cast<SpriteLayerInfo*>(inEventData)->actingLayer->mSpriteLayerScriptObj);
 			jsEvent->Set(STR2VAL("action"),INT2VAL(static_cast<SpriteLayerInfo*>(inEventData)->action));
-			jsEvent->Set(STR2VAL("actingLayer"),static_cast<SpriteLayerInfo*>(inEventData)->actingLayer->mSpriteLayerScriptObj);
+			jsEvent->Set(STR2VAL("actingLayer"), obj1_);
 			jsEvent->Set(STR2VAL("millisec"),UINT2VAL(static_cast<SpriteLayerInfo*>(inEventData)->millisec));
 			break;
 		default: {
@@ -811,28 +795,29 @@ bool ScriptEventHandler::handleEvent(EventEmitter* emitter, long inEventType, vo
 	
 	}
 
-    v8::TryCatch try_catch;
+    v8::TryCatch try_catch(isolate);
 
     v8::Local<v8::Value> argv[1];
-    argv[0] = v8::Local<v8::Value>::New(jsEvent);
+    argv[0] = v8::Local<v8::Value>::New(isolate, jsEvent);
 
     DEBUG_DUMP_SCRIPT_OBJECT(this->mIEventHandlerScriptObj, IEventHandler);
 
     v8::Local<v8::Value> resVal;
-    v8::Handle<v8::Function> func;
-    if (!mScriptHandlerFunc.IsEmpty() && mScriptHandlerFunc->IsFunction()) {
-		func = mScriptHandlerFunc;
-    } else if (mIEventHandlerScriptObj->Has(STR2VAL("handleEvent"))) {
-    	func = v8::Handle<v8::Function>::Cast(mIEventHandlerScriptObj->Get(STR2VAL("handleEvent")));
+    v8::Local<v8::Function> func;
+    v8::Local<v8::Object> obj_ = v8::Local<v8::Object>::New(isolate, mIEventHandlerScriptObj);
+    if (!mScriptHandlerFunc.IsEmpty()) {
+		func = v8::Local<v8::Function>::New(isolate, mScriptHandlerFunc);
+    } else if (obj_->Has(STR2VAL("handleEvent"))) {
+    	func = v8::Local<v8::Function>::Cast(obj_->Get(STR2VAL("handleEvent")));
 	} else {
 	  DEBUG_ONLY(
-		v8::String::Utf8Value objectNameStr(mIEventHandlerScriptObj->ToString());
+		v8::String::Utf8Value objectNameStr(obj_->ToString());
 		std::cerr << "fatal: IEventHandler object " << *objectNameStr << " missing handleEvent() Function!!\n";
 		exit(1);
 	  )
 		return false;
 	}
-    resVal = func->Call(this->mIEventHandlerScriptObj, 1, argv);
+    resVal = CALL_SCRIPT(func, obj_, 1, argv);
 
     if (try_catch.HasCaught()) {
 		DEBUG_ONLY( OS::_DOUT( "Script Fatal Exception calling event Handler!!" ); )
@@ -841,11 +826,8 @@ bool ScriptEventHandler::handleEvent(EventEmitter* emitter, long inEventType, vo
     }
 	if (!resVal->IsBoolean()) {
 	  %#ifdef DEBUG
-		v8::String::Utf8Value funcNameStr(func->GetName()->ToString());
-		v8::String::Utf8Value resNameStr(func->GetScriptOrigin().ResourceName()->ToString());
 		std::cerr << "result mismatch: return value from event handler Function must be a boolean ("
-		    << *funcNameStr << " at " << *resNameStr << ":" 
-		    << func->GetScriptLineNumber()+1 << ")\n";
+                << FUNCTION_GET_NAME(func) << " at " << FUNCTION_GET_FILE_AND_LINE(func) << ")\n";
 		exit(1);
 	  %#else
 	    return false;
@@ -858,37 +840,39 @@ bool ScriptEventHandler::handleEvent(EventEmitter* emitter, long inEventType, vo
 //MARK: Script Animation Helper
 // ========================================================================================
 
-ScriptAnimationHelper::ScriptAnimationHelper(v8::Persistent<v8::Function> func) {
-	mScriptAnimateFunc = v8::Persistent<v8::Function>::New(func);
+ScriptAnimationHelper::ScriptAnimationHelper(FUNCTION_REF func) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	mScriptAnimateFunc.Reset(isolate, func);
 }
 
-bool ScriptAnimationHelper::animate(Animated* what, uint32 msElapsed) throw() {
-  	v8::HandleScope scope;
+bool ScriptAnimationHelper::animate(Animated* what, ms_delta msElapsed) throw() {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
 
-    v8::TryCatch try_catch;
+    v8::TryCatch try_catch(isolate);
 
     v8::Local<v8::Value> argv[2];
-    argv[0] = v8::Local<v8::Value>::New(what->mAnimatedScriptObj);
-    argv[1] = v8::Local<v8::Value>::New(UINT2VAL(msElapsed));
+    argv[0] = v8::Local<v8::Object>::New(isolate, what->mAnimatedScriptObj);
+    argv[1] = v8::Local<v8::Value>::New(isolate, UINT2VAL(msElapsed));
 
     DEBUG_DUMP_SCRIPT_OBJECT(what->mAnimatedScriptObj, Animated);
     DEBUG_DUMP_SCRIPT_OBJECT(this->mIAnimationHelperScriptObj, IAnimationHelper);
 
     v8::Local<v8::Value> resVal;
-    v8::Handle<v8::Function> func;
-    if (!mScriptAnimateFunc.IsEmpty() && mScriptAnimateFunc->IsFunction()) {
-		func = mScriptAnimateFunc;
-    } else if (mIAnimationHelperScriptObj->Has(STR2VAL("animate"))) {
-    	func = v8::Handle<v8::Function>::Cast(mIAnimationHelperScriptObj->Get(STR2VAL("animate")));
+    v8::Local<v8::Function> func;
+    v8::Local<v8::Object> obj_ = v8::Local<v8::Object>::New(isolate, this->mIAnimationHelperScriptObj);
+    if (!mScriptAnimateFunc.IsEmpty()) {
+		func = v8::Local<v8::Function>::New(isolate, mScriptAnimateFunc);
+    } else if (obj_->Has(STR2VAL("animate"))) {
+    	func = v8::Local<v8::Function>::Cast(obj_->Get(STR2VAL("animate")));
 	} else {
 	  DEBUG_ONLY(
-		v8::String::Utf8Value objectNameStr(mIAnimationHelperScriptObj->ToString());
+		v8::String::Utf8Value objectNameStr(obj_->ToString());
 		std::cerr << "fatal: IAnimationHelper object " << *objectNameStr << " missing animate() Function!!";
 		exit(1);
 	  )
 		return false;
 	}
-    resVal = func->Call(this->mIAnimationHelperScriptObj, 2, argv);
+    resVal = CALL_SCRIPT(func, obj_, 2, argv);
 
     if (try_catch.HasCaught()) {
 		DEBUG_ONLY( OS::_DOUT( "Script Fatal Exception calling Animation Helper!!" ); )
@@ -897,11 +881,8 @@ bool ScriptAnimationHelper::animate(Animated* what, uint32 msElapsed) throw() {
     }
 	if (!resVal->IsBoolean()) {
 	  %#ifdef DEBUG
-		v8::String::Utf8Value funcNameStr(func->GetName()->ToString());
-		v8::String::Utf8Value resNameStr(func->GetScriptOrigin().ResourceName()->ToString());
 		std::cerr << "result mismatch: return value from animate helper Function must be a boolean ("
-		    << *funcNameStr << " at " << *resNameStr << ":" 
-		    << func->GetScriptLineNumber()+1 << ")\n";
+                << FUNCTION_GET_NAME(func) << " at " << FUNCTION_GET_FILE_AND_LINE(func) << ")\n";
 		exit(1);
 	  %#else
 	    return false;
@@ -914,38 +895,40 @@ bool ScriptAnimationHelper::animate(Animated* what, uint32 msElapsed) throw() {
 //MARK: Script Sprite Collide Helper
 // ========================================================================================
 
-ScriptSpriteCollideHelper::ScriptSpriteCollideHelper(v8::Persistent<v8::Function> func) {
-	mScriptAllowCollisionFunc = v8::Persistent<v8::Function>::New(func);
+ScriptSpriteCollideHelper::ScriptSpriteCollideHelper(FUNCTION_REF func) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	mScriptAllowCollisionFunc.Reset(isolate, func);
 }
 
 bool ScriptSpriteCollideHelper::allowCollision(Sprite* sprite, Sprite* withSprite) throw() {
-  	v8::HandleScope scope;
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
 
-    v8::TryCatch try_catch;
+    v8::TryCatch try_catch(isolate);
 
     v8::Local<v8::Value> argv[2];
-    argv[0] = v8::Local<v8::Value>::New(sprite->mSpriteScriptObj);
-    argv[1] = v8::Local<v8::Value>::New(withSprite->mSpriteScriptObj);
+    argv[0] = v8::Local<v8::Object>::New(isolate, sprite->mSpriteScriptObj);
+    argv[1] = v8::Local<v8::Object>::New(isolate, withSprite->mSpriteScriptObj);
 
     DEBUG_DUMP_SCRIPT_OBJECT(sprite->mSpriteScriptObj, Sprite);
     DEBUG_DUMP_SCRIPT_OBJECT(withSprite->mSpriteScriptObj, Sprite);
     DEBUG_DUMP_SCRIPT_OBJECT(this->mISpriteCollideHelperScriptObj, ISpriteCollideHelper);
 
     v8::Local<v8::Value> resVal;
-    v8::Handle<v8::Function> func;
-    if (!mScriptAllowCollisionFunc.IsEmpty() && mScriptAllowCollisionFunc->IsFunction()) {
-		func = mScriptAllowCollisionFunc;
-    } else if (mISpriteCollideHelperScriptObj->Has(STR2VAL("allowCollision"))) {
-    	func = v8::Handle<v8::Function>::Cast(mISpriteCollideHelperScriptObj->Get(STR2VAL("allowCollision")));
+    v8::Local<v8::Function> func;
+    v8::Local<v8::Object> obj_ = v8::Local<v8::Object>::New(isolate, this->mISpriteCollideHelperScriptObj);
+    if (!mScriptAllowCollisionFunc.IsEmpty()) {
+		func = v8::Local<v8::Function>::New(isolate, mScriptAllowCollisionFunc);
+    } else if (obj_->Has(STR2VAL("allowCollision"))) {
+    	func = v8::Local<v8::Function>::Cast(obj_->Get(STR2VAL("allowCollision")));
 	} else {
 	  DEBUG_ONLY(
-		v8::String::Utf8Value objectNameStr(mISpriteCollideHelperScriptObj->ToString());
+		v8::String::Utf8Value objectNameStr(obj_->ToString());
 		std::cerr << "fatal: ISpriteCollideHelper object " << *objectNameStr << " missing allowCollision() Function!!";
 		exit(1);
 	  )
 		return false;
 	}
-    resVal = func->Call(this->mISpriteCollideHelperScriptObj, 2, argv);
+    resVal = CALL_SCRIPT(func, obj_, 2, argv);
 
     if (try_catch.HasCaught()) {
 		DEBUG_ONLY( OS::_DOUT( "Script Fatal Exception calling Sprite Collide Helper!!" ); )
@@ -954,11 +937,8 @@ bool ScriptSpriteCollideHelper::allowCollision(Sprite* sprite, Sprite* withSprit
     }
 // 	if (!resVal->IsBoolean()) {
 // 	  %#ifdef DEBUG
-// 		v8::String::Utf8Value funcNameStr(func->GetName()->ToString());
-// 		v8::String::Utf8Value resNameStr(func->GetScriptOrigin().ResourceName()->ToString());
 // 		std::cerr << "result mismatch: return value from sprite collide helper Function must be a boolean ("
-// 		    << *funcNameStr << " at " << *resNameStr << ":" 
-// 		    << func->GetScriptLineNumber()+1 << ")\n";
+//                << FUNCTION_GET_NAME(func) << " at " << FUNCTION_GET_FILE_AND_LINE(func) << ")\n";
 // 		exit(1);
 // 	  %#else
 // 	    return false;
@@ -973,38 +953,39 @@ bool ScriptSpriteCollideHelper::allowCollision(Sprite* sprite, Sprite* withSprit
 //MARK: Script Sprite Draw Helper
 // ========================================================================================
 
-ScriptSpriteDrawHelper::ScriptSpriteDrawHelper(v8::Persistent<v8::Function> func) {
-	mScriptDrawFunc = v8::Persistent<v8::Function>::New(func);
+ScriptSpriteDrawHelper::ScriptSpriteDrawHelper(FUNCTION_REF func) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	mScriptDrawFunc.Reset(isolate, func);
 }
 
 bool ScriptSpriteDrawHelper::draw(Sprite* sprite, Port* port) throw() {
-  	v8::HandleScope scope;
-
-    v8::TryCatch try_catch;
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+    v8::TryCatch try_catch(isolate);
 
     v8::Local<v8::Value> argv[2];
-    argv[0] = v8::Local<v8::Value>::New(sprite->mSpriteScriptObj);
-    argv[1] = v8::Local<v8::Value>::New(port->mPortScriptObj);
+    argv[0] = v8::Local<v8::Object>::New(isolate, sprite->mSpriteScriptObj);
+    argv[1] = v8::Local<v8::Object>::New(isolate, port->mPortScriptObj);
 
     DEBUG_DUMP_SCRIPT_OBJECT(sprite->mSpriteScriptObj, Sprite);
     DEBUG_DUMP_SCRIPT_OBJECT(port->mPortScriptObj, Port);
     DEBUG_DUMP_SCRIPT_OBJECT(this->mISpriteDrawHelperScriptObj, ISpriteDrawHelper);
 
     v8::Local<v8::Value> resVal;
-    v8::Handle<v8::Function> func;
-    if (!mScriptDrawFunc.IsEmpty() && mScriptDrawFunc->IsFunction()) {
-		func = mScriptDrawFunc;
-    } else if (mISpriteDrawHelperScriptObj->Has(STR2VAL("draw"))) {
-    	func = v8::Handle<v8::Function>::Cast(mISpriteDrawHelperScriptObj->Get(STR2VAL("draw")));
+    v8::Local<v8::Function> func;
+    v8::Local<v8::Object> obj_ = v8::Local<v8::Object>::New(isolate, this->mISpriteDrawHelperScriptObj);
+    if (!mScriptDrawFunc.IsEmpty()) {
+		func = v8::Local<v8::Function>::New(isolate, mScriptDrawFunc);
+    } else if (obj_->Has(STR2VAL("draw"))) {
+    	func = v8::Local<v8::Function>::Cast(obj_->Get(STR2VAL("draw")));
 	} else {
 	  DEBUG_ONLY(
-		v8::String::Utf8Value objectNameStr(mISpriteDrawHelperScriptObj->ToString());
+		v8::String::Utf8Value objectNameStr(obj_->ToString());
 		std::cerr << "fatal: IDrawSpriteHelper object " << *objectNameStr << " missing draw() Function!!";
 		exit(1);
 	  )
 		return false;
 	}
-    resVal = func->Call(this->mISpriteDrawHelperScriptObj, 2, argv);
+    resVal = CALL_SCRIPT(func, obj_, 2, argv);
 
     if (try_catch.HasCaught()) {
 		DEBUG_ONLY( OS::_DOUT( "Script Fatal Exception calling Sprite Draw Helper!!" ); )
@@ -1013,11 +994,8 @@ bool ScriptSpriteDrawHelper::draw(Sprite* sprite, Port* port) throw() {
     }
 // 	if (!resVal->IsBoolean()) {
 // 	  %#ifdef DEBUG
-// 		v8::String::Utf8Value funcNameStr(func->GetName()->ToString());
-// 		v8::String::Utf8Value resNameStr(func->GetScriptOrigin().ResourceName()->ToString());
 // 		std::cerr << "result mismatch: return value from sprite draw helper Function must be a boolean ("
-// 		    << *funcNameStr << " at " << *resNameStr << ":" 
-// 		    << func->GetScriptLineNumber()+1 << ")\n";
+//                << FUNCTION_GET_NAME(func) << " at " << FUNCTION_GET_FILE_AND_LINE(func) << ")\n";
 // 		exit(1);
 // 	  %#else
 // 	    return false;
@@ -1033,23 +1011,22 @@ bool ScriptSpriteDrawHelper::draw(Sprite* sprite, Port* port) throw() {
 
 
 v8::Local<v8::Value> EncodeBinary(const void *buf, size_t len) {
-	v8::HandleScope scope;
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	v8::EscapableHandleScope scope(isolate);
 	const uint8 *cbuf = static_cast<const uint8*>(buf);
 	uint16* twobytebuf = new uint16[len];
 	for (size_t i = 0; i < len; i++) {
 	  twobytebuf[i] = cbuf[i];
 	}
-	v8::Local<v8::String> chunk = v8::String::New(twobytebuf, len);
+	v8::Local<v8::String> chunk = v8::String::NewFromTwoByte(isolate, twobytebuf, v8::String::kNormalString, len);
 	delete [] twobytebuf;
-	return scope.Close(chunk);
+	return scope.Escape(chunk);
 }
 
 
 // Returns number of bytes written. 
 // call free on the pointer returned when you are done with it
-void* DecodeBinary(v8::Handle<v8::Value> val, size_t* outLen) {
-	v8::HandleScope scope;
-
+void* DecodeBinary(v8::Local<v8::Value> val, size_t* outLen) {
 	v8::Local<v8::String> str = val->ToString();
 	size_t buflen = str->Length();
 	if (outLen) {
@@ -1072,7 +1049,7 @@ void* DecodeBinary(v8::Handle<v8::Value> val, size_t* outLen) {
 
 // =========================  easing functions =============================
 
-float CallScriptEasingFunc(int which, uint32 ut, float b, float c, uint32 ud) {
+float CallScriptEasingFunc(int which, ms_delta ut, float b, float c, ms_delta ud) {
 	if (which > gNumCustomEasings) {
 	  %#ifdef DEBUG
 		std::cerr << "logic error: attempting to call an unregistered easing function #"
@@ -1083,16 +1060,18 @@ float CallScriptEasingFunc(int which, uint32 ut, float b, float c, uint32 ud) {
 	  	return 0.0f; // don't do anything in release builds
 	  %#endif
 	}
-  	v8::HandleScope scope;
-
-    v8::TryCatch try_catch;
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+    v8::TryCatch try_catch(isolate);
 
     v8::Local<v8::Value> argv[4];
-    argv[0] = v8::Local<v8::Value>::New(UINT2VAL(ut));
-    argv[1] = v8::Local<v8::Value>::New(NUM2VAL(b));
-    argv[2] = v8::Local<v8::Value>::New(NUM2VAL(c));
-    argv[3] = v8::Local<v8::Value>::New(UINT2VAL(ud));
-	v8::Local<v8::Value> resVal = s_CustomScriptEasing[which]->Call(v8::Context::GetCurrent()->Global(), 4, argv);;
+    argv[0] = v8::Local<v8::Value>::New(isolate, UINT2VAL(ut));
+    argv[1] = v8::Local<v8::Value>::New(isolate, NUM2VAL(b));
+    argv[2] = v8::Local<v8::Value>::New(isolate, NUM2VAL(c));
+    argv[3] = v8::Local<v8::Value>::New(isolate, UINT2VAL(ud));
+    v8::Local<v8::Function> easingfunc_ = v8::Local<v8::Function>::New(isolate, s_CustomScriptEasing[which]);
+
+
+    v8::Local<v8::Value> resVal = CALL_SCRIPT(easingfunc_, isolate->GetCurrentContext()->Global(), 4, argv);
 
     if (try_catch.HasCaught()) {
 		DEBUG_ONLY( OS::_DOUT( "Script Fatal Exception calling Easing Function!!" ); )
@@ -1102,11 +1081,9 @@ float CallScriptEasingFunc(int which, uint32 ut, float b, float c, uint32 ud) {
 	if (!resVal->IsNumber()) {
 		// TODO: call FatalError
 	  %#ifdef DEBUG
-		v8::String::Utf8Value funcNameStr(s_CustomScriptEasing[which]->GetName()->ToString());
-		v8::String::Utf8Value resNameStr(s_CustomScriptEasing[which]->GetScriptOrigin().ResourceName()->ToString());
 		std::cerr << "result mismatch: return value from easing Function must be a Number ("
-		    << *funcNameStr << " at " << *resNameStr << ":" 
-		    << s_CustomScriptEasing[which]->GetScriptLineNumber()+1 << ")\n";
+                << FUNCTION_GET_NAME(easingfunc_) << " at " 
+                << FUNCTION_GET_FILE_AND_LINE(easingfunc_) << ")\n";
 		exit(1);
 	  %#else
 	    return 0.0f;
@@ -1119,17 +1096,17 @@ FUNCTION_IMPL(RegisterEasingFunction)
 	METHOD_SIGNATURE("", undefined, 1, (function easingFunc)); 
     REQUIRE_ARG_COUNT(1);
 	REQUIRE_FUNCTION_ARG(1, easingFunc);
-    v8::Persistent<v8::Function> jsEasingFunc = v8::Persistent<v8::Function>::New(easingFunc);
+    v8::Local<v8::Function> jsEasingFunc = v8::Local<v8::Function>::New(isolate, easingFunc);
     if (gNumCustomEasings >= MAX_CUSTOM_EASINGS) {
     	THROW_ERR("Can't register any more custom easing functions!!");
     } else {
-    	s_CustomScriptEasing[gNumCustomEasings] = jsEasingFunc;
-		v8::String::Utf8Value funcNameStr(jsEasingFunc->GetName()->ToString());
+    	s_CustomScriptEasing[gNumCustomEasings].Reset(isolate, jsEasingFunc);
+		v8::String::Utf8Value funcNameStr(easingFunc->GetName()->ToString());
 		int funcId = NUM_BUILTIN_EASINGS + gNumCustomEasings;
 		CallScriptEasingFunc(gNumCustomEasings, 0, 0.0f, 0.0f, 1); // test calling the function
      	gNumCustomEasings++;
-   		s_BindingTarget->Set(SYMBOL(*funcNameStr), INT2VAL(funcId), 
-    			static_cast<v8::PropertyAttribute>(v8::ReadOnly | v8::DontDelete));
+     	v8::Local<v8::Object> bind_ = v8::Local<v8::Object>::New(isolate, s_BindingTarget);
+     	bind_->Set(SYMBOL(*funcNameStr), INT2VAL(funcId));
 		DEBUG_ONLY( OS::_DOUT( "Registered custom easing Function %d as constant name %s [%d]",
 				gNumCustomEasings, *funcNameStr, funcId); )
     }
@@ -1148,10 +1125,10 @@ static size_t sLastHeapUsed = 0;
 static long sIdleLastHeapReport = OS::getMilliseconds();
 )
 
-void initBindings(v8::Handle<v8::Object> target);
+void initBindings(v8::Local<v8::Object> target);
 
-void initBindings(v8::Handle<v8::Object> target) {
-    v8::HandleScope scope;
+void initBindings(v8::Local<v8::Object> target) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
     
 	// register all our customEasing functions with pdg C++
 	easingFuncToId(customEasing0);
@@ -1166,7 +1143,7 @@ void initBindings(v8::Handle<v8::Object> target) {
 	easingFuncToId(customEasing9);
 
     // save our binding target for runtime bindings, such as easing functions
-    s_BindingTarget = v8::Persistent<v8::Object>::New(target);
+    s_BindingTarget.Reset(isolate, target);
 
 	INIT_CLASS(MemBlock);
 	INIT_CLASS(FileManager);
@@ -1238,6 +1215,9 @@ void initBindings(v8::Handle<v8::Object> target) {
   %#endif
 
 	INIT_FUNCTION("createSpriteLayer", CreateSpriteLayer);
+%#ifdef PDG_SCML_SUPPORT
+	INIT_FUNCTION("createSpriteLayerFromSCMLFile", CreateSpriteLayerFromSCMLFile);
+%#endif
 	INIT_FUNCTION("cleanupSpriteLayer", CleanupSpriteLayer);
 	INIT_FUNCTION("createTileLayer", CreateTileLayer);
 
@@ -1312,21 +1292,21 @@ void initBindings(v8::Handle<v8::Object> target) {
     INIT_CONSTANT("screenPos_FaceDown", screenPos_FaceDown);
     
   %#ifndef PDG_NO_GUI
-    INIT_CONSTANT("textStyle_Plain", Graphics::textStyle_Plain);
-	INIT_CONSTANT("textStyle_Bold", Graphics::textStyle_Bold);
-	INIT_CONSTANT("textStyle_Italic", Graphics::textStyle_Italic);
-	INIT_CONSTANT("textStyle_Underline", Graphics::textStyle_Underline);
-	INIT_CONSTANT("textStyle_Centered", Graphics::textStyle_Centered);
-	INIT_CONSTANT("textStyle_LeftJustified", Graphics::textStyle_LeftJustified);
-	INIT_CONSTANT("textStyle_RightJustified", Graphics::textStyle_RightJustified);
+    INIT_CONSTANT("textStyle_Plain", textStyle_Plain);
+	INIT_CONSTANT("textStyle_Bold", textStyle_Bold);
+	INIT_CONSTANT("textStyle_Italic", textStyle_Italic);
+	INIT_CONSTANT("textStyle_Underline", textStyle_Underline);
+	INIT_CONSTANT("textStyle_Centered", textStyle_Centered);
+	INIT_CONSTANT("textStyle_LeftJustified", textStyle_LeftJustified);
+	INIT_CONSTANT("textStyle_RightJustified", textStyle_RightJustified);
   %#endif
 
-	INIT_CONSTANT("fit_None", Image::fit_None);
-    INIT_CONSTANT("fit_Height", Image::fit_Height);
-    INIT_CONSTANT("fit_Width", Image::fit_Width);
-    INIT_CONSTANT("fit_Inside", Image::fit_Inside);
-    INIT_CONSTANT("fit_Fill", Image::fit_Fill);
-    INIT_CONSTANT("fit_FillKeepProportions", Image::fit_FillKeepProportions);
+	INIT_CONSTANT("fit_None", fit_None);
+    INIT_CONSTANT("fit_Height", fit_Height);
+    INIT_CONSTANT("fit_Width", fit_Width);
+    INIT_CONSTANT("fit_Inside", fit_Inside);
+    INIT_CONSTANT("fit_Fill", fit_Fill);
+    INIT_CONSTANT("fit_FillKeepProportions", fit_FillKeepProportions);
 
     INIT_CONSTANT("init_CreateUniqueNewFile", LogManager::init_CreateUniqueNewFile);
     INIT_CONSTANT("init_OverwriteExisting", LogManager::init_OverwriteExisting);
@@ -1334,8 +1314,8 @@ void initBindings(v8::Handle<v8::Object> target) {
     INIT_CONSTANT("init_StdOut", LogManager::init_StdOut);
     INIT_CONSTANT("init_StdErr", LogManager::init_StdErr);
 
-	INIT_CONSTANT("duration_Constant", Sprite::duration_Constant);
-	INIT_CONSTANT("duration_Instantaneous", Sprite::duration_Instantaneous);
+	INIT_CONSTANT("duration_Constant", duration_Constant);
+	INIT_CONSTANT("duration_Instantaneous", duration_Instantaneous);
 		
 	INIT_CONSTANT("animate_StartToEnd", Sprite::animate_StartToEnd);
 	INIT_CONSTANT("animate_EndToStart", Sprite::animate_EndToStart);
@@ -1453,8 +1433,9 @@ void initBindings(v8::Handle<v8::Object> target) {
 
 
 void CreateSingletons() {
-	// this creation order matches the behavior of the native pdg framework app
-	FileManagerWrap::GetScriptSingletonInstance();
+ 	// this creation order matches the behavior of the native pdg framework app
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	FileManagerWrap::GetScriptSingletonInstance(isolate);  // there is now C++ singleton, only JavaScript
 
 	LogManagerWrap::getSingletonInstance();
 	ConfigManagerWrap::getSingletonInstance();
@@ -1478,7 +1459,8 @@ void CreateSingletons() {
 extern "C" void pdg_LibContainerDoIdle() {
 	
 	// give V8 some time to garbage collect
-	v8::V8::IdleNotification();
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+	isolate->IdleNotificationDeadline(0.01f);  // only give it 1/100th of a second
 
 	// report heap
 	SCRIPT_DEBUG_ONLY(

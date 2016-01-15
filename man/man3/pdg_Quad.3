@@ -1,4 +1,4 @@
-.TH "Quad" 3 "Thu Jul 10 2014" "Version v0.9.4" "Pixel Dust Game Engine" \" -*- nroff -*-
+.TH "Quad" 3 "Mon Oct 26 2015" "Version v0.9.5" "Pixel Dust Game Engine" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,7 +13,22 @@ Quad \-
 
 .in +1c
 .ti -1c
-.RI "\fBQuad\fP (args\&.\&.\&.)"
+.RI "\fBQuad\fP ()"
+.br
+.ti -1c
+.RI "\fBQuad\fP (\fBQuad\fP q)"
+.br
+.ti -1c
+.RI "\fBQuad\fP (\fBRect\fP r)"
+.br
+.ti -1c
+.RI "\fBQuad\fP (\fBRotatedRect\fP r)"
+.br
+.ti -1c
+.RI "\fBQuad\fP (\fBPoint\fP p1, \fBPoint\fP p2, \fBPoint\fP p3, \fBPoint\fP p4)"
+.br
+.ti -1c
+.RI "\fBQuad\fP (\fBPoint\fP[] p)"
 .br
 .ti -1c
 .RI "\fBPoint\fP \fBcenterPoint\fP ()"
@@ -45,9 +60,6 @@ Quad \-
 .ti -1c
 .RI "\fBrotate\fP (number rotationRadians, \fBOffset\fP centerPtOffset=\fBPoint\fP(0, 0))"
 .br
-.ti -1c
-.RI "string \fBtoString\fP ()"
-.br
 .in -1c
 .SS "Public Attributes"
 
@@ -63,7 +75,17 @@ Quad \-
 \fBQuad\fP is a class that provides support for dealing with 4 point ploygons in 2 dimensional space The PDG coordinate space starts with the top left corner of the drawing port at Point(0,0) and the bottom left corner at Point( width, height ); 
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "\fBQuad\fP (args\&.\&.\&.)"
+.SS "\fBQuad\fP ()"
+
+.SS "\fBQuad\fP (\fBQuad\fPq)"
+
+.SS "\fBQuad\fP (\fBRect\fPr)"
+
+.SS "\fBQuad\fP (\fBRotatedRect\fPr)"
+
+.SS "\fBQuad\fP (\fBPoint\fPp1, \fBPoint\fPp2, \fBPoint\fPp3, \fBPoint\fPp4)"
+
+.SS "\fBQuad\fP (\fBPoint\fP[]p)"
 
 .SH "Member Function Documentation"
 .PP 
@@ -86,8 +108,6 @@ Quad \-
 .SS "boolean notEquals (\fBQuad\fPq2)"
 
 .SS "rotate (numberrotationRadians, \fBOffset\fPcenterPtOffset = \fC\fBPoint\fP(0, 0)\fP)"
-
-.SS "string toString ()"
 
 .SH "Member Data Documentation"
 .PP 

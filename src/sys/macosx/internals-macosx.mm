@@ -27,6 +27,7 @@
 //
 // -----------------------------------------------
 
+#include "internals.h"
 #include "internals-macosx.h"
 
 #include <cstring>
@@ -36,6 +37,7 @@
 #import <Foundation/NSPathUtilities.h>
 #import <Foundation/NSError.h>
 #import <Foundation/NSDictionary.h>
+
 
 bool macosx_getApplicationSupportDirectory(const char* appName, char* buffer, int size) {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -78,17 +80,17 @@ void macosx_getSystemVersion( int &major, int &minor, int &bugfix ) { // sensibl
 	NSString* versionString = [[NSDictionary dictionaryWithContentsOfFile:@"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"];
 	NSArray* versions = [versionString componentsSeparatedByString:@"."];
 	if ( versions.count >= 1 ) {
-		major = [[versions objectAtIndex:0] integerValue];
+		major = (int)[[versions objectAtIndex:0] integerValue];
 	} else {
 		major = 0;
 	}
 	if ( versions.count >= 2 ) {
-		minor = [[versions objectAtIndex:1] integerValue];
+		minor = (int)[[versions objectAtIndex:1] integerValue];
 	} else {
 		minor = 0;
 	}
 	if ( versions.count >= 3 ) {
-		bugfix = [[versions objectAtIndex:2] integerValue];
+		bugfix = (int)[[versions objectAtIndex:2] integerValue];
 	} else {
 		bugfix = 0;
 	}

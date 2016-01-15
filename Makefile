@@ -37,16 +37,18 @@ configure:
 
 compile: configure
 	node-gyp build
-ifeq ($(PLATFORM),Darwin)
-	-@nm -mu build/Release/pdg.node | grep "dynamically looked" | grep -v "__ZNK2v8" \
-		| grep -v "__ZN4node" | grep -v "__ZN2v8" | grep -v "_ev_" | grep -v "_MOZ_Z_"
-else
-	-@nm -u build/Release/pdg.node | grep -v "@@" | grep -v "_ZNK2v8" \
-		| grep -v "_ZN4node" | grep -v "_ZN2v8" | grep -v " ev_" | grep -v "^[ \t]*w "
-endif
 
 compile-verbose: 
 	node-gyp -verbose build
+
+check-dylib:
+    ifeq ($(PLATFORM),Darwin)
+	    -@nm -mu $(PDG_ROOT)/node_modules/pdg/build/Release/pdg.node | grep "dynamically looked" | grep -v "__ZNK2v8" \
+		    | grep -v "__ZN4node" | grep -v "__ZN2v8" | grep -v "_ev_" | grep -v "_MOZ_Z_"
+    else
+	    -@nm -u $(PDG_ROOT)/node_modules/pdg/build/Release/pdg.node | grep -v "@@" | grep -v "_ZNK2v8" \
+		    | grep -v "_ZN4node" | grep -v "_ZN2v8" | grep -v " ev_" | grep -v "^[ \t]*w "
+    endif
 
 test: 
 	echo "TODO: add tests to node package"
